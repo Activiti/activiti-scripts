@@ -27,7 +27,14 @@ do
     git pull --rebase
     git rebase develop
     git checkout develop
-    git merge --no-ff --no-edit ${BRANCH} 
+    git merge --no-ff --no-edit ${BRANCH}
+    if [ -n "$PUSH" ]
+    then
+      echo "* pushing to origin"
+      git push --force-with-lease --atomic origin $BRANCH develop
+      git push origin :$BRANCH
+      git branch -d $BRANCH
+    fi
   fi
   echo "*************** MERGE $BRANCH IN $REPO - END ***************"
   popd > /dev/null
