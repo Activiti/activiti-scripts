@@ -5,4 +5,4 @@ Activiti/example-runtime-bundle
 Activiti/activiti-cloud-modeling-backend
 Activiti/activiti-cloud-registry
 Activiti/blueprint-trending-topic-campaigns
-Alfresco/alfresco-api-gateway
+Activiti/activiti-cloud-gateway
