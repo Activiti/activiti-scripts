@@ -14,11 +14,11 @@ if [ -z "${NEXT_SNAPSHOT_VERSION}" ]
 then
   YEAR=`echo ${SNAPSHOT_VERSION} | cut -c3-6`
   MONTH=`echo ${SNAPSHOT_VERSION} | cut -c7-8`
-  DATE=${YEAR}-${MONTH}
+  DATE=$YEAR-$MONTH-1
 
   if [[ "$OSTYPE" == "darwin"* ]]
   then
-    NEXT_DATE=$(date -v+1m -jf "%Y-%m" "+%Y-%m" ${DATE})
+    NEXT_DATE=$(date -v+1m -jf "%Y-%m" "+%Y-%m-" ${DATE})
   else
     NEXT_DATE=$(date +%Y%m -d "$DATE + 1 month")
   fi
