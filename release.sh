@@ -46,7 +46,7 @@ else
   then
     echo "* pushing to origin"
     git checkout ${RELEASE_VERSION}
-    mvn clean deploy -DperformRelease -DskipTests -Darguments="-DskipTests -Dgpg.passphrase=${bamboo.gpg.passphrase} -Dgpg.homedir=${HOME}/.gnupg" -Dusername=alfresco-build -Dpassword=${bamboo.github.password} -Dsquash=true
+    mvn clean deploy -DperformRelease -DskipTests -Dgpg.passphrase=${bamboo.gpg.passphrase} -Dgpg.homedir="${HOME}/.gnupg" -Dusername=alfresco-build -Dpassword=${bamboo.github.password} -Dsquash=true
     git push --atomic origin master develop ${RELEASE_VERSION}
   fi
 fi
