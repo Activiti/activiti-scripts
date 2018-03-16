@@ -25,8 +25,9 @@ else
   echo RELEASE_VERSION=${RELEASE_VERSION}
   echo NEXT_SNAPSHOT_VERSION=${NEXT_SNAPSHOT_VERSION}
 
-  #git config user.name "$GIT_AUTHOR_NAME"
-  #git config user.email "$GIT_AUTHOR_EMAIL"
+  echo $GIT_AUTHOR_NAME
+  git config user.name "$GIT_AUTHOR_NAME"
+  git config user.email "$GIT_AUTHOR_EMAIL"
 
   git checkout -b release/${RELEASE_VERSION} develop
 
