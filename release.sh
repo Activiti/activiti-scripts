@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
+echo "BAMBOO_OPTS=${BAMBOO_OPTS}"
+
 SCRIPT_DIR="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)"
 echo $SCRIPT_DIR
 
@@ -46,7 +48,7 @@ else
   then
     echo "* pushing to origin"
     git checkout ${RELEASE_VERSION}
-    mvn clean deploy -DperformRelease -DskipTests -Dgpg.passphrase=${bamboo.gpg.passphrase} -Dgpg.homedir="${HOME}/.gnupg" -Dusername=alfresco-build -Dpassword=${bamboo.github.password} -Dsquash=true
+    mvn clean deploy -DperformRelease -DskipTests ${BAMBOO_OPTS}
     git push --atomic origin master develop ${RELEASE_VERSION}
   fi
 fi
