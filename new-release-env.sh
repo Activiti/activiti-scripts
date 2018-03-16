@@ -3,7 +3,7 @@ set -e
 
 SCRIPT_DIR="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)"
 
-SNAPSHOT_VERSION=$(mvn -Dorg.slf4j.simpleLogger.defaultLogLevel=OFF -Dorg.slf4j.simpleLogger.log.org.apache.maven.plugins.help=INFO help:evaluate -Dexpression=project.version 2>/dev/null | tail -1)
+SNAPSHOT_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' -N org.codehaus.mojo:exec-maven-plugin:exec)
 
 if [ -z "${RELEASE_VERSION}" ]
 then
@@ -14,9 +14,7 @@ if [ -z "${NEXT_SNAPSHOT_VERSION}" ]
 then
   YEAR=`echo ${SNAPSHOT_VERSION} | cut -c3-6`
   MONTH=`echo ${SNAPSHOT_VERSION} | cut -c7-8`
-  DATE=${YEAR}-${MONTH}-1
-
-  echo $DATE
+  DATE=${YEAR}-${MONTH}
 
   if [[ "$OSTYPE" == "darwin"* ]]
   then
