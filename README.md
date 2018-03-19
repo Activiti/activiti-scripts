@@ -24,3 +24,11 @@ To include a push first:
     export PUSH=true
 
 To resume a release or use a custom version set the RELEASE_VERSION and NEXT_SNAPSHOT_VERSION
+
+To test a release, building images locally:
+
+    export BRANCH=<RELEASE_TAG_NAME>
+    export MAVEN_ARGS="clean install -DskipTests"
+    PROJECTS=release ./remove-all.sh
+    PROJECTS=release ./clone-all.sh
+    PROJECTS=release ./build-all.sh
