@@ -22,9 +22,10 @@ then
   then
     echo "* pushing to origin"
     git checkout ${RELEASE_VERSION}
+    echo "DEPLOY_EXISTING: ${DEPLOY_EXISTING}"
     if [ -n "${DEPLOY_EXISTING}" ]
     then
-      echo 'deployin existing repo'
+      echo 'deploying existing repo'
       mvn clean deploy -DperformRelease -DskipTests ${BAMBOO_OPTS}
     else
       mvn clean install -DskipTests
