@@ -24,6 +24,7 @@ then
     git checkout ${RELEASE_VERSION}
     if [ -n "${DEPLOY_EXISTING}" ]
     then
+      echo 'deployin existing repo'
       mvn clean deploy -DperformRelease -DskipTests ${BAMBOO_OPTS}
     else
       mvn clean install -DskipTests
