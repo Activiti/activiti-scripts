@@ -22,7 +22,12 @@ then
   then
     echo "* pushing to origin"
     git checkout ${RELEASE_VERSION}
-    mvn clean install -DskipTests
+    if [ -n "${DEPLOY_EXISTING}" ]
+    then
+      mvn clean deploy -DperformRelease -DskipTests ${BAMBOO_OPTS}
+    else
+      mvn clean install -DskipTests
+    fi
   fi
 else
   echo SNAPSHOT_VERSION=${SNAPSHOT_VERSION}
