@@ -28,6 +28,14 @@ do
   else
     cd ${REPO}
   fi
+  if [ -z "${BRANCH}" ];
+   then
+   echo "Using default branch";
+  else
+   git fetch
+   echo "Checking out branch '${BRANCH}' for $(pwd)";
+   git checkout $BRANCH || ${IGNORE_BRANCH_CHECKOUT_FAILURE:true}
+  fi
   ${SCRIPT:-echo I\'m in ${REPO}}
   echo "*************** EXECUTE ON ${REPO} :: END   ***************"
   popd > /dev/null
