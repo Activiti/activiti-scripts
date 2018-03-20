@@ -60,7 +60,13 @@ else
   then
     echo "* pushing to origin"
     git checkout ${RELEASE_VERSION}
-    mvn clean deploy -DperformRelease -DskipTests ${BAMBOO_OPTS}
+    if [ -n "${SKIP_DEPLOY}" ]
+    then
+      mvn clean install -DskipTests
+    else
+      echo 'deploying existing repo'
+      mvn clean deploy -DperformRelease -DskipTests ${BAMBOO_OPTS}
+    fi
     git push --atomic origin master develop ${RELEASE_VERSION}
   fi
 fi
