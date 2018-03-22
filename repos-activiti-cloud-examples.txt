@@ -4,5 +4,4 @@ Activiti/activiti-cloud-query
 Activiti/example-runtime-bundle
 Activiti/activiti-cloud-modeling-backend
 Activiti/activiti-cloud-registry
-Activiti/blueprint-trending-topic-campaigns
 Activiti/activiti-cloud-gateway

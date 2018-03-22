@@ -3,7 +3,7 @@ Activiti Scripts for Building Projects
 
 Includes a script to checkout and build all the Activiti repositories.
 
-    PROJECTS=activiti,activiti-cloud,activiti-cloud-examples ./build-all.sh
+    PROJECTS=activiti,activiti-cloud,activiti-cloud-examples,activiti-cloud-blueprints ./build-all.sh
     
 will build all the repositories listed in the index files:
 
@@ -13,7 +13,7 @@ will build all the repositories listed in the index files:
 
 To clone all:
 
-    PROJECTS=activiti,activiti-cloud,activiti-cloud-examples ./clone-all.sh
+    PROJECTS=activiti,activiti-cloud,activiti-cloud-examples,activiti-cloud-blueprints ./clone-all.sh
 
 To release:
 
