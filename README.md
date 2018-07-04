@@ -28,7 +28,7 @@ To resume a release or use a custom version set the RELEASE_VERSION and NEXT_SNA
 To test a release, building images locally:
 
     export BRANCH=<RELEASE_TAG_NAME>
-    export MAVEN_ARGS="clean install -DskipTests"
+    export MAVEN_ARGS="-Pdocker clean install -DskipTests"
     PROJECTS=release ./remove-all.sh
     PROJECTS=release ./clone-all.sh
     PROJECTS=release ./build-all.sh
