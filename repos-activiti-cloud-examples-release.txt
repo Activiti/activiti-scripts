@@ -2,3 +2,4 @@ Activiti/activiti-cloud-audit
 Activiti/activiti-cloud-query
 Activiti/example-runtime-bundle
 Activiti/activiti-cloud-gateway
+Activiti/example-cloud-connector

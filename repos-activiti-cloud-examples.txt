@@ -5,3 +5,4 @@ Activiti/example-runtime-bundle
 Activiti/activiti-cloud-modeling
 Activiti/activiti-cloud-registry
 Activiti/activiti-cloud-gateway
+Activiti/example-cloud-connector
