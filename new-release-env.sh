@@ -3,7 +3,10 @@ set -e
 
 SCRIPT_DIR="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)"
 
-SNAPSHOT_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' -N org.codehaus.mojo:exec-maven-plugin:exec)
+if [ -z "${SNAPSHOT_VERSION}" ]
+then
+  SNAPSHOT_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' -N org.codehaus.mojo:exec-maven-plugin:exec)
+fi
 
 if [ -z "${RELEASE_VERSION}" ]
 then
