@@ -1,8 +1,5 @@
 Activiti/activiti-cloud-audit
-Activiti/activiti-cloud-audit-mongodb
 Activiti/activiti-cloud-query
 Activiti/example-runtime-bundle
-Activiti/activiti-cloud-modeling
-Activiti/activiti-cloud-registry
 Activiti/activiti-cloud-gateway
 Activiti/example-cloud-connector

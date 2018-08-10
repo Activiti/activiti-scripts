@@ -2,7 +2,7 @@
 
 echo update pom version from ${VERSION} to ${NEXT_VERSION}
 
-for DEP in '' activiti activiti-cloud-service-common activiti-cloud-runtime-bundle activiti-cloud-audit activiti-cloud-query activiti-cloud-connectors activiti-cloud-app activiti-cloud-process-model activiti-cloud-org
+for DEP in '' activiti activiti-cloud-service-common activiti-cloud-runtime-bundle activiti-cloud-audit activiti-cloud-query activiti-cloud-connectors activiti-cloud-app activiti-cloud-process-model activiti-cloud-org activiti.cloud
 do
   [ -n "$DEP" ] && TAG="${DEP}."
   TAG="${TAG}version"
