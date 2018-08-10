@@ -67,11 +67,6 @@ else
       echo 'deploying existing repo'
       mvn clean deploy -DperformRelease -DskipTests ${BAMBOO_OPTS}
     fi
-    if [ -n "${DOCKER_PUSH}" ]
-    then
-      docker build -t activiti/${GIT_PROJECT}:${RELEASE_VERSION} .
-      docker push docker.io/activiti/${GIT_PROJECT}:${RELEASE_VERSION}
-    fi
     git push --atomic origin master develop ${RELEASE_VERSION}
   fi
 fi
