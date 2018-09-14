@@ -1,6 +1,9 @@
 Activiti/activiti-build
+Activiti/activiti-api
 Activiti/activiti
+Activiti/activiti-dependencies
 Activiti/activiti-cloud-build
+Activiti/activiti-cloud-api
 Activiti/activiti-cloud-service-common
 Activiti/activiti-cloud-runtime-bundle-service
 Activiti/activiti-cloud-audit-service
@@ -9,3 +12,4 @@ Activiti/activiti-cloud-connectors
 Activiti/activiti-cloud-app-service
 Activiti/activiti-cloud-process-model-service
 Activiti/activiti-cloud-org-service
+Activiti/activiti-cloud-dependencies

@@ -1,2 +1,4 @@
 Activiti/activiti-build
+Activiti/activiti-api
 Activiti/activiti
+Activiti/activiti-dependencies
