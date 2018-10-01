@@ -50,15 +50,47 @@ do
        REPO_INNER=${REPO_ARRAY_INNER[0]}
        PROP_INNER=${REPO_ARRAY_INNER[1]}
        VERSION_INNER=${REPO_ARRAY_INNER[2]}
-       
+
+       POM_VERSION=$(xmllint --xpath "//*[local-name()='project']/*[local-name()='version']/text()" "${SRC_DIR:-$HOME/src}/$REPO/pom.xml")
+
        if [ "${COUNTER}" -eq "${INNER_COUNTER}" ];
          then
            echo "CHECKING THAT ${REPO} VERSION IS ${REPO_ARRAY_INNER[2]}"
+           if [ "${POM_VERSION}" != "${REPO_ARRAY_INNER[2]}" ]
+             then
+               "POM VERSION DOES NOT MATCH"
+               exit 1
+           fi
        fi
 
        if [ "${COUNTER}" -gt "${INNER_COUNTER}" ];
          then
            echo "CHECKING THAT ${REPO} USES ${PROP_INNER} ${REPO_ARRAY_INNER[2]}"
+
+           PARENT_VERSION=$(xmllint --xpath "//*[local-name()='parent']/*[local-name()='version']/text()" "${SRC_DIR:-$HOME/src}/$REPO/pom.xml")
+           VERSION_USED=false
+
+           if [ "${PARENT_VERSION}" = "${REPO_ARRAY_INNER[2]}" ]
+             then
+               echo "${REPO_INNER} ${VERSION_INNER} IS USED IN PARENT OF ${REPO}"
+               VERSION_USED=true
+             else
+               echo "${REPO_INNER} ${VERSION_INNER} IS NOT USED IN PARENT OF ${REPO}"
+           fi
+
+           PROPERTY_VERSION=$(xmllint --xpath "//*[local-name()='properties']/*[local-name()='${PROP_INNER}']/text()" "${SRC_DIR:-$HOME/src}/$REPO/pom.xml")
+           if [ "${PROPERTY_VERSION}" = "${REPO_ARRAY_INNER[2]}" ]
+             then
+               echo "${REPO_INNER} ${VERSION_INNER} IS USED IN ${PROP_INNER} PROPERTY OF ${REPO}"
+               VERSION_USED=true
+             else
+               echo "${REPO_INNER} ${VERSION_INNER} IS NOT USED IN ${PROP_INNER} PROPERTY OF ${REPO}"
+           fi
+
+           if [ "$VERSION_USED" = "false" ]
+           then
+             echo "WARNING - ${REPO_INNER} ${VERSION_INNER} IS NOT USED DIRECTLY IN ${REPO}"
+           fi
        fi
        INNER_COUNTER=$((INNER_COUNTER+1))
      done < "$SCRIPT_DIR/repos-${PROJECT}.txt"
