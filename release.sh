@@ -40,7 +40,7 @@ else
   git config user.name "$GIT_AUTHOR_NAME"
   git config user.email "$GIT_AUTHOR_EMAIL"
 
-  git checkout -b release/${RELEASE_VERSION} develop
+  git checkout tags/v${TAG} -b release/${RELEASE_VERSION}
 
   VERSION=${SNAPSHOT_VERSION} NEXT_VERSION=${RELEASE_VERSION} ${SCRIPT_DIR}/update-pom-version.sh
 
