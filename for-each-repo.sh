@@ -8,7 +8,6 @@ echo "SCRIPT_DIR ${SRC_DIR:-$HOME/src}"
 mkdir -p ${SRC_DIR:-$HOME/src} && cd $_
 
 COUNTER=0
-INNER_COUNTER=0
 
 for PROJECT in ${PROJECTS//,/ }
 do
@@ -44,16 +43,22 @@ do
     echo "*************** EXECUTE ON ${REPO} :: END   ***************"
     popd > /dev/null
 
+    INNER_COUNTER=0
+
     while read REPO_LINE_INNER;
      do REPO_ARRAY_INNER=($REPO_LINE_INNER)
        REPO_INNER=${REPO_ARRAY_INNER[0]}
        PROP_INNER=${REPO_ARRAY_INNER[1]}
        VERSION_INNER=${REPO_ARRAY_INNER[2]}
+       
        if [ "${COUNTER}" -eq "${INNER_COUNTER}" ];
          then
            echo "CHECKING THAT ${REPO} VERSION IS ${REPO_ARRAY_INNER[2]}"
-       else
-         echo "CHECKING THAT ${REPO} USES ${PROP_INNER} ${REPO_ARRAY_INNER[2]}"
+       fi
+
+       if [ "${COUNTER}" -gt "${INNER_COUNTER}" ];
+         then
+           echo "CHECKING THAT ${REPO} USES ${PROP_INNER} ${REPO_ARRAY_INNER[2]}"
        fi
        INNER_COUNTER=$((INNER_COUNTER+1))
      done < "$SCRIPT_DIR/repos-${PROJECT}.txt"
