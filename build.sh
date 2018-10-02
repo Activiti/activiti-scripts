@@ -21,7 +21,8 @@ then
        PROP_INNER=${REPO_ARRAY_INNER[0]}
        VERSION_INNER=${REPO_ARRAY_INNER[1]}
 
-       POM_VERSION=$(xmllint --xpath "//*[local-name()='project']/*[local-name()='version']/text()" "pom.xml") || true
+       POM_VERSION=$(mvn help:evaluate -Dexpression=project.version | grep -e '^[^\[]' 2>/dev/null) || true
+       POM_VERSION=${POM_VERSION#"null object or invalid expression"}
 
        if [ "${REPO_INNER}" = "${GIT_PROJECT}" ];
          then
@@ -34,7 +35,8 @@ then
        else
            echo "CHECKING THAT ${GIT_PROJECT} USES ${PROP_INNER}.version ${REPO_ARRAY_INNER[1]}"
 
-           PARENT_VERSION=$(xmllint --xpath "//*[local-name()='parent']/*[local-name()='version']/text()" "pom.xml" 2>/dev/null) || true
+           PARENT_VERSION=$(mvn help:evaluate -Dexpression=project.parent.version | grep -e '^[^\[]' 2>/dev/null) || true
+           PARENT_VERSION=${PARENT_VERSION#"null object or invalid expression"}
 
            if [ "${PARENT_VERSION}" = "${REPO_ARRAY_INNER[1]}" ]
              then
@@ -43,7 +45,9 @@ then
                echo "${REPO_INNER} ${VERSION_INNER} IS NOT USED IN PARENT OF ${GIT_PROJECT}"
            fi
 
-           PROPERTY_VERSION=$(xmllint --xpath "//*[local-name()='properties']/*[local-name()='${PROP_INNER}.version']/text()" "pom.xml" 2>/dev/null) || true
+           PROPERTY_VERSION=$(mvn help:evaluate -Dexpression=${PROP_INNER}.version | grep -e '^[^\[]' 2>/dev/null) || true
+           PROPERTY_VERSION=${PROPERTY_VERSION#"null object or invalid expression"}
+
            if [ -z "${PROPERTY_VERSION}" ];
              then
                echo "PROPERTY ${PROP_INNER} IS NOT USED IN ${GIT_PROJECT}"
