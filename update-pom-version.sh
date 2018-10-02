@@ -1,13 +1,39 @@
 #!/usr/bin/env bash
 
-echo update pom version from ${VERSION} to ${NEXT_VERSION}
+echo update pom versions to ${NEXT_VERSION}
 
-for DEP in '' activiti activiti-cloud-service-common activiti-cloud-runtime-bundle activiti-cloud-audit activiti-cloud-query activiti-cloud-connectors activiti-cloud-app activiti-cloud-process-model activiti-cloud-org activiti\.cloud
+PROJECTS=${PROJECTS:-activiti}
+GIT_PROJECT=$(basename $(pwd))
+
+echo "UPDATING POMS IN $(pwd)"
+
+SED_REPLACEMENTS=''
+
+POM_VERSION=$(xmllint --xpath "//*[local-name()='project']/*[local-name()='version']/text()" "pom.xml") || true
+
+SED_REPLACEMENTS="${SED_REPLACEMENTS}-e 's@<version>${POM_VERSION}</version>@<version>${NEXT_VERSION}</version>@g'"
+
+PARENT_VERSION=$(xmllint --xpath "//*[local-name()='parent']/*[local-name()='version']/text()" "pom.xml" 2>/dev/null) || true
+
+if [ -n "${PARENT_VERSION}" ];
+  then
+    SED_REPLACEMENTS="${SED_REPLACEMENTS} -e 's@<version>${PARENT_VERSION}</version>@<version>${NEXT_VERSION}</version>@g'"
+  else
+    echo "${GIT_PROJECT} HAS NO PARENT"
+fi
+
+COUNTER=0
+
+for PROJECT in ${PROJECTS//,/ }
 do
-  [ -n "$DEP" ] && TAG="${DEP}."
-  TAG="${TAG}version"
-  [ -n "${SED_REPLACEMENTS}" ] && SED_REPLACEMENTS="${SED_REPLACEMENTS} "
-  SED_REPLACEMENTS="${SED_REPLACEMENTS}-e 's@<${TAG}>${VERSION}</${TAG}>@<${TAG}>${NEXT_VERSION}</${TAG}>@g'"
+  while read REPO_LINE;
+    do REPO_ARRAY=($REPO_LINE)
+    REPO=${REPO_ARRAY[0]}
+
+    SED_REPLACEMENTS="${SED_REPLACEMENTS} -e 's@<${REPO}.version>.*</${REPO}.version>@<${REPO}.version>${NEXT_VERSION}</${REPO}.version>@g'"
+
+    COUNTER=$((COUNTER+1))
+  done < "$SCRIPT_DIR/repos-${PROJECT}.txt"
 done
 
 if [[ "$OSTYPE" == "darwin"* ]]
