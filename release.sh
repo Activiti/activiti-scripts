@@ -41,7 +41,7 @@ else
     while read REPO_LINE;
       do REPO_ARRAY=($REPO_LINE)
       REPO=${REPO_ARRAY[0]}
-      if [ $REPO = $GIT_PROJECT ];
+      if [ "${REPO}" = "${GIT_PROJECT}" ];
       then
         TAG=${REPO_ARRAY[1]}
       fi
@@ -52,10 +52,10 @@ else
 
   VERSION=${SNAPSHOT_VERSION} NEXT_VERSION=${RELEASE_VERSION} ${SCRIPT_DIR}/update-pom-version.sh
 
-  git tag -a ${RELEASE_VERSION} -m "tagging release ${RELEASE_VERSION}"
-
   if [ -n "${PUSH}" ]
   then
+    git tag -a ${RELEASE_VERSION} -m "tagging release ${RELEASE_VERSION}"
+
     echo "* pushing to origin"
     git checkout ${RELEASE_VERSION}
     if [ -n "${SKIP_DEPLOY}" ]

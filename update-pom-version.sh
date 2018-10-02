@@ -4,8 +4,8 @@ echo update pom versions to ${NEXT_VERSION}
 
 PROJECTS=${PROJECTS:-activiti}
 GIT_PROJECT=$(basename $(pwd))
-echo $GIT_PROJECT
 
+echo "UPDATING POMS IN $(pwd)"
 
 SED_REPLACEMENTS=''
 
@@ -15,11 +15,11 @@ SED_REPLACEMENTS="${SED_REPLACEMENTS}-e 's@<version>${POM_VERSION}</version>@<ve
 
 PARENT_VERSION=$(xmllint --xpath "//*[local-name()='parent']/*[local-name()='version']/text()" "pom.xml" 2>/dev/null) || true
 
-if [ -z "${PARENT_VERSION}" ];
+if [ -n "${PARENT_VERSION}" ];
   then
     SED_REPLACEMENTS="${SED_REPLACEMENTS} -e 's@<version>${PARENT_VERSION}</version>@<version>${NEXT_VERSION}</version>@g'"
   else
-    echo "${REPO} HAS NO PARENT"
+    echo "${GIT_PROJECT} HAS NO PARENT"
 fi
 
 COUNTER=0
@@ -36,14 +36,10 @@ do
   done < "$SCRIPT_DIR/repos-${PROJECT}.txt"
 done
 
-echo "PWD IS $(pwd)"
-
 if [[ "$OSTYPE" == "darwin"* ]]
 then
-  echo "REPLACE ON ${REPO} USING - find . -name pom.xml -exec sed -i.bak ${SED_REPLACEMENTS} {} \;"
   eval "find . -name pom.xml -exec sed -i.bak ${SED_REPLACEMENTS} {} \;"
   find . -name pom.xml.bak -delete
 else
-  echo "REPLACE ON ${REPO} USING - find . -name pom.xml -exec sed -i ${SED_REPLACEMENTS} {} \;"
   eval "find . -name pom.xml -exec sed -i ${SED_REPLACEMENTS} {} \;"
 fi
