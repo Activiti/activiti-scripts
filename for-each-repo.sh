@@ -51,7 +51,7 @@ do
        PROP_INNER=${REPO_ARRAY_INNER[1]}
        VERSION_INNER=${REPO_ARRAY_INNER[2]}
 
-       POM_VERSION=$(xmllint --xpath "//*[local-name()='project']/*[local-name()='version']/text()" "${SRC_DIR:-$HOME/src}/$REPO/pom.xml")
+       POM_VERSION=$(xmllint --xpath "//*[local-name()='project']/*[local-name()='version']/text()" "${SRC_DIR:-$HOME/src}/$REPO/pom.xml") || true
 
        if [ "${COUNTER}" -eq "${INNER_COUNTER}" ];
          then
@@ -67,7 +67,7 @@ do
          then
            echo "CHECKING THAT ${REPO} USES ${PROP_INNER} ${REPO_ARRAY_INNER[2]}"
 
-           PARENT_VERSION=$(xmllint --xpath "//*[local-name()='parent']/*[local-name()='version']/text()" "${SRC_DIR:-$HOME/src}/$REPO/pom.xml")
+           PARENT_VERSION=$(xmllint --xpath "//*[local-name()='parent']/*[local-name()='version']/text()" "${SRC_DIR:-$HOME/src}/$REPO/pom.xml" 2>/dev/null) || true
            VERSION_USED=false
 
            if [ "${PARENT_VERSION}" = "${REPO_ARRAY_INNER[2]}" ]
@@ -78,13 +78,19 @@ do
                echo "${REPO_INNER} ${VERSION_INNER} IS NOT USED IN PARENT OF ${REPO}"
            fi
 
-           PROPERTY_VERSION=$(xmllint --xpath "//*[local-name()='properties']/*[local-name()='${PROP_INNER}']/text()" "${SRC_DIR:-$HOME/src}/$REPO/pom.xml")
-           if [ "${PROPERTY_VERSION}" = "${REPO_ARRAY_INNER[2]}" ]
+           PROPERTY_VERSION=$(xmllint --xpath "//*[local-name()='properties']/*[local-name()='${PROP_INNER}']/text()" "${SRC_DIR:-$HOME/src}/$REPO/pom.xml" 2>/dev/null) || true
+           if [ -z "${PROPERTY_VERSION}" ];
              then
-               echo "${REPO_INNER} ${VERSION_INNER} IS USED IN ${PROP_INNER} PROPERTY OF ${REPO}"
-               VERSION_USED=true
+               echo "PROPERTY ${PROP_INNER} IS NOT USED IN ${REPO}"
              else
-               echo "${REPO_INNER} ${VERSION_INNER} IS NOT USED IN ${PROP_INNER} PROPERTY OF ${REPO}"
+               if [ "${PROPERTY_VERSION}" = "${REPO_ARRAY_INNER[2]}" ]
+                 then
+                   echo "${REPO_INNER} ${VERSION_INNER} IS USED IN ${PROP_INNER} PROPERTY OF ${REPO}"
+                   VERSION_USED=true
+               else
+                 echo "${REPO} USES ${PROPERTY_VERSION} FOR ${PROP_INNER} WHEN EXPECTED VERSION IS ${VERSION_INNER}"
+                 exit 1
+               fi
            fi
 
            if [ "$VERSION_USED" = "false" ]
