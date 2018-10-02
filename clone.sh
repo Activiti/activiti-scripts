@@ -3,4 +3,4 @@ set -e
 
 [ -n "${PULL}" ] && git pull --rebase
 
-echo "cloned into $(REPO_DIR)"
+echo "cloned into ${REPO_DIR}"

@@ -1,4 +1,4 @@
-Activiti/activiti-build activiti-build.version 7.0.29
-Activiti/activiti-api activiti-api.version 7.0.23
-Activiti/activiti activiti.version 7.0.32
-Activiti/activiti-dependencies activiti-dependencies.version 7.0.32
+activiti-build 7.0.33
+activiti-api 7.0.27
+activiti 7.0.37
+activiti-dependencies 7.0.34
