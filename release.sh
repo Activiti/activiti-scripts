@@ -49,7 +49,7 @@ else
 
   git checkout tags/v${TAG} -b release/${RELEASE_VERSION}
 
-  VERSION=${SNAPSHOT_VERSION} NEXT_VERSION=${RELEASE_VERSION} ${SCRIPT_DIR}/update-pom-version.sh
+  VERSION=${SNAPSHOT_VERSION} NEXT_VERSION=${RELEASE_VERSION} . ${SCRIPT_DIR}/update-pom-version.sh
 
   if [ -n "${PUSH}" ]
   then

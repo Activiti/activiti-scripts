@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 set -e
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECTS=${PROJECTS:-activiti}
 
 echo "SCRIPT_DIR ${SRC_DIR:-$HOME/src}"
@@ -39,7 +38,7 @@ do
      echo "Checking out tag '${TAG}' for $(pwd)";
      git checkout tags/v$TAG || ${IGNORE_TAG_CHECKOUT_FAILURE:true}
     fi
-    ${SCRIPT:-echo I\'m in ${REPO}}
+    . ${SCRIPT:-echo I\'m in ${REPO}}
     echo "*************** EXECUTE ON ${REPO} :: END   ***************"
     popd > /dev/null
 
