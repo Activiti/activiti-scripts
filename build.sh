@@ -5,6 +5,7 @@ set -e
 
 GIT_PROJECT=$(basename $(pwd))
 echo "BUILDING PROJECT $GIT_PROJECT from $(pwd)"
+echo "SCRIPT_DIR IS $SCRIPT_DIR"
 
 PROJECTS=${PROJECTS:-activiti}
 

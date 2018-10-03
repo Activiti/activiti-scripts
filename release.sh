@@ -3,10 +3,9 @@ set -e
 
 echo "BAMBOO_OPTS=${BAMBOO_OPTS}"
 
-SCRIPT_DIR="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)"
-echo $SCRIPT_DIR
 GIT_PROJECT=$(basename $(pwd))
-echo $GIT_PROJECT
+echo "RELEASING PROJECT $GIT_PROJECT from $(pwd)"
+echo "SCRIPT_DIR IS $SCRIPT_DIR"
 
 git remote set-url origin https://${GIT_AUTHOR_NAME}:${GIT_PASSWORD}@github.com/Activiti/${GIT_PROJECT}.git
 
