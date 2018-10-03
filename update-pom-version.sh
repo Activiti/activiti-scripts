@@ -4,6 +4,7 @@ echo update pom versions to ${NEXT_VERSION}
 
 PROJECTS=${PROJECTS:-activiti}
 GIT_PROJECT=$(basename $(pwd))
+SCRIPT_DIR="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)"
 
 echo "UPDATING POMS IN $(pwd)"
 
