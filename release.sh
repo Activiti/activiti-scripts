@@ -53,6 +53,8 @@ else
 
   if [ -n "${PUSH}" ]
   then
+    git add .
+    git commit -m "updating to release version ${RELEASE_VERSION}"
     git tag -a ${RELEASE_VERSION} -m "tagging release ${RELEASE_VERSION}"
 
     echo "* pushing to origin"
