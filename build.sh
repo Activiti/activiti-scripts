@@ -30,7 +30,7 @@ then
            echo "CHECKING THAT ${GIT_PROJECT} VERSION IS ${REPO_ARRAY_INNER[1]}"
            if [ "${POM_VERSION}" != "${REPO_ARRAY_INNER[1]}" ]
              then
-               echo "POM VERSION DOES NOT MATCH"
+               echo "EXPECTED POM VERSION ${REPO_ARRAY_INNER[1]} BUT IS ${POM_VERSION}"
                exit 1
            fi
        else
