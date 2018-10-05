@@ -31,6 +31,16 @@ To test cloud versions in the txt file are consistent:
    PROJECTS=activiti-cloud ./remove-all.sh
    PROJECTS=activiti-cloud ./build-all.sh
 
+To test that a release can replace the versions with a release version, follow this with:
+
+   export CHECK_VERSIONS=true
+   export RELEASE_VERSION=7.0.0.TEST1
+   PROJECTS=activiti-cloud ./remove-all.sh
+   PROJECTS=activiti-cloud ./build-all.sh
+   PROJECTS=activiti-cloud ./release-all.sh
+   
+Nothing should be pushed or released unless PUSH=true is set - see release.sh. Your local SOURCE_DIR (default to home/src/) will then contain the product.
+
 To test a release, building images locally:
 
     export BRANCH=<RELEASE_TAG_NAME>
