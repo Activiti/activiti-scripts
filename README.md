@@ -25,9 +25,10 @@ To include a push first:
 
 To resume a release set the RELEASE_VERSION. The release job that invokes this is in bamboo.
 
-To test cloud versions in the txt file are consistent:
+To test cloud versions in the txt file are consistent without running tests:
 
     export CHECK_VERSIONS=true
+    export MAVEN_ARGS="clean install -DskipTests"
     PROJECTS=activiti-cloud ./remove-all.sh
     PROJECTS=activiti-cloud ./build-all.sh
 
