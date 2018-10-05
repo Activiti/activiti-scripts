@@ -23,7 +23,13 @@ To include a push first:
 
     export PUSH=true
 
-To resume a release or use a custom version set the RELEASE_VERSION and NEXT_SNAPSHOT_VERSION
+To resume a release set the RELEASE_VERSION. The release job that invokes this is in bamboo.
+
+To test cloud versions in the txt file are consistent:
+   
+   export CHECK_VERSIONS=true
+   PROJECTS=activiti-cloud ./remove-all.sh
+   PROJECTS=activiti-cloud ./build-all.sh
 
 To test a release, building images locally:
 
