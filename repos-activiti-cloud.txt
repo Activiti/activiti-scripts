@@ -4,8 +4,8 @@ activiti-cloud-service-common 7.0.23
 activiti-cloud-runtime-bundle-service 7.0.28
 activiti-cloud-audit-service 7.0.17
 activiti-cloud-query-service 7.0.24
-activiti-cloud-connectors 7.0.16
+activiti-cloud-connectors 7.0.21
 activiti-cloud-app-service 7.0.16
 activiti-cloud-process-model-service 7.0.12
 activiti-cloud-org-service 7.0.8
-activiti-cloud-dependencies 7.0.58
+activiti-cloud-dependencies 7.0.59
