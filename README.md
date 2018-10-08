@@ -42,6 +42,10 @@ To test that a release can replace the versions with a release version, follow t
    
 Nothing should be pushed or released unless PUSH=true is set - see release.sh. Your local SRC_DIR (default to home/src/) will then contain the product.
 
+If cloud is released separately from non-cloud, then cloud can be pointed at a non-cloud release version e.g. 7.0.0.TEST1. Set:
+
+    export EXTRA_SED='s@<activiti-dependencies.version>.*</activiti-dependencies.version>@<activiti-dependencies.version>7.0.0.TEST1</activiti-dependencies.version>@g'
+
 To test a release, building images locally:
 
     export BRANCH=<RELEASE_TAG_NAME>

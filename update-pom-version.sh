@@ -39,6 +39,11 @@ do
   done < "$SCRIPT_DIR/repos-${PROJECT}.txt"
 done
 
+if [ -n "${EXTRA_SED}" ];
+  then
+    SED_REPLACEMENTS="${SED_REPLACEMENTS} -e '${EXTRA_SED}'"
+fi
+
 if [[ "$OSTYPE" == "darwin"* ]]
 then
   eval "find . -name pom.xml -exec sed -i.bak ${SED_REPLACEMENTS} {} \;"
