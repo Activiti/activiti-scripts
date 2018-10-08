@@ -8,4 +8,4 @@ activiti-cloud-connectors 7.0.25
 activiti-cloud-app-service 7.0.18
 activiti-cloud-process-model-service 7.0.14
 activiti-cloud-org-service 7.0.12
-activiti-cloud-dependencies 7.0.63
+activiti-cloud-dependencies 7.0.64
