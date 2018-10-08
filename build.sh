@@ -14,8 +14,7 @@ then
   INNER_COUNTER=0
   echo "CHECKING VERSIONS DURING BUILD"
 
-  for PROJECT in ${PROJECTS//,/ }
-  do
+
     while read REPO_LINE_INNER;
      do REPO_ARRAY_INNER=($REPO_LINE_INNER)
        REPO_INNER=${REPO_ARRAY_INNER[0]}
@@ -68,7 +67,6 @@ then
        fi
        INNER_COUNTER=$((INNER_COUNTER+1))
      done < "$SCRIPT_DIR/repos-${PROJECT}.txt"
-  done
 fi
 
 mvn ${MAVEN_ARGS:-clean install}
