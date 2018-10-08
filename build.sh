@@ -32,6 +32,9 @@ then
              then
                echo "EXPECTED POM VERSION ${REPO_ARRAY_INNER[1]} BUT IS ${POM_VERSION}"
                exit 1
+             else
+               echo "${GIT_PROJECT} VERSION IS ${REPO_ARRAY_INNER[1]} AS EXPECTED"
+               break
            fi
        else
            echo "CHECKING THAT ${GIT_PROJECT} USES ${PROP_INNER}.version ${REPO_ARRAY_INNER[1]}"
