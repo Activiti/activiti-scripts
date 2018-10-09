@@ -10,8 +10,6 @@ echo "SCRIPT_DIR IS $SCRIPT_DIR"
 
 git remote set-url origin https://${GIT_AUTHOR_NAME}:${GIT_PASSWORD}@github.com/Activiti/$GIT_PROJECT.git
 
-git checkout ${RELEASE_VERSION}
-
 if [ -e "pom.xml" ]; then
     mvn ${MAVEN_ARGS:-clean install -DskipTests}
 else

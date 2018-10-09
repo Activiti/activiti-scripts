@@ -1,5 +1,4 @@
 activiti-cloud-audit
-activiti-cloud-audit-mongodb
 activiti-cloud-query
 example-runtime-bundle
 example-cloud-connector
@@ -18,3 +17,4 @@ activiti-cloud-registry
 activiti-cloud-modeling
 activiti-modeling-app
 activiti-cloud-registry
+activiti-cloud-audit-mongodb

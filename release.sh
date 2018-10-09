@@ -13,19 +13,16 @@ if  git tag --list | egrep -q "^$RELEASE_VERSION$"
 then
   echo "Found tag - released already"
   git checkout $RELEASE_VERSION
-  if [ -n "${PUSH}" ]
-  then
     echo "* pushing to origin"
     git checkout ${RELEASE_VERSION}
     echo "DEPLOY_EXISTING: ${DEPLOY_EXISTING}"
-    if [ -n "${DEPLOY_EXISTING}" ]
+    if [ -n "${PUSH}" ]
     then
       echo 'deploying existing repo'
       mvn clean deploy -DperformRelease -DskipTests ${BAMBOO_OPTS}
     else
       mvn clean install -DskipTests
     fi
-  fi
 else
   echo SNAPSHOT_VERSION=${SNAPSHOT_VERSION}
   echo RELEASE_VERSION=${RELEASE_VERSION}
@@ -56,26 +53,31 @@ else
 
   VERSION=${SNAPSHOT_VERSION} NEXT_VERSION=${RELEASE_VERSION} . ${SCRIPT_DIR}/update-pom-version.sh
 
-  if [ -n "${PUSH}" ]
-  then
+   if [ -n "${PUSH}" ]
+   then
     git add .
     git commit -m "updating to release version ${RELEASE_VERSION}"
     git tag -a ${RELEASE_VERSION} -m "tagging release ${RELEASE_VERSION}"
-
-    echo "* pushing to origin"
     git checkout ${RELEASE_VERSION}
+   fi
+
+
     if [ -e "pom.xml" ];
     then
-      if [ -n "${SKIP_DEPLOY}" ];
+      if [ -n "${PUSH}" ]
       then
-        mvn clean install -DskipTests
-      else
         echo 'deploying existing repo'
         mvn clean deploy -DperformRelease -DskipTests ${BAMBOO_OPTS}
+      else
+        mvn ${MAVEN_ARGS:-clean install -DskipTests}
       fi
     else
       echo "No pom.xml - not building"
     fi
-    git push --atomic origin ${RELEASE_VERSION}
-  fi
+
+    if [ -n "${PUSH}" ]
+    then
+      git push --atomic origin ${RELEASE_VERSION}
+    fi
+
 fi

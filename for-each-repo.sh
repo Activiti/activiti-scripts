@@ -30,14 +30,19 @@ do
       cd ${REPO}
     fi
     git fetch
-    if [ -z "${TAG}" ];
-     then
-     echo "Using develop branch";
-     git checkout develop || ${IGNORE_TAG_CHECKOUT_FAILURE:true}
-    else
-     echo "Checking out tag '${TAG}' for $(pwd)";
-     git checkout tags/v$TAG || ${IGNORE_TAG_CHECKOUT_FAILURE:true}
+
+    if [-n "${SKIP_CHECKOUT}"];
+    then
+      if [ -z "${TAG}" ];
+       then
+       echo "Using develop branch";
+       git checkout develop || ${IGNORE_TAG_CHECKOUT_FAILURE:true}
+      else
+       echo "Checking out tag '${TAG}' for $(pwd)";
+       git checkout tags/v$TAG || ${IGNORE_TAG_CHECKOUT_FAILURE:true}
+      fi
     fi
+
     . ${SCRIPT:-echo I\'m in ${REPO}}
     echo "*************** EXECUTE ON ${REPO} :: END   ***************"
     popd > /dev/null
