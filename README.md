@@ -65,5 +65,7 @@ To test a whole release, building images locally and not pushing anything (becau
     PROJECTS=activiti,activiti-cloud,activiti-examples,activiti-cloud-examples ./remove-all.sh
     PROJECTS=activiti,activiti-cloud,activiti-examples,activiti-cloud-examples ./clone-all.sh
     PROJECTS=activiti,activiti-cloud,activiti-examples,activiti-cloud-examples ./build-all.sh
+    export EXTRA_SED='s@<activiti-dependencies.version>.*</activiti-dependencies.version>@<activiti-dependencies.version>7.0.0.TEST1</activiti-dependencies.version>@g'
+    export EXTRA_SED='s@<activiti-cloud-dependencies.version>.*</activiti-cloud-dependencies.version>@<activiti-cloud-dependencies.version>7.0.0.TEST1</activiti-cloud-dependencies.version>@g'
     PROJECTS=activiti,activiti-cloud,activiti-examples,activiti-cloud-examples ./release-all.sh
     PROJECTS=activiti-cloud-examples ./dockerpush-all.sh
