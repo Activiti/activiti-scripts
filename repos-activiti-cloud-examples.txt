@@ -2,14 +2,9 @@ activiti-cloud-audit
 activiti-cloud-audit-mongodb
 activiti-cloud-query
 example-runtime-bundle
-activiti-cloud-modeling
-activiti-cloud-registry
-activiti-cloud-gateway
 example-cloud-connector
-activiti-cloud-modeling
-activiti-modeling-app
 activiti-cloud-acceptance-tests
-ttc-dashboard-ui
+activiti-cloud-gateway
 ttc-campaigns-service
 ttc-connectors-dummytwitter
 ttc-rb-english-campaign
@@ -17,4 +12,9 @@ ttc-query-campaign
 ttc-connectors-processing
 ttc-connectors-ranking
 ttc-connectors-reward
+ttc-dashboard-ui
 ttc-acceptance-tests
+activiti-cloud-registry
+activiti-cloud-modeling
+activiti-modeling-app
+activiti-cloud-registry
