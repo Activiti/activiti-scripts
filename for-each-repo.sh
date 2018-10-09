@@ -29,11 +29,12 @@ do
     else
       cd ${REPO}
     fi
+    git fetch
     if [ -z "${TAG}" ];
      then
-     echo "Using default branch";
+     echo "Using develop branch";
+     git checkout develop || ${IGNORE_TAG_CHECKOUT_FAILURE:true}
     else
-     git fetch
      echo "Checking out tag '${TAG}' for $(pwd)";
      git checkout tags/v$TAG || ${IGNORE_TAG_CHECKOUT_FAILURE:true}
     fi
