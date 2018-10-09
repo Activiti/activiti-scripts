@@ -16,7 +16,6 @@ do
     echo "REPO_LINE ${REPO_LINE}"
     echo "REPO ${REPO}"
     TAG=${REPO_ARRAY[1]}
-    echo "TAG v${TAG}"
 
     pushd ${PWD} > /dev/null
     echo "*************** EXECUTE ON ${REPO} :: START ***************"

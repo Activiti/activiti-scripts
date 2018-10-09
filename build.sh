@@ -23,6 +23,11 @@ then
        PROP_INNER=${REPO_ARRAY_INNER[0]}
        VERSION_INNER=${REPO_ARRAY_INNER[1]}
 
+       if [ -z "${VERSION_INNER}" ];
+       then
+         break
+       fi
+
        POM_VERSION=$(mvn help:evaluate -B -Dexpression=project.version | grep -e '^[^\[]' 2>/dev/null) || true
        POM_VERSION=${POM_VERSION#"null object or invalid expression"}
 
@@ -75,4 +80,8 @@ then
      done < "$SCRIPT_DIR/repos-${PROJECT}.txt"
 fi
 
-mvn ${MAVEN_ARGS:-clean install}
+if [ -e "pom.xml" ]; then
+    mvn ${MAVEN_ARGS:-clean install}
+else
+    echo "No pom.xml - not building"
+fi

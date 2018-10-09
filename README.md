@@ -9,15 +9,16 @@ will build all the repositories listed in the index files:
 
 * [activiti](./repos-activiti.txt)
 * [activiti-cloud](./repos-activiti-cloud.txt)
-* [activiti-cloud-examples](./repos-activiti-examples.txt)
+* [activiti-examples](./repos-activiti-examples.txt)
+* [activiti-cloud-examples](./repos-activiti-cloud-examples.txt)
 
 To clone all:
 
-    PROJECTS=activiti,activiti-cloud,activiti-cloud-examples ./clone-all.sh
+    PROJECTS=activiti,activiti-cloud,activiti-examples,activiti-cloud-examples ./clone-all.sh
 
-To release:
+To release non-example projects:
 
-    PROJECTS=release ./release-all.sh
+    PROJECTS=activiti,activiti-cloud ./release-all.sh
 
 To include a push first:
 
@@ -46,10 +47,23 @@ If cloud is released separately from non-cloud, then cloud can be pointed at a n
 
     export EXTRA_SED='s@<activiti-dependencies.version>.*</activiti-dependencies.version>@<activiti-dependencies.version>7.0.0.TEST1</activiti-dependencies.version>@g'
 
-To test a release, building images locally:
+Releasing activiti-examples requires the same sed in order to replace the cloud version in the examples.
 
-    export BRANCH=<RELEASE_TAG_NAME>
-    export MAVEN_ARGS="-Pdocker clean install -DskipTests"
-    PROJECTS=release ./remove-all.sh
-    PROJECTS=release ./clone-all.sh
-    PROJECTS=release ./build-all.sh
+To release activiti-cloud-examples a sed is also required to set the activiti-cloud-dependencies version in the poms:
+
+    export EXTRA_SED='s@<activiti-cloud-dependencies.version>.*</activiti-cloud-dependencies.version>@<activiti-cloud-dependencies.version>7.0.0.TEST1</activiti-cloud-dependencies.version>@g'
+
+The text files for the example projects do not require version numbers as for these a tag is created from develop.
+
+To test a whole release, building images locally and not pushing anything (because PUSH flag is blank):
+
+    export MAVEN_ARGS="clean install -DskipTests"
+    export PUSH=
+    export DOCKER_PUSH=
+    export RELEASE_VERSION=7.0.0.TEST1
+    export CHECK_VERSIONS=true
+    PROJECTS=activiti,activiti-cloud,activiti-examples,activiti-cloud-examples ./remove-all.sh
+    PROJECTS=activiti,activiti-cloud,activiti-examples,activiti-cloud-examples ./clone-all.sh
+    PROJECTS=activiti,activiti-cloud,activiti-examples,activiti-cloud-examples ./build-all.sh
+    PROJECTS=activiti,activiti-cloud,activiti-examples,activiti-cloud-examples ./release-all.sh
+    PROJECTS=activiti-cloud-examples ./dockerpush-all.sh

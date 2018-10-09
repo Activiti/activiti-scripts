@@ -47,7 +47,12 @@ else
     done < "$SCRIPT_DIR/repos-${PROJECT}.txt"
   done
 
-  git checkout tags/v${TAG} -b release/${RELEASE_VERSION}
+  if [ -z "${TAG}" ];
+  then
+    git checkout develop -b release/${RELEASE_VERSION}
+  else
+    git checkout tags/v${TAG} -b release/${RELEASE_VERSION}
+  fi
 
   VERSION=${SNAPSHOT_VERSION} NEXT_VERSION=${RELEASE_VERSION} . ${SCRIPT_DIR}/update-pom-version.sh
 
@@ -59,12 +64,17 @@ else
 
     echo "* pushing to origin"
     git checkout ${RELEASE_VERSION}
-    if [ -n "${SKIP_DEPLOY}" ]
+    if [ -e "pom.xml" ];
     then
-      mvn clean install -DskipTests
+      if [ -n "${SKIP_DEPLOY}" ];
+      then
+        mvn clean install -DskipTests
+      else
+        echo 'deploying existing repo'
+        mvn clean deploy -DperformRelease -DskipTests ${BAMBOO_OPTS}
+      fi
     else
-      echo 'deploying existing repo'
-      mvn clean deploy -DperformRelease -DskipTests ${BAMBOO_OPTS}
+      echo "No pom.xml - not building"
     fi
     git push --atomic origin ${RELEASE_VERSION}
   fi
