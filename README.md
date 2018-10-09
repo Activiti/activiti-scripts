@@ -45,13 +45,13 @@ Nothing should be pushed or released unless PUSH=true is set - see release.sh. Y
 
 If cloud is released separately from non-cloud, then cloud can be pointed at a non-cloud release version e.g. 7.0.0.TEST1. Set:
 
-    export EXTRA_SED='s@<activiti-dependencies.version>.*</activiti-dependencies.version>@<activiti-dependencies.version>7.0.0.TEST1</activiti-dependencies.version>@g'
+    export EXTRA_SED="'s@<activiti-dependencies.version>.*</activiti-dependencies.version>@<activiti-dependencies.version>7.0.0.TEST1</activiti-dependencies.version>@g'"
 
 Releasing activiti-examples requires the same sed in order to replace the cloud version in the examples.
 
 To release activiti-cloud-examples a sed is also required to set the activiti-cloud-dependencies version in the poms:
 
-    export EXTRA_SED='s@<activiti-cloud-dependencies.version>.*</activiti-cloud-dependencies.version>@<activiti-cloud-dependencies.version>7.0.0.TEST1</activiti-cloud-dependencies.version>@g'
+    export EXTRA_SED="'s@<activiti-cloud-dependencies.version>.*</activiti-cloud-dependencies.version>@<activiti-cloud-dependencies.version>7.0.0.TEST1</activiti-cloud-dependencies.version>@g'"
 
 The text files for the example projects do not require version numbers as for these a tag is created from develop.
 
@@ -65,7 +65,6 @@ To test a whole release, building images locally and not pushing anything (becau
     PROJECTS=activiti,activiti-cloud,activiti-examples,activiti-cloud-examples ./remove-all.sh
     PROJECTS=activiti,activiti-cloud,activiti-examples,activiti-cloud-examples ./clone-all.sh
     PROJECTS=activiti,activiti-cloud,activiti-examples,activiti-cloud-examples ./build-all.sh
-    export EXTRA_SED='s@<activiti-dependencies.version>.*</activiti-dependencies.version>@<activiti-dependencies.version>7.0.0.TEST1</activiti-dependencies.version>@g'
-    export EXTRA_SED='s@<activiti-cloud-dependencies.version>.*</activiti-cloud-dependencies.version>@<activiti-cloud-dependencies.version>7.0.0.TEST1</activiti-cloud-dependencies.version>@g'
+    export EXTRA_SED="'s@<activiti-dependencies.version>.*</activiti-dependencies.version>@<activiti-dependencies.version>7.0.0.TEST1</activiti-dependencies.version>@g' -e 's@<activiti-cloud-dependencies.version>.*</activiti-cloud-dependencies.version>@<activiti-cloud-dependencies.version>7.0.0.TEST1</activiti-cloud-dependencies.version>@g'"
     PROJECTS=activiti,activiti-cloud,activiti-examples,activiti-cloud-examples ./release-all.sh
     PROJECTS=activiti-cloud-examples ./dockerpush-all.sh

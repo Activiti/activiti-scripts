@@ -41,7 +41,7 @@ done
 
 if [ -n "${EXTRA_SED}" ];
   then
-    SED_REPLACEMENTS="${SED_REPLACEMENTS} -e '${EXTRA_SED}'"
+    SED_REPLACEMENTS="${SED_REPLACEMENTS} -e ${EXTRA_SED}"
 fi
 
 if [[ "$OSTYPE" == "darwin"* ]]
