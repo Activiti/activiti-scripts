@@ -10,12 +10,12 @@ echo "UPDATING POMS IN $(pwd)"
 
 SED_REPLACEMENTS=''
 
-POM_VERSION=$(mvn help:evaluate -Dexpression=project.version | grep -e '^[^\[]' 2>/dev/null) || true
+POM_VERSION=$(mvn help:evaluate -B -Dexpression=project.version | grep -e '^[^\[]' 2>/dev/null) || true
 POM_VERSION=${POM_VERSION#"null object or invalid expression"}
 
 SED_REPLACEMENTS="${SED_REPLACEMENTS}-e 's@<version>${POM_VERSION}</version>@<version>${NEXT_VERSION}</version>@g'"
 
-PARENT_VERSION=$(mvn help:evaluate -Dexpression=project.parent.version | grep -e '^[^\[]' 2>/dev/null) || true
+PARENT_VERSION=$(mvn help:evaluate -B -Dexpression=project.parent.version | grep -e '^[^\[]' 2>/dev/null) || true
 PARENT_VERSION=${PARENT_VERSION#"null object or invalid expression"}
 
 if [ -n "${PARENT_VERSION}" ];
