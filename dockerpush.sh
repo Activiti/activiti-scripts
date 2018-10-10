@@ -17,13 +17,14 @@ else
 fi
 
 if [ -e "Dockerfile" ]; then
+    DOCKER_USER=${DOCKER_USER:-activiti}
     if [ -z "${SKIP_DOCKER_BUILD}" ]
     then
-      docker build -t activiti/${GIT_PROJECT}:${RELEASE_VERSION} .
+      docker build -t ${DOCKER_USER}/${GIT_PROJECT}:${RELEASE_VERSION} .
     fi
     if [ -n "${DOCKER_PUSH}" ]
     then
-      docker push docker.io/activiti/${GIT_PROJECT}:${RELEASE_VERSION}
+      docker push docker.io/${DOCKER_USER}/${GIT_PROJECT}:${RELEASE_VERSION}
     fi
 else
     echo "No Dockerfile for $GIT_PROJECT - not building image"

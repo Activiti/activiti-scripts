@@ -31,7 +31,7 @@ do
     fi
     git fetch
 
-    if [-n "${SKIP_CHECKOUT}"];
+    if [ "$(basename ${SCRIPT})" = "clone.sh" ];
     then
       if [ -z "${TAG}" ];
        then
