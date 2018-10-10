@@ -33,13 +33,19 @@ do
 
     if [ "$(basename ${SCRIPT})" = "clone.sh" ];
     then
-      if [ -z "${TAG}" ];
-       then
-       echo "Using develop branch";
-       git checkout develop || ${IGNORE_TAG_CHECKOUT_FAILURE:true}
+      if  git tag --list | egrep -q "^$RELEASE_VERSION$"
+      then
+        echo "Found tag - released already"
+        git checkout $RELEASE_VERSION
       else
-       echo "Checking out tag '${TAG}' for $(pwd)";
-       git checkout tags/v$TAG || ${IGNORE_TAG_CHECKOUT_FAILURE:true}
+        if [ -z "${TAG}" ];
+        then
+          echo "Using develop branch";
+          git checkout develop || ${IGNORE_TAG_CHECKOUT_FAILURE:true}
+        else
+          echo "Checking out tag '${TAG}' for $(pwd)";
+          git checkout tags/v$TAG || ${IGNORE_TAG_CHECKOUT_FAILURE:true}
+        fi
       fi
     fi
 
