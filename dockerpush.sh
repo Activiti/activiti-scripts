@@ -16,6 +16,12 @@ else
     echo "No pom.xml for $GIT_PROJECT - build straight from Dockerfile"
 fi
 
+if [ -e "package.json" ]; then
+    npm install
+else
+    echo "No package.json for $GIT_PROJECT - build straight from Dockerfile"
+fi
+
 if [ -e "Dockerfile" ]; then
     DOCKER_USER=${DOCKER_USER:-activiti}
     if [ -z "${SKIP_DOCKER_BUILD}" ]
