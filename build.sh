@@ -31,6 +31,12 @@ then
        POM_VERSION=$(mvn help:evaluate -B -Dexpression=project.version | grep -e '^[^\[]' 2>/dev/null) || true
        POM_VERSION=${POM_VERSION#"null object or invalid expression"}
 
+       if [ "${RELEASE_VERSION}" == "${POM_VERSION}" ];
+       then
+         REPO_ARRAY_INNER[1]=${RELEASE_VERSION}
+         VERSION_INNER=${RELEASE_VERSION}
+       fi
+
        if [ "${REPO_INNER}" = "${GIT_PROJECT}" ];
          then
            echo "CHECKING THAT ${GIT_PROJECT} VERSION IS ${REPO_ARRAY_INNER[1]}"

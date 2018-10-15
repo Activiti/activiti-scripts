@@ -55,6 +55,8 @@ To release activiti-cloud-examples a sed is also required to set the activiti-cl
 
     export EXTRA_SED="'s@<activiti-cloud-dependencies.version>.*</activiti-cloud-dependencies.version>@<activiti-cloud-dependencies.version>7.0.0.TEST1</activiti-cloud-dependencies.version>@g'"
 
+There is a similar situation for cloud-modeling, where `cloud-service-common.version` needs to be added to the `sed` and likewise for `modeling-examples`, for which `activiti-cloud-modeling-dependencies` needs to be added.
+
 The text files for the example projects do not require version numbers as for these a tag is created from develop.
 
 To test a whole release, not pushing anything to github or nexus (because PUSH flag is blank) and pushing images to a personal dockerhub (ryandawsonuk):
@@ -65,9 +67,9 @@ To test a whole release, not pushing anything to github or nexus (because PUSH f
     export DOCKER_USER=ryandawsonuk
     export RELEASE_VERSION=7.0.0.TEST1
     export CHECK_VERSIONS=true
-    export EXTRA_SED="'s@<activiti-dependencies.version>.*</activiti-dependencies.version>@<activiti-dependencies.version>7.0.0.TEST1</activiti-dependencies.version>@g' -e 's@<activiti-cloud-dependencies.version>.*</activiti-cloud-dependencies.version>@<activiti-cloud-dependencies.version>7.0.0.TEST1</activiti-cloud-dependencies.version>@g'"
-    PROJECTS=activiti,activiti-cloud,activiti-examples,activiti-cloud-examples ./remove-all.sh
-    PROJECTS=activiti,activiti-cloud,activiti-examples,activiti-cloud-examples ./clone-all.sh
-    PROJECTS=activiti,activiti-cloud,activiti-examples,activiti-cloud-examples ./build-all.sh
-    PROJECTS=activiti,activiti-cloud,activiti-examples,activiti-cloud-examples ./release-all.sh
-    PROJECTS=activiti-cloud-examples ./dockerpush-all.sh
+    export EXTRA_SED="'s@<activiti-dependencies.version>.*</activiti-dependencies.version>@<activiti-dependencies.version>7.0.0.TEST1</activiti-dependencies.version>@g' -e 's@<activiti-cloud-dependencies.version>.*</activiti-cloud-dependencies.version>@<activiti-cloud-dependencies.version>7.0.0.TEST1</activiti-cloud-dependencies.version>@g' -e 's@<activiti-cloud-service-common.version>.*</activiti-cloud-service-common.version>@<activiti-cloud-service-common.version>7.0.0.TEST1</activiti-cloud-service-common.version>@g' -e 's@<activiti-cloud-modeling-dependencies.version>.*</activiti-cloud-modeling-dependencies.version>@<activiti-cloud-modeling-dependencies.version>7.0.0.TEST1</activiti-cloud-modeling-dependencies.version>@g'"
+    PROJECTS=activiti,activiti-cloud,activiti-cloud-modeling,activiti-examples,activiti-cloud-modeling-examples,activiti-cloud-examples ./remove-all.sh
+    PROJECTS=activiti,activiti-cloud,activiti-cloud-modeling,activiti-examples,activiti-cloud-modeling-examples,activiti-cloud-examples ./clone-all.sh
+    PROJECTS=activiti,activiti-cloud,activiti-cloud-modeling,activiti-examples,activiti-cloud-modeling-examples,activiti-cloud-examples ./build-all.sh
+    PROJECTS=activiti,activiti-cloud,activiti-cloud-modeling,activiti-examples,activiti-cloud-modeling-examples,activiti-cloud-examples ./release-all.sh
+    PROJECTS=activiti-cloud-examples,activiti-cloud-modeling-examples ./dockerpush-all.sh
