@@ -15,4 +15,3 @@ ttc-dashboard-ui
 ttc-acceptance-tests
 activiti-keycloak
 rabbitmq-stomp
-activiti-cloud-audit-mongodb
