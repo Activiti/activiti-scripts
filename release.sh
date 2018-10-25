@@ -77,7 +77,12 @@ else
 
     if [ -n "${GIT_PUSH}" ]
     then
-      git push --atomic origin ${RELEASE_VERSION}
+      if [ -e "pom.xml" ];
+      then
+        git push --atomic origin ${RELEASE_VERSION}
+      else
+        git push --atomic origin ${RELEASE_VERSION} || true
+      fi
     fi
 
 fi
