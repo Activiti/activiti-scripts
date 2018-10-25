@@ -20,9 +20,10 @@ To release non-example projects:
 
     PROJECTS=activiti,activiti-cloud ./release-all.sh
 
-To include a push first:
+To include pushing first set:
 
-    export PUSH=true
+    export GIT_PUSH=true
+    export MAVEN_PUSH=true
 
 To resume a release set the RELEASE_VERSION. The release job that invokes this is in bamboo.
 
@@ -62,7 +63,6 @@ The text files for the example projects do not require version numbers as for th
 To test a whole release, not pushing anything to github or nexus (because PUSH flag is blank) and pushing images to a personal dockerhub (ryandawsonuk):
 
     export MAVEN_ARGS="clean install -DskipTests"
-    export PUSH=
     export DOCKER_PUSH=true
     export DOCKER_USER=ryandawsonuk
     export RELEASE_VERSION=7.0.0.TEST1

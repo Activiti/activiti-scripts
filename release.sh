@@ -16,7 +16,7 @@ then
     echo "* pushing to origin"
     git checkout ${RELEASE_VERSION}
     echo "DEPLOY_EXISTING: ${DEPLOY_EXISTING}"
-    if [ -n "${PUSH}" ]
+    if [ -n "${MAVEN_PUSH}" ]
     then
       echo 'deploying existing repo'
       mvn clean deploy -DperformRelease -DskipTests ${BAMBOO_OPTS}
@@ -53,7 +53,7 @@ else
 
   VERSION=${SNAPSHOT_VERSION} NEXT_VERSION=${RELEASE_VERSION} . ${SCRIPT_DIR}/update-pom-version.sh
 
-   if [ -n "${PUSH}" ]
+   if [ -n "${GIT_PUSH}" ]
    then
     git add .
     git commit -m "updating to release version ${RELEASE_VERSION}"
@@ -64,7 +64,7 @@ else
 
     if [ -e "pom.xml" ];
     then
-      if [ -n "${PUSH}" ]
+      if [ -n "${MAVEN_PUSH}" ]
       then
         echo 'deploying existing repo'
         mvn clean deploy -DperformRelease -DskipTests ${BAMBOO_OPTS}
@@ -75,7 +75,7 @@ else
       echo "No pom.xml - not building"
     fi
 
-    if [ -n "${PUSH}" ]
+    if [ -n "${GIT_PUSH}" ]
     then
       git push --atomic origin ${RELEASE_VERSION}
     fi

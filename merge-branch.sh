@@ -11,7 +11,7 @@ git rebase develop
 git checkout develop
 git merge --no-ff --no-edit ${BRANCH}
 
-if [ -n "${PUSH}" ]
+if [ -n "${GIT_PUSH}" ]
 then
   echo "* pushing to origin"
   git push --force-with-lease --atomic origin ${BRANCH} develop
