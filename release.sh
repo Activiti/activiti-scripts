@@ -56,7 +56,12 @@ else
    if [ -n "${GIT_PUSH}" ]
    then
     git add .
-    git commit -m "updating to release version ${RELEASE_VERSION}"
+    if [ -e "pom.xml" ];
+      then
+        git commit -m "updating to release version ${RELEASE_VERSION}"
+      else
+        git commit -m "updating to release version ${RELEASE_VERSION}" || true
+    fi
     git tag -a ${RELEASE_VERSION} -m "tagging release ${RELEASE_VERSION}"
     git checkout ${RELEASE_VERSION}
    fi
