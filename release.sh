@@ -52,7 +52,7 @@ else
 
   if [ -z "${TAG}" ];
   then
-    git checkout develop -b release/${RELEASE_VERSION}
+    git checkout origin/develop -b release/${RELEASE_VERSION}
   else
     git checkout tags/v${TAG} -b release/${RELEASE_VERSION}
   fi
