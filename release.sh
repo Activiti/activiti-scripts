@@ -18,7 +18,7 @@ then
     echo "DEPLOY_EXISTING: ${DEPLOY_EXISTING}"
     if [ -e "pom.xml" ];
     then
-      if [ -n "${MAVEN_PUSH}" ] && [ -z "${DEPLOY_EXISTING}" ]
+      if [ -n "${MAVEN_PUSH}" ] && [ -n "${DEPLOY_EXISTING}" ]
       then
         echo 'deploying existing repo'
         mvn clean deploy -DperformRelease -DskipTests ${BAMBOO_OPTS}
