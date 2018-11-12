@@ -16,22 +16,18 @@ then
     echo "* pushing to origin"
     git checkout ${RELEASE_VERSION}
     echo "DEPLOY_EXISTING: ${DEPLOY_EXISTING}"
-    if [ -z "${DEPLOY_EXISTING}" ];
+    if [ -e "pom.xml" ];
     then
-      if [ -e "pom.xml" ];
+      if [ -n "${MAVEN_PUSH}" ] && [ -z "${DEPLOY_EXISTING}" ]
       then
-        if [ -n "${MAVEN_PUSH}" ]
-        then
-          echo 'deploying existing repo'
-          mvn clean deploy -DperformRelease -DskipTests ${BAMBOO_OPTS}
-        else
-          mvn clean install -DskipTests
-        fi
+        echo 'deploying existing repo'
+        mvn clean deploy -DperformRelease -DskipTests ${BAMBOO_OPTS}
       else
-        echo "No pom.xml - not building"
+        echo 'not deploying ${GIT_PROJECT} to maven - just building'
+        mvn clean install -DskipTests
       fi
     else
-      echo 'Not deploying ${GIT_PROJECT} as deployed already'
+      echo "No pom.xml - not building"
     fi
 else
   echo SNAPSHOT_VERSION=${SNAPSHOT_VERSION}
@@ -81,7 +77,6 @@ else
     then
       if [ -n "${MAVEN_PUSH}" ]
       then
-        echo 'deploying existing repo'
         mvn clean deploy -DperformRelease -DskipTests ${BAMBOO_OPTS}
       else
         mvn ${MAVEN_ARGS:-clean install -DskipTests}
