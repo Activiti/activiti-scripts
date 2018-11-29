@@ -2,7 +2,7 @@ activiti-cloud-audit
 activiti-cloud-query
 example-runtime-bundle
 example-cloud-connector
-activiti-cloud-acceptance-tests
+activiti-cloud-acceptance-scenarios
 activiti-cloud-gateway
 ttc-campaigns-service
 ttc-connectors-dummytwitter
