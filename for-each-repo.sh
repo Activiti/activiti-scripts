@@ -31,6 +31,17 @@ do
     fi
     git fetch
 
+    BASEBRANCH=develop
+
+    DEVEXISTS=$(git show-ref refs/heads/develop)
+
+    if [ -n "$DEVEXISTS" ];
+    then
+      echo 'using develop as base branch'
+    else
+      BASEBRANCH=master
+    fi
+
     if [ "$(basename ${SCRIPT})" = "clone.sh" ];
     then
       if  git tag --list | egrep -q "^$RELEASE_VERSION$"
@@ -40,8 +51,8 @@ do
       else
         if [ -z "${TAG}" ];
         then
-          echo "Using develop branch";
-          git checkout develop || ${IGNORE_TAG_CHECKOUT_FAILURE:true}
+          echo "Using ${BASEBRANCH} branch";
+          git checkout ${BASEBRANCH} || ${IGNORE_TAG_CHECKOUT_FAILURE:true}
         else
           echo "Checking out tag '${TAG}' for $(pwd)";
           git checkout tags/v$TAG || ${IGNORE_TAG_CHECKOUT_FAILURE:true}

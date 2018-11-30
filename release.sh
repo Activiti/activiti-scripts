@@ -50,9 +50,20 @@ else
     done < "$SCRIPT_DIR/repos-${PROJECT}.txt"
   done
 
+  BASEBRANCH=develop
+
+  DEVEXISTS=$(git show-ref refs/heads/develop)
+
+  if [ -n "$DEVEXISTS" ];
+  then
+    echo 'using develop as base branch'
+  else
+    BASEBRANCH=master
+  fi
+
   if [ -z "${TAG}" ];
   then
-    git checkout origin/develop -b release/${RELEASE_VERSION}
+    git checkout origin/${BASEBRANCH} -b release/${RELEASE_VERSION}
   else
     git checkout tags/v${TAG} -b release/${RELEASE_VERSION}
   fi
