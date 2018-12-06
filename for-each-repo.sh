@@ -33,7 +33,7 @@ do
 
     BASEBRANCH=develop
 
-    DEVEXISTS=$(git show-ref refs/heads/develop)
+    DEVEXISTS=$(git show-ref refs/heads/develop) || true
 
     if [ -n "$DEVEXISTS" ];
     then
