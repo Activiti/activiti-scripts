@@ -14,4 +14,5 @@ cd ${SRC_DIR:-$HOME/src}
 for REPO in ${REPOS}
 do
   rm -rf ${REPO}
+  echo "rm -rf ${REPO}"
 done
