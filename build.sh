@@ -54,19 +54,14 @@ then
            PARENT_VERSION=$(mvn help:evaluate -B -Dexpression=project.parent.version | grep -e '^[^\[]' 2>/dev/null) || true
            PARENT_VERSION=${PARENT_VERSION#"null object or invalid expression"}
 
-           if [ -z "${PARENT_VERSION}" ];
+           if [ "${INNER_COUNTER}" -eq "0" ];
              then
-               echo "PROPERTY ${PROP_INNER} IS NOT USED IN ${GIT_PROJECT}"
-             else
-               if [ "${INNER_COUNTER}" -eq "0" ];
-               then
-                 if [ "${PARENT_VERSION}" = "${REPO_ARRAY_INNER[1]}" ];
-                   then
-                     echo "${REPO_INNER} ${VERSION_INNER} IS USED IN PARENT OF ${GIT_PROJECT}"
-                   else
-                     echo "${REPO_INNER} ${VERSION_INNER} IS NOT USED IN PARENT OF ${GIT_PROJECT}"
-                     exit 1
-                 fi
+               if [ "${PARENT_VERSION}" = "${REPO_ARRAY_INNER[1]}" ];
+                 then
+                   echo "${REPO_INNER} ${VERSION_INNER} IS USED IN PARENT OF ${GIT_PROJECT}"
+                 else
+                   echo "${REPO_INNER} ${VERSION_INNER} IS NOT USED IN PARENT OF ${GIT_PROJECT}"
+                   exit 1
                fi
            fi
 
