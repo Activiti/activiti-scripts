@@ -6,5 +6,5 @@ activiti-cloud-query-service 7.0.80
 activiti-cloud-audit-service 7.0.57
 activiti-cloud-connectors 7.0.51
 activiti-cloud-app-service 7.0.42
-activiti-cloud-acceptance-tests 7.0.34
-activiti-cloud-dependencies 7.0.143
+activiti-cloud-acceptance-tests 7.0.36
+activiti-cloud-dependencies 7.0.145
