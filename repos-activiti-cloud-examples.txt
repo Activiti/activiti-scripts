@@ -4,6 +4,7 @@ example-runtime-bundle
 example-cloud-connector
 activiti-cloud-acceptance-scenarios
 activiti-cloud-gateway
+activiti-cloud-notifications-graphql
 ttc-campaigns-service
 ttc-connectors-dummytwitter
 ttc-rb-english-campaign
