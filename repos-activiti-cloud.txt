@@ -7,4 +7,5 @@ activiti-cloud-audit-service 7.0.71
 activiti-cloud-connectors 7.0.65
 activiti-cloud-app-service 7.0.55
 activiti-cloud-acceptance-tests 7.0.43
+activiti-cloud-notifications-service-graphql 7.0.2
 activiti-cloud-dependencies 7.0.159
