@@ -18,9 +18,14 @@ SED_REPLACEMENTS="${SED_REPLACEMENTS}-e 's@<version>${POM_VERSION}</version>@<ve
 PARENT_VERSION=$(mvn help:evaluate -B -Dexpression=project.parent.version | grep -e '^[^\[]' 2>/dev/null) || true
 PARENT_VERSION=${PARENT_VERSION#"null object or invalid expression"}
 
+PARENT_ARTIFACT=$(mvn help:evaluate -B -Dexpression=project.parent.artifactId | grep -e '^[^\[]' 2>/dev/null) || true
+
 if [ -n "${PARENT_VERSION}" ];
   then
-    SED_REPLACEMENTS="${SED_REPLACEMENTS} -e 's@<version>${PARENT_VERSION}</version>@<version>${NEXT_VERSION}</version>@g'"
+    if [ "$PARENT_ARTIFACT" != "spring-boot-starter-parent" ];
+      then
+        SED_REPLACEMENTS="${SED_REPLACEMENTS} -e 's@<version>${PARENT_VERSION}</version>@<version>${NEXT_VERSION}</version>@g'"
+    fi
   else
     echo "${GIT_PROJECT} HAS NO PARENT"
 fi
