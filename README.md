@@ -68,8 +68,8 @@ To test a whole release, not pushing anything to github or nexus (because PUSH f
     export RELEASE_VERSION=7.0.0.TEST1
     export CHECK_VERSIONS=true
     export EXTRA_SED="'s@<activiti-dependencies.version>.*</activiti-dependencies.version>@<activiti-dependencies.version>7.0.0.TEST1</activiti-dependencies.version>@g' -e 's@<activiti-cloud-dependencies.version>.*</activiti-cloud-dependencies.version>@<activiti-cloud-dependencies.version>7.0.0.TEST1</activiti-cloud-dependencies.version>@g' -e 's@<activiti-cloud-service-common.version>.*</activiti-cloud-service-common.version>@<activiti-cloud-service-common.version>7.0.0.TEST1</activiti-cloud-service-common.version>@g' -e 's@<activiti-cloud-modeling-dependencies.version>.*</activiti-cloud-modeling-dependencies.version>@<activiti-cloud-modeling-dependencies.version>7.0.0.TEST1</activiti-cloud-modeling-dependencies.version>@g'"
-    PROJECTS=activiti,activiti-cloud,activiti-cloud-modeling,activiti-examples,activiti-cloud-modeling-examples,activiti-cloud-examples ./remove-all.sh
-    PROJECTS=activiti,activiti-cloud,activiti-cloud-modeling,activiti-examples,activiti-cloud-modeling-examples,activiti-cloud-examples ./clone-all.sh
-    PROJECTS=activiti,activiti-cloud,activiti-cloud-modeling,activiti-examples,activiti-cloud-modeling-examples,activiti-cloud-examples ./build-all.sh
-    PROJECTS=activiti,activiti-cloud,activiti-cloud-modeling,activiti-examples,activiti-cloud-modeling-examples,activiti-cloud-examples ./release-all.sh
+    PROJECTS=activiti,activiti-cloud,activiti-cloud-modeling,activiti-examples,activiti-cloud-modeling-examples,activiti-cloud-examples,activiti-cloud-quickstarts ./remove-all.sh
+    PROJECTS=activiti,activiti-cloud,activiti-cloud-modeling,activiti-examples,activiti-cloud-modeling-examples,activiti-cloud-examples,activiti-cloud-quickstarts ./clone-all.sh
+    PROJECTS=activiti,activiti-cloud,activiti-cloud-modeling,activiti-examples,activiti-cloud-modeling-examples,activiti-cloud-examples,activiti-cloud-quickstarts ./build-all.sh
+    PROJECTS=activiti,activiti-cloud,activiti-cloud-modeling,activiti-examples,activiti-cloud-modeling-examples,activiti-cloud-examples,activiti-cloud-quickstarts ./release-all.sh
     PROJECTS=activiti-cloud-examples,activiti-cloud-modeling-examples ./dockerpush-all.sh
