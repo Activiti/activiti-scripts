@@ -12,7 +12,6 @@ ttc-query-campaign
 ttc-connectors-processing
 ttc-connectors-ranking
 ttc-connectors-reward
-ttc-dashboard-ui
 ttc-acceptance-tests
 activiti-keycloak
 rabbitmq-stomp
