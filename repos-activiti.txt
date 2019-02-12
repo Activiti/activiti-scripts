@@ -1,5 +1,5 @@
-activiti-build 7.0.56
-activiti-api 7.0.83
-activiti-core-common 7.0.45
-activiti 7.0.119
-activiti-dependencies 7.0.97
+activiti-build 7.0.59
+activiti-api 7.0.86
+activiti-core-common 7.0.47
+activiti 7.0.126
+activiti-dependencies 7.0.103
