@@ -14,4 +14,3 @@ ttc-connectors-ranking
 ttc-connectors-reward
 ttc-acceptance-tests
 activiti-keycloak
-rabbitmq-stomp
