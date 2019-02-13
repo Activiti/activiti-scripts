@@ -3,9 +3,9 @@ activiti-cloud-api 7.0.53
 activiti-cloud-service-common 7.0.86
 activiti-cloud-runtime-bundle-service 7.0.128
 activiti-cloud-query-service 7.0.106
-activiti-cloud-audit-service 7.0.80
+activiti-cloud-audit-service 7.0.81
 activiti-cloud-connectors 7.0.74
 activiti-cloud-app-service 7.0.64
-activiti-cloud-acceptance-tests 7.0.61
+activiti-cloud-acceptance-tests 7.0.62
 activiti-cloud-notifications-service-graphql 7.0.16
-activiti-cloud-dependencies 7.0.188
+activiti-cloud-dependencies 7.0.189
