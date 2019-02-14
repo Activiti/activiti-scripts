@@ -3,13 +3,13 @@ set -e
 
 [ -z "${BRANCH}" ] && exit
 
-BASEBRANCH=develop
+BASEBRANCH=${BASEBRANCH:-develop}
 
-DEVEXISTS=$(git show-ref refs/heads/develop) || true
+BASEBRANCHEXISTS=$(git show-ref refs/heads/${BASEBRANCH}) || true
 
-if [ -n "$DEVEXISTS" ];
+if [ -n "$BASEBRANCHEXISTS" ];
   then
-    echo 'using develop as base branch'
+    echo 'using ${BASEBRANCH} as base branch'
   else
     BASEBRANCH=master
 fi
