@@ -52,11 +52,11 @@ else
 
   BASEBRANCH=${BASEBRANCH:-develop}
 
-  BASEBRANCHEXISTS=$(git show-ref refs/heads/${BASEBRANCH}) || true
+  BASEBRANCHEXISTS=$(git ls-remote origin ${BASEBRANCH}) || true
 
   if [ -n "$BASEBRANCHEXISTS" ];
     then
-      echo 'using ${BASEBRANCH} as base branch'
+      echo 'using' $BASEBRANCH 'as base branch'
     else
       BASEBRANCH=master
   fi
