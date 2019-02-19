@@ -73,3 +73,7 @@ To test a whole release, not pushing anything to github or nexus (because PUSH f
     PROJECTS=activiti,activiti-cloud,activiti-cloud-modeling,activiti-examples,activiti-cloud-modeling-examples,activiti-cloud-examples ./build-all.sh
     PROJECTS=activiti,activiti-cloud,activiti-cloud-modeling,activiti-examples,activiti-cloud-modeling-examples,activiti-cloud-examples ./release-all.sh
     PROJECTS=activiti-cloud-examples,activiti-cloud-modeling-examples ./dockerpush-all.sh
+
+To build all projects from a branch instead of a tag e.g. `7.0.x`, take the versions out of the text files and set
+
+    export BASEBRANCH=7.0.x

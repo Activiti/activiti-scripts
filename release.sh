@@ -50,15 +50,15 @@ else
     done < "$SCRIPT_DIR/repos-${PROJECT}.txt"
   done
 
-  BASEBRANCH=develop
+  BASEBRANCH=${BASEBRANCH:-develop}
 
-  DEVEXISTS=$(git show-ref refs/heads/develop) || true
+  BASEBRANCHEXISTS=$(git ls-remote origin ${BASEBRANCH}) || true
 
-  if [ -n "$DEVEXISTS" ];
-  then
-    echo 'using develop as base branch'
-  else
-    BASEBRANCH=master
+  if [ -n "$BASEBRANCHEXISTS" ];
+    then
+      echo 'using' $BASEBRANCH 'as base branch'
+    else
+      BASEBRANCH=master
   fi
 
   if [ -z "${TAG}" ];
