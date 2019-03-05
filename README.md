@@ -77,3 +77,5 @@ To test a whole release, not pushing anything to github or nexus (because PUSH f
 To build all projects from a branch instead of a tag e.g. `7.0.x`, take the versions out of the text files and set
 
     export BASEBRANCH=7.0.x
+
+If version replacement is needed ot make the branches build then the `build-all` step may need to be removed.
