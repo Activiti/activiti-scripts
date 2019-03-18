@@ -1,11 +1,11 @@
-activiti-cloud-build
-activiti-cloud-api
-activiti-cloud-service-common
-activiti-cloud-runtime-bundle-service
-activiti-cloud-query-service
-activiti-cloud-audit-service
-activiti-cloud-connectors
-activiti-cloud-app-service
-activiti-cloud-acceptance-tests
-activiti-cloud-notifications-service-graphql
-activiti-cloud-dependencies
+activiti-cloud-build 7.1.6
+activiti-cloud-api 7.1.12
+activiti-cloud-service-common 7.1.17
+activiti-cloud-runtime-bundle-service 7.1.18
+activiti-cloud-query-service 7.1.18
+activiti-cloud-audit-service 7.1.15
+activiti-cloud-connectors 7.1.16
+activiti-cloud-app-service 7.1.15
+activiti-cloud-acceptance-tests 7.1.23
+activiti-cloud-notifications-service-graphql 7.1.16
+activiti-cloud-dependencies 7.1.28
