@@ -44,6 +44,8 @@ do
   done < "$SCRIPT_DIR/repos-${PROJECT}.txt"
 done
 
+SED_REPLACEMENTS="${SED_REPLACEMENTS} -e 's@version>.*</activiti@version>${NEXT_VERSION}</activiti@g'"
+
 if [ -n "${EXTRA_SED}" ];
   then
     SED_REPLACEMENTS="${SED_REPLACEMENTS} -e ${EXTRA_SED}"
