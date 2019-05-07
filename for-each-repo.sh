@@ -2,9 +2,9 @@
 set -e
 
 PROJECTS=${PROJECTS:-activiti}
-
+echo "PROJECTS ${PROJECTS}"
 echo "SCRIPT_DIR ${SRC_DIR:-$HOME/src}"
-mkdir -p ${SRC_DIR:-$HOME/src} && cd ${SRC_DIR:-$HOME/src}
+mkdir -p ${SRC_DIR:-$HOME/src} && cd $_
 
 COUNTER=0
 
@@ -12,8 +12,8 @@ for PROJECT in ${PROJECTS//,/ }
 do
   while read REPO_LINE;
     do REPO_ARRAY=($REPO_LINE)
-    REPO=${REPO_ARRAY[0]}
     echo "REPO_LINE ${REPO_LINE}"
+    REPO=${REPO_ARRAY[0]}
     echo "REPO ${REPO}"
     TAG=${REPO_ARRAY[1]}
 
