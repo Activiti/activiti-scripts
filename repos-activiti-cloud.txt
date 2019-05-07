@@ -6,6 +6,6 @@ activiti-cloud-query-service 7.1.38
 activiti-cloud-audit-service 7.1.36
 activiti-cloud-connectors 7.1.30
 activiti-cloud-app-service 7.1.29
-activiti-cloud-acceptance-tests 7.1.38
-activiti-cloud-notifications-service-graphql 7.1.40
-activiti-cloud-dependencies 7.1.64
+activiti-cloud-acceptance-tests 7.1.40
+activiti-cloud-notifications-service-graphql 7.1.41
+activiti-cloud-dependencies 7.1.67
