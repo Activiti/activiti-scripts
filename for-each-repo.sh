@@ -4,7 +4,7 @@ set -e
 PROJECTS=${PROJECTS:-activiti}
 
 echo "SCRIPT_DIR ${SRC_DIR:-$HOME/src}"
-mkdir -p ${SRC_DIR:-$HOME/src} && cd $_
+mkdir -p ${SRC_DIR:-$HOME/src} && cd ${SRC_DIR:-$HOME/src}
 
 COUNTER=0
 
