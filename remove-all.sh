@@ -4,6 +4,7 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECTS=${PROJECTS:-activiti}
+echo "PROJECTs to remove: " ${PROJECTS}
 
 for PROJECT in ${PROJECTS//,/ }
 do
