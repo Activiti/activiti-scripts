@@ -3,4 +3,4 @@ set -e
 
 export SCRIPT_DIR="$(cd "$( dirname "$0" )" && pwd)"
 
-SCRIPT="${SCRIPT_DIR}/release.sh" . ${SCRIPT_DIR}/run.sh
+SCRIPT="${SCRIPT_DIR}/release.sh" ${SCRIPT_DIR}/run.sh
