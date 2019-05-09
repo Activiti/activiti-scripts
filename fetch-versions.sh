@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 
 if [ ! -z "$1" ]; then
     if [ "$1" = "activiti-dependencies" ] || [ "$1" = "activiti-cloud-dependencies" ] || [ "$1" = "activiti-cloud-modeling-dependencies" ]; then
