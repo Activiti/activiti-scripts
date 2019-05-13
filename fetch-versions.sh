@@ -57,9 +57,17 @@ do
         fi
 
     else
-        # if no second argument is provided, we get the latest tag
-        git checkout -q tags/$(git describe --tags `git rev-list --tags --max-count=1`)
-        echo $(git describe --tags `git rev-list --tags --max-count=1` | cut -d'v' -f 2) >> $file  
+         # if no second argument is provided, we get the latest tag
+         latest_tag=$(git tag --sort=-creatordate | head -n 1)
+
+        if [[ ${latest_tag::1} == "v" ]];then
+            aggregator_tag=$(git tag --sort=-creatordate | head -n 1)            
+        else
+            aggregator_tag=$(git tag --sort=-creatordate | head -n 2 | grep "v")
+        fi  
+
+        git checkout -q tags/$aggregator_tag
+        echo $aggregator_tag | cut -d'v' -f 2 >> $file
     fi
 
     # name and version of the projects in this aggregator
