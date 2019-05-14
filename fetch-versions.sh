@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+original_directory=$(pwd)
+
 if [ ! -z "$1" ]; then
     if [ "$1" = "activiti-dependencies" ] || [ "$1" = "activiti-cloud-dependencies" ] || [ "$1" = "activiti-cloud-modeling-dependencies" ]; then
         projects=($1)
@@ -14,7 +16,7 @@ fi
 
 for i in "${projects[@]}"
 do 
-    mkdir .temp && cd .temp
+    mkdir /tmp/release-versions && cd /tmp/release-versions
     git clone -q https://github.com/Activiti/$i.git  && cd $i
 
     case "$i" in
@@ -52,7 +54,7 @@ do
         else
             echo "The provided version does not exist"
             cd ../..
-            rm -rf .temp
+            rm -rf release-versions
             exit 1
         fi
 
@@ -74,13 +76,22 @@ do
     for j in $(cat pom.xml | grep -v "Downloading" | grep "activiti" | grep "version" | grep "7." | cut -d'<' -f 2 | cut -d'.' -f 1)
     do
         echo -n "$j " >> $file
-        echo $(eval "mvn help:evaluate -Dexpression=$j.version | grep '^[^\[]'") >> $file
+        version=$(eval "mvn help:evaluate -B -Dexpression=$j.version | grep '^[^\[]'")
+        echo $version >> $file
+
+        # check for the existence of such version for current project
+        if [ $(curl -s -o /dev/null -w "%{http_code}" https://github.com/Activiti/$j/releases/tag/v$version) != "200" ];then
+            echo "$version version of project $j does not exist"
+            echo "Script interrupted due to non existent version" >> $file
+            exit 1
+        fi
     done
 
-    echo "-------------------------------------------"
+    echo "--------------------------------------------------------------------"
     cat $file
     
     cd ../..
-    mv .temp/$i/$file .
-    rm -rf .temp
+    mv release-versions/$i/$file $original_directory
+    rm -rf release-versions
+
 done
