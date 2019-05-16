@@ -9,9 +9,17 @@ will build all the repositories listed in the index files:
 
 * [activiti](./repos-activiti.txt)
 * [activiti-cloud](./repos-activiti-cloud.txt)
+* [activiti-cloud-modeling](./repos-activiti-cloud-modeling.txt)
 * [activiti-examples](./repos-activiti-examples.txt)
 * [activiti-cloud-examples](./repos-activiti-cloud-examples.txt)
+* [activiti-cloud-modeling-examples](./repos-activiti-cloud-modeling-examples.txt)
 
+To get the set of versions to be released:
+
+    fetch-versions.sh (fetch latest version for all sets)
+    fetch-versions.sh activiti-dependencies (fetch latest versions for the provided set)
+    fetch-versions.sh activiti-dependencies 7.1.18 (fetch set of versions for the provided set in the provided version set)
+    
 To clone all:
 
     PROJECTS=activiti,activiti-cloud,activiti-examples,activiti-cloud-examples ./clone-all.sh
