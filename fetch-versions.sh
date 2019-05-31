@@ -31,9 +31,7 @@ do
     ;;
     esac
 
-    # name and version of the dependency aggregator
-    echo -n "$i " >> $file
-
+    name_dependency_aggregator=$i
     git fetch --tags
 
     if [ ! -z "$2" ]; then
@@ -50,7 +48,7 @@ do
 
         if [ "$exist" -eq 1 ]; then
             git checkout -q tags/v$2 
-            echo $2 >> $file 
+            version_dependency_aggregator=$2 
         else
             echo "The provided version does not exist"
             cd ../..
@@ -69,7 +67,7 @@ do
         fi  
 
         git checkout -q tags/$aggregator_tag
-        echo $aggregator_tag | cut -d'v' -f 2 >> $file
+        version_dependency_aggregator=$(echo $aggregator_tag | cut -d'v' -f 2)
     fi
 
     # name and version of the projects in this aggregator
@@ -86,6 +84,10 @@ do
             exit 1
         fi
     done
+
+    # name and version of the dependency aggregator
+    echo -n "$name_dependency_aggregator " >> $file
+    echo $version_dependency_aggregator >> $file 
 
     echo "--------------------------------------------------------------------"
     cat $file
