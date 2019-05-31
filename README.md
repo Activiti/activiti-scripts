@@ -16,9 +16,9 @@ will build all the repositories listed in the index files:
 
 To get the set of versions to be released:
 
-    fetch-versions.sh (fetch latest version for all sets)
-    fetch-versions.sh activiti-dependencies (fetch latest versions for the provided set)
-    fetch-versions.sh activiti-dependencies 7.1.18 (fetch set of versions for the provided set in the provided version set)
+    ./fetch-versions.sh (fetch latest version for all sets)
+    ./fetch-versions.sh activiti-dependencies (fetch latest versions for the provided set)
+    ./fetch-versions.sh activiti-dependencies 7.1.18 (fetch set of versions for the provided set in the provided version set)
     
 To clone all:
 
