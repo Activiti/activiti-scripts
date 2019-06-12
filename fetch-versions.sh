@@ -85,6 +85,7 @@ do
         fi
     done
 
+    # addition of modeling front end project
     if [ $name_dependency_aggregator == "activiti-cloud-modeling-dependencies" ]; then
         echo -n "activiti-modeling-app " >> $file
         echo $(curl -s https://api.github.com/repos/Activiti/activiti-modeling-app/tags | grep name | cut -d'v' -f 2 | cut -d'"' -f 1 |  head -n1) >> $file
