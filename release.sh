@@ -8,7 +8,7 @@ echo "RELEASING PROJECT $GIT_PROJECT from $(pwd)"
 echo "SCRIPT_DIR IS $SCRIPT_DIR"
 
 git remote set-url origin https://${GIT_AUTHOR_NAME}:${GIT_PASSWORD}@github.com/Activiti/${GIT_PROJECT}.git
-
+git fetch --tags
 if  git tag --list | egrep -q "^$RELEASE_VERSION$"
 then
   echo "Found tag - released already"
