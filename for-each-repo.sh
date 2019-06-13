@@ -55,6 +55,7 @@ do
           git checkout ${BASEBRANCH} || ${IGNORE_TAG_CHECKOUT_FAILURE:true}
         else
           echo "Checking out tag '${TAG}' for $(pwd)";
+          git fetch --tags
           git checkout tags/v$TAG || ${IGNORE_TAG_CHECKOUT_FAILURE:true}
         fi
       fi
