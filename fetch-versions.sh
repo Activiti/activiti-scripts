@@ -10,6 +10,8 @@ if [ ! -z "$1" ]; then
         echo "Choose among: activiti-dependencies, activiti-cloud-dependencies or activiti-cloud-modeling-dependencies"
         echo "Leave blank to update all projects"
     fi
+else
+    projects=(activiti-dependencies activiti-cloud-dependencies activiti-cloud-modeling-dependencies)
 fi
 
 for i in "${projects[@]}"
