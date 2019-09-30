@@ -2,4 +2,4 @@ activiti-build 7.1.28
 activiti-api 7.1.48
 activiti-core-common 7.1.50
 activiti 7.1.88
-activiti-dependencies 7.1.74
+activiti-dependencies 7.1.78
