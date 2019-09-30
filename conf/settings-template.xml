@@ -1,0 +1,17 @@
+<settings>
+  <profiles>
+    <profile>
+      <id>Staging</id>
+      <repositories>
+        <repository>
+          <id>activiti-staging</id>
+          <name>Activiti stating</name>
+          <url>https://oss.sonatype.org/service/local/repositories/orgactiviti-STAGING_ID/content</url>
+        </repository>
+      </repositories>
+    </profile>
+  </profiles>
+  <activeProfiles>
+    <activeProfile>Staging</activeProfile>
+  </activeProfiles>
+</settings>
