@@ -24,7 +24,7 @@ then
         mvn clean deploy -DperformRelease -DskipTests ${BAMBOO_OPTS}
       else
         echo 'not deploying ${GIT_PROJECT} to maven - just building'
-        mvn clean install -DskipTests
+        mvn ${MAVEN_ARGS:-clean install -DskipTests}
       fi
     else
       echo "No pom.xml - not building"
