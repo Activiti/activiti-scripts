@@ -74,7 +74,7 @@ do
     # name and version of the projects in this aggregator
     for j in $(cat pom.xml | grep -v "Downloading" | grep "activiti" | grep "version" | grep "7." | cut -d'<' -f 2 | cut -d'.' -f 1)
     do
-        echo -n "$j" >> $file
+        echo -n "$j " >> $file
         version=$(eval "mvn help:evaluate -B -Dexpression=$j.version | grep '^[^\[]'")
         echo $version >> $file
 
@@ -88,16 +88,16 @@ do
 
     # addition of modeling front end project
     if [ $name_dependency_aggregator == "activiti-cloud-modeling-dependencies" ]; then
-        echo -n "activiti-modeling-app" >> $file
+        echo -n "activiti-modeling-app " >> $file
         echo $(curl -s https://api.github.com/repos/Activiti/activiti-modeling-app/tags | grep name | cut -d'v' -f 2 | cut -d'"' -f 1 |  head -n1) >> $file
     fi
 
     # name and version of the dependency aggregator
     if [ $name_dependency_aggregator == "activiti-cloud-dependencies" ]; then
-      echo -n "$name_dependency_aggregator" >> ${bom_file}
+      echo -n "$name_dependency_aggregator " >> ${bom_file}
       echo $version_dependency_aggregator >> ${bom_file}
     else
-      echo -n "$name_dependency_aggregator" >> $file
+      echo -n "$name_dependency_aggregator " >> $file
       echo $version_dependency_aggregator >> $file
     fi
 
