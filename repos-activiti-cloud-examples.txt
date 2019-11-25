@@ -6,11 +6,3 @@ activiti-cloud-acceptance-scenarios
 activiti-cloud-gateway
 activiti-cloud-notifications-graphql
 activiti-keycloak
-ttc-campaigns-service
-ttc-connectors-dummytwitter
-ttc-rb-english-campaign
-ttc-query-campaign
-ttc-connectors-processing
-ttc-connectors-ranking
-ttc-connectors-reward
-ttc-acceptance-tests
