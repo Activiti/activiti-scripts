@@ -1,8 +1,4 @@
-activiti-cloud-modeling-build \c
-7.1.5
-activiti-cloud-org-service \c
-7.1.261
-activiti-modeling-app \c
-0.0.213
-activiti-cloud-modeling-dependencies \c
-7.1.270
+activiti-cloud-modeling-build7.1.5
+activiti-cloud-org-service7.1.261
+activiti-modeling-app0.0.213
+activiti-cloud-modeling-dependencies7.1.270

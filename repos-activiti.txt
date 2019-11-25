@@ -1,10 +1,5 @@
-activiti-build \c
-7.1.32
-activiti-api \c
-7.1.57
-activiti-core-common \c
-7.1.64
-activiti \c
-7.1.128
-activiti-dependencies \c
-7.1.117
+activiti-build7.1.32
+activiti-api7.1.57
+activiti-core-common7.1.64
+activiti7.1.128
+activiti-dependencies7.1.117
