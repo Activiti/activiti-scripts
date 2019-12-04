@@ -10,7 +10,6 @@ will build all the repositories listed in the index files:
 * [activiti](./repos-activiti.txt)
 * [activiti-cloud](./repos-activiti-cloud.txt)
 * [activiti-cloud-modeling](./repos-activiti-cloud-modeling.txt)
-* [activiti-examples](./repos-activiti-examples.txt)
 * [activiti-cloud-examples](./repos-activiti-cloud-examples.txt)
 * [activiti-cloud-modeling-examples](./repos-activiti-cloud-modeling-examples.txt)
 
@@ -22,7 +21,7 @@ To get the set of versions to be released:
     
 To clone all:
 
-    PROJECTS=activiti,activiti-cloud,activiti-examples,activiti-cloud-examples ./clone-all.sh
+    PROJECTS=activiti,activiti-cloud,activiti-cloud-examples ./clone-all.sh
 
 To release non-example projects:
 
@@ -62,10 +61,10 @@ To test a whole release, not pushing anything to github or nexus (because PUSH f
     export DOCKER_USER=ryandawsonuk
     export RELEASE_VERSION=7.0.0.TEST1
     export CHECK_VERSIONS=true
-    PROJECTS=activiti,activiti-cloud,activiti-cloud-modeling,activiti-examples,activiti-cloud-examples,activiti-cloud-modeling-examples ./remove-all.sh
-    PROJECTS=activiti,activiti-cloud,activiti-cloud-modeling,activiti-examples,activiti-cloud-examples,activiti-cloud-modeling-examples ./clone-all.sh
-    PROJECTS=activiti,activiti-cloud,activiti-cloud-modeling,activiti-examples,activiti-cloud-examples,activiti-cloud-modeling-examples ./build-all.sh
-    PROJECTS=activiti,activiti-cloud,activiti-cloud-modeling,activiti-examples,activiti-cloud-examples,activiti-cloud-modeling-examples ./release-all.sh
+    PROJECTS=activiti,activiti-cloud,activiti-cloud-modeling,activiti-cloud-examples,activiti-cloud-modeling-examples ./remove-all.sh
+    PROJECTS=activiti,activiti-cloud,activiti-cloud-modeling,activiti-cloud-examples,activiti-cloud-modeling-examples ./clone-all.sh
+    PROJECTS=activiti,activiti-cloud,activiti-cloud-modeling,activiti-cloud-examples,activiti-cloud-modeling-examples ./build-all.sh
+    PROJECTS=activiti,activiti-cloud,activiti-cloud-modeling,activiti-cloud-examples,activiti-cloud-modeling-examples ./release-all.sh
     PROJECTS=activiti-cloud-examples,activiti-cloud-modeling-images ./dockerpush-all.sh
 
 To build all projects from a branch instead of a tag e.g. `7.0.x`, take the versions out of the text files and set
