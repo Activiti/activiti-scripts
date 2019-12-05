@@ -1,4 +1,4 @@
 activiti-cloud-modeling-build 7.1.5
-activiti-cloud-org-service 7.1.261
-activiti-modeling-app 0.0.214
-activiti-cloud-modeling-dependencies 7.1.270
+activiti-cloud-org-service 7.1.274
+activiti-modeling-app 0.0.224
+activiti-cloud-modeling-dependencies 7.1.283

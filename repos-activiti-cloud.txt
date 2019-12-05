@@ -1,8 +1,8 @@
 activiti-cloud-build 7.1.12
-activiti-cloud-api 7.1.58
-activiti-cloud-service-common 7.1.94
-activiti-cloud-runtime-bundle-service 7.1.181
-activiti-cloud-query-service 7.1.161
-activiti-cloud-audit-service 7.1.111
-activiti-cloud-connectors 7.1.92
-activiti-cloud-notifications-service-graphql 7.1.159
+activiti-cloud-api 7.1.59
+activiti-cloud-service-common 7.1.95
+activiti-cloud-runtime-bundle-service 7.1.186
+activiti-cloud-query-service 7.1.165
+activiti-cloud-audit-service 7.1.114
+activiti-cloud-connectors 7.1.93
+activiti-cloud-notifications-service-graphql 7.1.163
