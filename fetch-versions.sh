@@ -11,7 +11,7 @@ if [ ! -z "$1" ]; then
         echo "Leave blank to update all projects"
     fi
 else
-    projects=(activiti-dependencies activiti-cloud-dependencies activiti-cloud-modeling-dependencies)
+    projects=(Activiti activiti-cloud-dependencies activiti-cloud-modeling-dependencies)
 fi
 
 for i in "${projects[@]}"
@@ -20,7 +20,7 @@ do
     git clone -q https://github.com/Activiti/$i.git  && cd $i
 
     case "$i" in
-    'activiti-dependencies')
+    'Activiti')
         file=repos-activiti.txt
     ;;
     'activiti-cloud-dependencies')
