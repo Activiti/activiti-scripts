@@ -1,8 +1,0 @@
-ttc-campaigns-service
-ttc-connectors-dummytwitter
-ttc-rb-english-campaign
-ttc-query-campaign
-ttc-connectors-processing
-ttc-connectors-ranking
-ttc-connectors-reward
-ttc-acceptance-tests
