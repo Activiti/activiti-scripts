@@ -1,0 +1,9 @@
+activiti-cloud-audit
+activiti-cloud-query
+example-runtime-bundle
+example-cloud-connector
+activiti-cloud-notifications-graphql
+activiti-cloud-modeling
+activiti-cloud-acceptance-scenarios
+activiti-cloud-gateway
+activiti-keycloak

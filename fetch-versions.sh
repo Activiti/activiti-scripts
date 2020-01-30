@@ -7,7 +7,7 @@ if [ ! -z "$1" ]; then
     projects=$1
   else
     echo "Incorrect project name '$1'"
-    echo "Choose among: activiti-dependencies or activiti-cloud-dependencies"
+    echo "Choose among: Activiti or activiti-cloud-dependencies"
     echo "Leave blank to update all projects"
   fi
 else
