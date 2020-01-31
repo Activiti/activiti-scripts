@@ -1,5 +1,32 @@
 #!/usr/bin/env bash
 
+parseVersions() {
+  local pom_path=$1
+  local property_pattern=$2
+  local destination_file=$3
+  for j in $(cat $pom_path | grep -v "Downloading" | grep $property_pattern | grep "version" | grep "7." | cut -d'<' -f 2 | cut -d'.' -f 1); do
+    echo -n "$j " >>$destination_file
+    version=$(cat $pom_path | grep -v "Downloading" | grep "$j.version" | grep -om1 "7.[0-9]*.[0-9]*")
+    echo $version >>$destination_file
+
+    # check for the existence of such version for current project
+    if [ $(curl -s -o /dev/null -w "%{http_code}" https://github.com/Activiti/$j/releases/tag/v$version) != "200" ]; then
+      echo "$version version of project $j does not exist"
+      echo "Script interrupted due to non existent version" >>$destination_file
+      exit 1
+    fi
+  done
+}
+
+updateRepoFile() {
+  local current_project=$1
+  local file_to_update=$2
+  local destination_folder=$3
+  echo "--------------------------------------------------------------------"
+  cat release-versions/${current_project}/${file_to_update}
+  mv release-versions/${current_project}/${file_to_update} ${destination_folder}
+}
+
 original_directory=$(pwd)
 
 if [ ! -z "$1" ]; then
@@ -24,6 +51,7 @@ for i in "${projects[@]}"; do
     ;;
   'activiti-cloud-dependencies')
     file=repos-activiti-cloud.txt
+    examples_file=repos-activiti-cloud-examples.txt
     bom_file=repos-activiti-cloud-bom.txt
     ;;
   esac
@@ -67,18 +95,10 @@ for i in "${projects[@]}"; do
   fi
 
   # name and version of the projects in this aggregator
-  for j in $(cat pom.xml | grep -v "Downloading" | grep "activiti" | grep "version" | grep "7." | cut -d'<' -f 2 | cut -d'.' -f 1); do
-    echo -n "$j " >>$file
-    version=$(cat pom.xml | grep -v "Downloading" | grep "$j.version" | grep -om1 "7.[0-9]*.[0-9]*")
-    echo $version >>$file
-
-    # check for the existence of such version for current project
-    if [ $(curl -s -o /dev/null -w "%{http_code}" https://github.com/Activiti/$j/releases/tag/v$version) != "200" ]; then
-      echo "$version version of project $j does not exist"
-      echo "Script interrupted due to non existent version" >>$file
-      exit 1
-    fi
-  done
+  parseVersions pom.xml "activiti" $file
+  if [ ! -z "$examples_file" ]; then
+    parseVersions dependencies-tests/pom.xml "activiti\|example-" $examples_file
+  fi
 
   if [ $name_dependency_aggregator == "activiti-cloud-dependencies" ]; then
     # addition of modeling front end project
@@ -92,15 +112,15 @@ for i in "${projects[@]}"; do
     echo $version_dependency_aggregator >>$file
   fi
 
-  echo "--------------------------------------------------------------------"
-  cat $file
-
   cd ../..
-  mv release-versions/$i/$file $original_directory
+  updateRepoFile $i $file $original_directory
   if [ $name_dependency_aggregator == "activiti-cloud-dependencies" ]; then
-    cat release-versions/$i/${bom_file}
-    mv release-versions/$i/${bom_file} $original_directory
+    updateRepoFile $i ${bom_file} ${original_directory}
   fi
+  if [ ! -z "$examples_file" ]; then
+    updateRepoFile $i ${examples_file} ${original_directory}
+  fi
+
   rm -rf release-versions
 
 done
