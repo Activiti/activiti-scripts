@@ -69,7 +69,7 @@ for i in "${projects[@]}"; do
   # name and version of the projects in this aggregator
   for j in $(cat pom.xml | grep -v "Downloading" | grep "activiti" | grep "version" | grep "7." | cut -d'<' -f 2 | cut -d'.' -f 1); do
     echo -n "$j " >>$file
-    version=$(eval "mvn help:evaluate -B -Dexpression=$j.version | grep '^[^\[]'")
+    version=$(cat pom.xml | grep -v "Downloading" | grep "$j.version" | grep -om1 "7.[0-9]*.[0-9]*")
     echo $version >>$file
 
     # check for the existence of such version for current project
