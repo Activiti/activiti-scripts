@@ -8,8 +8,6 @@ GIT_PROJECT=$(basename $(pwd))
 echo "BUILDING IMAGE FOR PROJECT $GIT_PROJECT from $(pwd)"
 echo "SCRIPT_DIR IS $SCRIPT_DIR"
 
-git remote set-url origin https://${GIT_AUTHOR_NAME}:${GIT_PASSWORD}@github.com/Activiti/$GIT_PROJECT.git
-
 if [ -e "pom.xml" ]; then
     mvn ${MAVEN_ARGS:-clean install -DskipTests}
 else

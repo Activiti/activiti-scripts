@@ -7,7 +7,6 @@ GIT_PROJECT=$(basename $(pwd))
 echo "RELEASING PROJECT $GIT_PROJECT from $(pwd)"
 echo "SCRIPT_DIR IS $SCRIPT_DIR"
 
-git remote set-url origin https://${GIT_AUTHOR_NAME}:${GIT_PASSWORD}@github.com/Activiti/${GIT_PROJECT}.git
 git fetch --tags
 if  git tag --list | egrep -q "^$RELEASE_VERSION$"
 then
@@ -63,8 +62,10 @@ else
 
   if [ -z "${TAG}" ];
   then
+    echo "Creating release branch from origin/${BASEBRANCH}..."
     git checkout origin/${BASEBRANCH} -b release/${RELEASE_VERSION}
   else
+    echo "Creating release branch from tags/v${TAG}..."
     git checkout tags/v${TAG} -b release/${RELEASE_VERSION}
   fi
 
