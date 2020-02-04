@@ -52,11 +52,11 @@ do
         if [ -z "${TAG}" ];
         then
           echo "Using ${BASEBRANCH} branch";
-          git checkout ${BASEBRANCH} || ${IGNORE_TAG_CHECKOUT_FAILURE:false}
+          git checkout ${BASEBRANCH} || ${IGNORE_TAG_CHECKOUT_FAILURE:-false}
         else
           echo "Checking out tag '${TAG}' for $(pwd)";
           git fetch --tags
-          git checkout tags/v$TAG || ${IGNORE_TAG_CHECKOUT_FAILURE:false}
+          git checkout tags/v$TAG || ${IGNORE_TAG_CHECKOUT_FAILURE:-false}
         fi
       fi
     fi
