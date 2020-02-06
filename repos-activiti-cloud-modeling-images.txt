@@ -1,1 +1,1 @@
-activiti-modeling-app 0.0.283
+activiti-modeling-app 0.0.285
