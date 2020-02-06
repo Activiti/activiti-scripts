@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 set -ex
 
-echo "BAMBOO_OPTS=${BAMBOO_OPTS}"
-
 GIT_PROJECT=$(basename $(pwd))
 
 echo "BUILDING IMAGE FOR PROJECT $GIT_PROJECT from $(pwd)"

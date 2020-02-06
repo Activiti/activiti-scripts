@@ -1,0 +1,12 @@
+language: java
+jdk: openjdk11
+before_install:
+  - echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
+  - echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
+  - echo BRANCH=${TRAVIS_PULL_REQUEST_BRANCH:-${TRAVIS_BRANCH}}
+install: mvn --settings $PWD/settings.xml install -DskipTests=true -Dgpg.skip -Dmaven.javadoc.skip=true -B -V
+script:
+  - if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [[ "$TRAVIS_BRANCH" == "master" ]]; then mvn clean deploy --settings .maven.xml -DskipTests=true -B -U -Prelease; fi
+cache:
+  directories:
+    - ~/.m2/repository

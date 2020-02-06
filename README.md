@@ -1,4 +1,7 @@
 # activiti-scripts
+
+[![Build Status](https://travis-ci.com/Activiti/activiti-scripts.svg?branch=master)](https://travis-ci.com/Activiti/activiti-scripts)
+
 Activiti Scripts for Building Projects
 
 Includes a script to checkout and build all the Activiti repositories.
@@ -72,3 +75,26 @@ To build all projects from a branch instead of a tag e.g. `7.0.x`, take the vers
     export BASEBRANCH=7.0.x
 
 If version replacement is needed ot make the branches build then the `build-all` step may need to be removed.
+
+## CI/CD
+
+Running on Travis, requires the following environment variable to be set:
+
+| Name | Description |
+|------|-------------|
+| GPG_EXECUTABLE | |
+| GPG_PASSPHRASE | |
+| GPG_SECRET_KEYS | |
+| GPG_OWNERTRUST | |
+| DOCKER_REGISTRY | Docker registry to publish images to |
+| DOCKER_REGISTRY_USERNAME | Docker registry username |
+| DOCKER_REGISTRY_PASSWORD | Docker registry password |
+| GITHUB_TOKEN | GitHub token to clone and push |
+| GIT_AUTHOR_NAME | |
+| GIT_AUTHOR_EMAIL | |
+| GIT_COMMITTER_NAME | |
+| GIT_COMMITTER_EMAIL | |
+| MAVEN_USERNAME | Internal Maven repository username |
+| MAVEN_PASSWORD | Internal Maven repository password |
+| SRCCLR_API_TOKEN | SourceClear API token |
+| TRAVIS_API_TOKEN | token to launch other builds |
