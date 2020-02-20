@@ -7,6 +7,7 @@ before_install:
 install: mvn --settings $PWD/settings.xml install -DskipTests=true -Dgpg.skip -Dmaven.javadoc.skip=true -B -V
 script:
   - if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [[ "$TRAVIS_BRANCH" == "master" ]]; then mvn clean deploy --settings .maven.xml -DskipTests=true -B -U -Prelease; fi
+  - if [ "" ]; then echo "Manual trigger"; else echo "Commit trigger"; fi
 cache:
   directories:
     - ~/.m2/repository
