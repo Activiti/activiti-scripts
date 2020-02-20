@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 set -e
 
-echo "MAVEN_OPTS=${MAVEN_OPTS}"
+mvnDeploy() {
+  mvn clean deploy -DperformRelease "${MAVEN_DEPLOY_OPTS}"
+}
+
+echo "MAVEN_DEPLOY_OPTS=${MAVEN_DEPLOY_OPTS}"
 
 GIT_PROJECT=$(basename $(pwd))
 echo "RELEASING PROJECT $GIT_PROJECT from $(pwd)"
@@ -20,7 +24,7 @@ then
       if [ -n "${MAVEN_PUSH}" ] && [ -n "${DEPLOY_EXISTING}" ]
       then
         echo 'deploying existing repo'
-        mvn clean deploy -DperformRelease -DskipTests ${MAVEN_OPTS}
+        mvnDeploy
       else
         echo 'not deploying ${GIT_PROJECT} to maven - just building'
         mvn ${MAVEN_ARGS:-clean install -DskipTests}
@@ -89,7 +93,7 @@ else
     then
       if [ -n "${MAVEN_PUSH}" ]
       then
-        mvn clean deploy -DperformRelease -DskipTests ${MAVEN_OPTS}
+        mvnDeploy
       else
         mvn ${MAVEN_ARGS:-clean install -DskipTests}
       fi
