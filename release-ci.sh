@@ -24,7 +24,6 @@ else
   echo 'will not deploy existing repos'
 fi
 
-export PROJECTS=activiti
 export SRC_DIR=${PWD}
 export GIT_PUSH=true
 export MAVEN_PUSH=true
@@ -37,11 +36,11 @@ else
   export CHECK_VERSIONS=true
 fi
 
-./fetch-versions.sh Activiti 7.1.190
-./fetch-versions.sh activiti-cloud-dependencies 7.1.317
+./fetch-versions.sh Activiti "${ACTIVITI_CORE_VERSION}"
+./fetch-versions.sh activiti-cloud-dependencies "${ACTIVITI_CLOUD_VERSION}"
 
-git commit -am "Update internal versions"
-git push origin master
+#git commit -am "Update internal versions"
+#git push origin master
 
 ./clone-all.sh
-MAVEN_ARGS="clean install -DskipTests" ./release-all.sh
+#MAVEN_ARGS="clean install -DskipTests" ./release-all.sh

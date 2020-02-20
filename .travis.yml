@@ -6,7 +6,7 @@ before_install:
   - echo BRANCH=${TRAVIS_PULL_REQUEST_BRANCH:-${TRAVIS_BRANCH}}
 script:
 #  - if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [[ "$TRAVIS_BRANCH" == "master" ]]; then mvn clean deploy --settings .maven.xml -DskipTests=true -B -U -Prelease; fi
-  - if [ "$TRAVIS_EVENT_TYPE" == "api" ]; then echo "Manual trigger"; else echo "Commit trigger"; fi
+  - if [ "$TRAVIS_EVENT_TYPE" == "api" ]; then echo "Manual trigger"; bash release-ci.sh; else echo "Commit trigger"; fi
 cache:
   directories:
     - ~/.m2/repository
