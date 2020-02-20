@@ -6,6 +6,8 @@ echo "PROJECTS ${PROJECTS}"
 echo "SCRIPT_DIR ${SRC_DIR:-$HOME/src}"
 mkdir -p ${SRC_DIR:-$HOME/src} && cd ${SRC_DIR:-$HOME/src}
 
+CLONE_MODE=${CLONE_MODE:-SSH}
+
 COUNTER=0
 
 for PROJECT in ${PROJECTS//,/ }
@@ -24,7 +26,12 @@ do
       REPO_DIR=$(dirname ${REPO})
       mkdir -p ${REPO_DIR}
       cd ${REPO_DIR}
-      git clone git@github.com:Activiti/${REPO}.git
+      if [ "${CLONE_MODE}" == "HTTPS" ]
+      then
+        git clone https://"${GITHUB_TOKEN}":x-oauth-basic@github.com/Activiti/${REPO}.git
+      else
+        git clone git@github.com:Activiti/${REPO}.git
+      fi
       cd $(basename ${REPO})
     else
       cd ${REPO}
