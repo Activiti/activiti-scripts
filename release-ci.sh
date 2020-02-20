@@ -24,7 +24,7 @@ else
   echo 'will not deploy existing repos'
 fi
 
-export SRC_DIR=${PWD}
+export SRC_DIR=${PWD}/..
 export GIT_PUSH=true
 export MAVEN_PUSH=true
 export IGNORE_TAG_CHECKOUT_FAILURE=false

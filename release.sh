@@ -5,7 +5,7 @@ mvnDeploy() {
   mvn clean deploy -DperformRelease "${MAVEN_DEPLOY_OPTS}"
 }
 
-MAVEN_DEPLOY_OPTS=${MAVEN_DEPLOY_OPTS:--s .maven.xml -DskipTests -B -U}
+MAVEN_DEPLOY_OPTS=${MAVEN_DEPLOY_OPTS:--s ${TRAVIS_BUILD_DIR}/activiti-scripts/.maven.xml -DskipTests -B -U}
 echo "MAVEN_DEPLOY_OPTS=${MAVEN_DEPLOY_OPTS}"
 
 GIT_PROJECT=$(basename $(pwd))
