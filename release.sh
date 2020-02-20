@@ -5,6 +5,7 @@ mvnDeploy() {
   mvn clean deploy -DperformRelease "${MAVEN_DEPLOY_OPTS}"
 }
 
+MAVEN_DEPLOY_OPTS=${MAVEN_DEPLOY_OPTS:--s .maven.xml -DskipTests -B -U}
 echo "MAVEN_DEPLOY_OPTS=${MAVEN_DEPLOY_OPTS}"
 
 GIT_PROJECT=$(basename $(pwd))
