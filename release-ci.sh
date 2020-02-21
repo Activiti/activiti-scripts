@@ -43,4 +43,4 @@ fi
 #git push origin master
 
 ./clone-all.sh
-MAVEN_ARGS="clean install -DskipTests" ./release-all.sh
+#MAVEN_ARGS="clean install -DskipTests" ./release-all.sh

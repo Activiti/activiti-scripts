@@ -36,6 +36,11 @@ do
     else
       cd ${REPO}
     fi
+
+    echo "Git remote -->"
+    git remote -v
+    echo "Git config -->"
+    git config --list
     git fetch
 
     BASEBRANCH=${BASEBRANCH:-develop}
