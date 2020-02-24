@@ -2,7 +2,7 @@
 set -e
 
 mvnDeploy() {
-  mvn clean deploy -DperformRelease -DskipTests -B -U
+  mvn clean deploy -DperformRelease -DskipTests -U
 }
 
 GIT_PROJECT=$(basename $(pwd))
