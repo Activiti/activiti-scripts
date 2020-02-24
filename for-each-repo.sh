@@ -39,6 +39,8 @@ do
 
     echo "Git remote -->"
     git remote -v
+    git config --local user.name "alfresco-build"
+    git config --local user.email "build@alfresco.com"
     echo "Git config -->"
     git config --list
     git fetch
