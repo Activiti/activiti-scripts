@@ -99,7 +99,6 @@ else
     then
       if [ -e "pom.xml" ];
       then
-        git log --max-count=5
         git push --atomic origin ${RELEASE_VERSION}
       else
         git push --atomic origin ${RELEASE_VERSION} || true
