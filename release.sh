@@ -1,10 +1,6 @@
 #!/usr/bin/env bash
 set -e
 
-mvnDeploy() {
-  mvn clean deploy -DperformRelease -DskipTests -U
-}
-
 GIT_PROJECT=$(basename $(pwd))
 echo "RELEASING PROJECT $GIT_PROJECT from $(pwd)"
 echo "SCRIPT_DIR IS $SCRIPT_DIR"
@@ -22,7 +18,7 @@ then
       if [ -n "${MAVEN_PUSH}" ] && [ -n "${DEPLOY_EXISTING}" ]
       then
         echo 'deploying existing repo'
-        mvnDeploy
+        mvn clean deploy -DperformRelease -DskipTests -U
       else
         echo 'not deploying ${GIT_PROJECT} to maven - just building'
         mvn ${MAVEN_ARGS:-clean install -DskipTests}
@@ -91,7 +87,7 @@ else
     then
       if [ -n "${MAVEN_PUSH}" ]
       then
-        mvnDeploy
+        mvn clean deploy -DperformRelease -DskipTests -U
       else
         mvn ${MAVEN_ARGS:-clean install -DskipTests}
       fi
