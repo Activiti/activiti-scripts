@@ -1,4 +1,3 @@
-if: ${TRAVIS_EVENT_TYPE} == "api"
 language: java
 jdk: openjdk11
 before_install:
@@ -9,7 +8,7 @@ before_install:
   - cp settings.xml $HOME/.m2
 script:
 #  - if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [[ "$TRAVIS_BRANCH" == "master" ]]; then mvn clean deploy --settings .maven.xml -DskipTests=true -B -U -Prelease; fi
-  - bash release-ci.sh
+  -  if [ "$TRAVIS_EVENT_TYPE" == "api" ]; then bash release-ci.sh; fi
 cache:
   directories:
     - ~/.m2/repository
