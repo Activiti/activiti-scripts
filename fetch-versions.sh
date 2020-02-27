@@ -38,7 +38,7 @@ if [ ! -z "$1" ]; then
     echo "Leave blank to update all projects"
   fi
 else
-  projects=(Activiti activiti-cloud-dependencies)
+  projects=(Activiti activiti-cloud activiti-cloud-dependencies)
 fi
 
 for i in "${projects[@]}"; do
@@ -48,6 +48,9 @@ for i in "${projects[@]}"; do
   case "$i" in
   'Activiti')
     file=repos-activiti.txt
+    ;;
+  'activiti-cloud')
+    file=repos-activiti-cloud-mono.txt
     ;;
   'activiti-cloud-dependencies')
     file=repos-activiti-cloud.txt
