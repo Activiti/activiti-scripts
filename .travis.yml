@@ -27,7 +27,7 @@ stages:
 jobs:
   include:
     - stage: Create tag
-      if: commit_message =~ /\[Release\] .+/
+      if: (commit_message =~ /\[Release\] .+/) AND (tag IS blank)
       script: ./create-tag.sh
     - stage: Prepare release
       if: tag =~ /v7\..+/
