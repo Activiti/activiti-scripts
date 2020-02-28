@@ -30,7 +30,7 @@ updateRepoFile() {
 original_directory=$(pwd)
 
 if [ ! -z "$1" ]; then
-  if [ "$1" = "Activiti" ] || [ "$1" = "activiti-cloud-dependencies" ]; then
+  if [ "$1" = "Activiti" ] || [ "$1" = "activiti-cloud" ] || [ "$1" = "activiti-cloud-dependencies" ]; then
     projects=$1
   else
     echo "Incorrect project name '$1'"

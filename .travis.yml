@@ -1,5 +1,9 @@
 language: java
 jdk: openjdk11
+
+services:
+  - docker
+
 env:
   global:
     - SONATYPE_DIR=$HOME/.sonatype
@@ -10,10 +14,22 @@ before_install:
   - mkdir -p $HOME/.m2
   - cp settings.xml $HOME/.m2
   - mkdir -p $SONATYPE_DIR
-script:
-#  - if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [[ "$TRAVIS_BRANCH" == "master" ]]; then mvn clean deploy --settings .maven.xml -DskipTests=true -B -U -Prelease; fi
-  -  if [ "$TRAVIS_EVENT_TYPE" == "api" ]; then bash release-ci.sh; fi
+
 cache:
   directories:
     - ~/.m2/repository
     - ~/.sonatype
+
+jobs:
+  include:
+    - stage: Create tag
+      if: commit_message =~ /\[Release\] .+/
+      script: ./create-tag.sh
+    - stage: Prepare release
+      if: tag =~ /v7\..+/
+      script:
+        - ./create-staging-repository.sh
+        - ./clone-all.sh
+    - stage: Release
+      if: tag =~ /v7\..+/
+      script: ./release-ci.sh
