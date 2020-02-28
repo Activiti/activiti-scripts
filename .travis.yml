@@ -19,6 +19,10 @@ cache:
   directories:
     - ~/.m2/repository
     - ~/.sonatype
+stages:
+  - Create tag
+  - Prepare release
+  - Release
 
 jobs:
   include:
