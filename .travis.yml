@@ -7,6 +7,7 @@ services:
 env:
   global:
     - SONATYPE_DIR=$HOME/.sonatype
+    - SONATYPE_STAGING_FILE=${SONATYPE_DIR}/staging-profile.xml
 before_install:
   - echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
   - echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
@@ -19,21 +20,16 @@ cache:
   directories:
     - ~/.m2/repository
     - ~/.sonatype
-stages:
-  - Create tag
-  - Prepare release
-  - Release
 
 jobs:
   include:
-    - stage: Create tag
+    - stage: create tag
       if: (commit_message =~ /\[Release\] .+/) AND (tag IS blank)
       script: ./create-tag.sh
-    - stage: Prepare release
+    - stage: prepare release
       if: tag =~ /v7\..+/
-      script:
-        - ./create-staging-repository.sh
-        - ./clone-all.sh
+      name: "Create stating repository"
+      script: ./create-staging-repository.sh
     - stage: Release
       if: tag =~ /v7\..+/
       script: ./release-ci.sh

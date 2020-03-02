@@ -42,5 +42,6 @@ fi
 #git commit -am "Update internal versions"
 #git push origin master
 
+./extract-staging-repository.sh
 ./clone-all.sh
 MAVEN_ARGS="clean install -DskipTests" ./release-all.sh
