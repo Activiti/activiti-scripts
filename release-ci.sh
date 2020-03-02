@@ -25,9 +25,6 @@ else
 fi
 
 export SRC_DIR=${PWD}/..
-export GIT_PUSH=true
-export MAVEN_PUSH=true
-export IGNORE_TAG_CHECKOUT_FAILURE=false
 
 if [ "${CHECK_VERSIONS}" == "false" ]
 then
@@ -42,6 +39,7 @@ fi
 #git commit -am "Update internal versions"
 #git push origin master
 
-./extract-staging-repository.sh
 ./clone-all.sh
+STAGING_REPOSITORY=$(< "${SONATYPE_STAGING_FILE}")
+export STAGING_REPOSITORY
 MAVEN_ARGS="clean install -DskipTests" ./release-all.sh

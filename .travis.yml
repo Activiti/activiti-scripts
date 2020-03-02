@@ -7,7 +7,10 @@ services:
 env:
   global:
     - SONATYPE_DIR=$HOME/.sonatype
-    - SONATYPE_STAGING_FILE=${SONATYPE_DIR}/staging-profile.xml
+    - SONATYPE_STAGING_FILE=${SONATYPE_DIR}/staging-repository.txt
+    - MAVEN_PUSH=true
+    - GIT_PUSH=true
+    - IGNORE_TAG_CHECKOUT_FAILURE=false
 before_install:
   - echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
   - echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
