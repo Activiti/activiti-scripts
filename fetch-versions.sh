@@ -1,30 +1,48 @@
 #!/usr/bin/env bash
 
+writeVersionOnFile() {
+  local pom_path=$1
+  local destination_file=$2
+  local current_dependency=$3
+  local related_repository=$4
+  echo -n "$related_repository " >>"$destination_file"
+  version=$(grep -v "Downloading" < "$pom_path" | grep "$current_dependency.version" | grep -om1 "7.[0-9]*.[0-9]*")
+  echo "$version" >>"$destination_file"
+
+  # check for the existence of such version for current project
+  if [ "$(curl -s -o /dev/null -w "%{http_code}" https://github.com/Activiti/"$related_repository"/releases/tag/v"$version")" != "200" ]; then
+    echo "No tag $version was found for project $related_repository"
+    echo "Script interrupted due to non existent version" >>"$destination_file"
+    exit 1
+  fi
+}
+
 parseVersions() {
   local pom_path=$1
   local property_pattern=$2
   local destination_file=$3
-  for j in $(cat $pom_path | grep -v "Downloading" | grep $property_pattern | grep "version" | grep "7." | cut -d'<' -f 2 | cut -d'.' -f 1); do
-    echo -n "$j " >>$destination_file
-    version=$(cat $pom_path | grep -v "Downloading" | grep "$j.version" | grep -om1 "7.[0-9]*.[0-9]*")
-    echo $version >>$destination_file
+  local name_dependency_aggregator=$4
 
-    # check for the existence of such version for current project
-    if [ $(curl -s -o /dev/null -w "%{http_code}" https://github.com/Activiti/$j/releases/tag/v$version) != "200" ]; then
-      echo "$version version of project $j does not exist"
-      echo "Script interrupted due to non existent version" >>$destination_file
-      exit 1
-    fi
-  done
+  if [ "$name_dependency_aggregator" == "activiti-cloud-dependencies" ]; then
+    for current_dependency in $(cat $pom_path | grep -v "Downloading" | grep $property_pattern | grep "version" | grep "7." | cut -d'<' -f 2 | cut -d'.' -f 1); do
+      if [ "$current_dependency" == "activiti-cloud-build" ]; then
+        writeVersionOnFile "$pom_path" "$destination_file" "$current_dependency" "activiti-cloud"
+      fi
+    done
+  else
+    for current_dependency in $(cat $pom_path | grep -v "Downloading" | grep $property_pattern | grep "version" | grep "7." | cut -d'<' -f 2 | cut -d'.' -f 1); do
+      writeVersionOnFile "$pom_path" "$destination_file" "$current_dependency" "$current_dependency"
+    done
+  fi
 }
 
 updateRepoFile() {
-  local current_project=$1
+  local current_dependency=$1
   local file_to_update=$2
   local destination_folder=$3
   echo "--------------------------------------------------------------------"
-  cat release-versions/${current_project}/${file_to_update}
-  mv release-versions/${current_project}/${file_to_update} ${destination_folder}
+  cat release-versions/${current_dependency}/${file_to_update}
+  mv release-versions/${current_dependency}/${file_to_update} ${destination_folder}
 }
 
 original_directory=$(pwd)
@@ -56,6 +74,7 @@ for i in "${projects[@]}"; do
     file=repos-activiti-cloud.txt
     examples_file=repos-activiti-cloud-examples.txt
     bom_file=repos-activiti-cloud-bom.txt
+    modeling_app_file=repos-activiti-cloud-modeling-app.txt
     ;;
   esac
 
@@ -98,30 +117,36 @@ for i in "${projects[@]}"; do
   fi
 
   # name and version of the projects in this aggregator
-  parseVersions pom.xml "activiti" $file
+  parseVersions pom.xml "activiti" $file "$name_dependency_aggregator"
   if [ ! -z "$examples_file" ]; then
     parseVersions dependencies-tests/pom.xml "activiti\|example-" $examples_file
   fi
 
-  if [ $name_dependency_aggregator == "activiti-cloud-dependencies" ]; then
+  if [ "$name_dependency_aggregator" == "activiti-cloud-dependencies" ]; then
     # addition of modeling front end project
+    modeling_app_version=$(curl -s https://api.github.com/repos/Activiti/activiti-modeling-app/tags | grep name | cut -d'v' -f 2 | cut -d'"' -f 1 | head -n1)
     echo -n "activiti-modeling-app " >>$file
-    echo $(curl -s https://api.github.com/repos/Activiti/activiti-modeling-app/tags | grep name | cut -d'v' -f 2 | cut -d'"' -f 1 | head -n1) >>$file
+    echo "$modeling_app_version" >>$file
+
+#    write also on repos-activiti-cloud-modeling-app.txt that's used by docker push
+    echo -n "activiti-modeling-app " >>"$modeling_app_file"
+    echo "$modeling_app_version" >>"$modeling_app_file"
 
     echo -n "$name_dependency_aggregator " >>${bom_file}
-    echo $version_dependency_aggregator >>${bom_file}
+    echo "$version_dependency_aggregator" >>${bom_file}
   else
     echo -n "$name_dependency_aggregator " >>$file
-    echo $version_dependency_aggregator >>$file
+    echo "$version_dependency_aggregator" >>$file
   fi
 
   cd ../..
   updateRepoFile $i $file $original_directory
-  if [ $name_dependency_aggregator == "activiti-cloud-dependencies" ]; then
-    updateRepoFile $i ${bom_file} ${original_directory}
+  if [ "$name_dependency_aggregator" == "activiti-cloud-dependencies" ]; then
+    updateRepoFile $i ${bom_file} "${original_directory}"
+    updateRepoFile $i $modeling_app_file "${original_directory}"
   fi
   if [ ! -z "$examples_file" ]; then
-    updateRepoFile $i ${examples_file} ${original_directory}
+    updateRepoFile $i ${examples_file} "${original_directory}"
   fi
 
   rm -rf release-versions
