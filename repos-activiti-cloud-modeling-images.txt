@@ -1,2 +1,0 @@
-activiti-cloud-modeling
-activiti-modeling-app

@@ -11,10 +11,16 @@ env:
     - MAVEN_PUSH=true
     - GIT_PUSH=true
     - IGNORE_TAG_CHECKOUT_FAILURE=false
+    - DEPLOY_EXISTING=true
+    - ACTIVITI_CORE_VERSION=7.1.197
+    - ACTIVITI_CLOUD_DEPENDENCIES_VERSION=7.1.345
+    - CHECK_VERSIONS=
+    - SRC_DIR=${TRAVIS_BUILD_DIR}/..
 before_install:
   - echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
   - echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
   - echo BRANCH=${TRAVIS_PULL_REQUEST_BRANCH:-${TRAVIS_BRANCH}}
+  - echo "$DOCKER_REGISTRY_PASSWORD" | docker login -u "$DOCKER_REGISTRY_USERNAME" --password-stdin "$DOCKER_REGISTRY"
   - mkdir -p $HOME/.m2
   - cp settings.xml $HOME/.m2
   - mkdir -p $SONATYPE_DIR
@@ -29,10 +35,47 @@ jobs:
     - stage: create tag
       if: (commit_message =~ /\[Release\] .+/) AND (tag IS blank)
       script: ./create-tag.sh
-    - stage: prepare release
+
+    - stage: Create Maven Central stating repository
       if: tag =~ /v7\..+/
-      name: "Create stating repository"
       script: ./create-staging-repository.sh
-    - stage: Release
+
+    - stage: Release Activi Core
       if: tag =~ /v7\..+/
+      env:
+        - PROJECTS=Activiti
+        - FETCH_AGGREGATOR=Activiti
+        - FETCH_AGGREGATOR_VERSION=${ACTIVITI_CORE_VERSION}
       script: ./release-ci.sh
+
+    - stage: Release Activi Cloud
+      if: tag =~ /v7\..+/
+      env:
+        - PROJECTS=activiti-cloud
+        - FETCH_AGGREGATOR=activiti-cloud
+        - FETCH_AGGREGATOR_VERSION=${ACTIVITI_CLOUD_DEPENDENCIES_VERSION}
+      script: ./release-ci.sh
+
+    - stage: Release Activiti Cloud Examples
+      if: tag =~ /v7\..+/
+      env:
+        - MAVEN_PUSH=
+        - FETCH_AGGREGATOR=activiti-cloud
+        - FETCH_AGGREGATOR_VERSION=${ACTIVITI_CLOUD_DEPENDENCIES_VERSION}
+      script: PROJECTS=activiti-cloud-examples ./release-ci.sh
+
+    - stage: Release Activi Cloud Dependencies
+      if: tag =~ /v7\..+/
+      env:
+        - PROJECTS=activiti-cloud-bom
+      script: ./release-ci.sh
+
+    - stage: Release Docker Images
+      if: tag =~ /v7\..+/
+      env:
+        - MAVEN_PUSH=
+        - DOCKER_PUSH=true
+      name: "Docker - Activiti Cloud Examples"
+      script: PROJECTS=activiti-cloud-examples ./dockerpush-all.sh
+    - name: "Docker - Activiti Modeling App"
+      script: PROJECTS=activiti-cloud-modeling-app ./dockerpush-all.sh
