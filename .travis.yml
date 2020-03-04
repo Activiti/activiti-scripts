@@ -6,7 +6,7 @@ services:
 
 env:
   global:
-    - SONATYPE_DIR=$HOME/.sonatype
+    - SONATYPE_DIR=${HOME}/sonatype
     - SONATYPE_STAGING_FILE=${SONATYPE_DIR}/staging-repository.txt
     - MAVEN_PUSH=true
     - GIT_PUSH=true
@@ -21,14 +21,14 @@ before_install:
   - echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
   - echo BRANCH=${TRAVIS_PULL_REQUEST_BRANCH:-${TRAVIS_BRANCH}}
   - echo "$DOCKER_REGISTRY_PASSWORD" | docker login -u "$DOCKER_REGISTRY_USERNAME" --password-stdin "$DOCKER_REGISTRY"
-  - mkdir -p $HOME/.m2
+  - mkdir -p ${HOME}/.m2
   - cp settings.xml $HOME/.m2
   - mkdir -p $SONATYPE_DIR
 
 cache:
   directories:
-    - ~/.m2/repository
-    - ~/.sonatype
+    - ${HOME}/.m2/repository
+    - ${SONATYPE_DIR}
 
 jobs:
   include:
