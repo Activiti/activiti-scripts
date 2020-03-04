@@ -40,13 +40,13 @@ jobs:
       if: tag =~ /v7\..+/
       script: ./create-staging-repository.sh
 
-    - stage: Release Activi Core
+    - stage: Release Activiti Core
       if: tag =~ /v7\..+/
       env:
         - PROJECTS=Activiti
       script: ./release-ci.sh
 
-    - stage: Release Activi Cloud
+    - stage: Release Activiti Cloud
       if: tag =~ /v7\..+/
       env:
         - PROJECTS=activiti-cloud
@@ -70,9 +70,9 @@ jobs:
       env:
         - MAVEN_PUSH=
         - DOCKER_PUSH=true
-      name: "Docker - Activiti Cloud Examples"
+      name: "Activiti Cloud Examples"
       script: PROJECTS=activiti-cloud-examples ./dockerpush-all.sh
 
-    - name: "Docker - Activiti Modeling App"
+    - name: "Activiti Modeling App"
       if: tag =~ /v7\..+/
       script: PROJECTS=activiti-cloud-modeling-app ./dockerpush-all.sh
