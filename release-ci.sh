@@ -3,6 +3,8 @@ set -e
 
 ./clone-all.sh
 
+echo ".Sonatype dir"
+ls "${SONATYPE_DIR}"
 STAGING_REPOSITORY=$(< "${SONATYPE_STAGING_FILE}")
 export STAGING_REPOSITORY
 

@@ -9,4 +9,5 @@ if [ -n "${MAVEN_PUSH}" ]; then
 
     echo "Stating repository "
     cat "${SONATYPE_STAGING_FILE}"
+    ls "${SONATYPE_DIR}"
 fi
