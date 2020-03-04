@@ -79,12 +79,11 @@ for i in "${projects[@]}"; do
   esac
 
   name_dependency_aggregator=$i
+  echo "Handling $name_dependency_aggregator"
   git fetch --tags
 
   if [ ! -z "$2" ]; then
     # adding 'v' to tag to align it with the format of internal versions: 'v7.1.68'
-    echo "currenty directory $(pwd)"
-    echo "Available tags: $(git tag --list)"
     for k in $(git tag --list 'v*' | cut -d'v' -f 2); do
       if [ "$k" = "$2" ]; then
         exist=1

@@ -7,7 +7,7 @@ git remote rm origin
 git remote add origin https://"${GITHUB_TOKEN}":x-oauth-basic@github.com/Activiti/activiti-scripts.git
 
 ./fetch-versions.sh Activiti "${ACTIVITI_CORE_VERSION}"
-./fetch-versions.sh activiti-cloud "${ACTIVITI_CLOUD_DEPENDENCIES_VERSION}"
+./fetch-versions.sh activiti-cloud-dependencies "${ACTIVITI_CLOUD_DEPENDENCIES_VERSION}"
 
 git add *.txt
 git commit -m "Update versions - Activiti Core: ${ACTIVITI_CORE_VERSION} - Activiti Cloud Dependencies: ${ACTIVITI_CLOUD_DEPENDENCIES_VERSION}"
