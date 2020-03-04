@@ -30,9 +30,18 @@ cache:
     - ${HOME}/.m2/repository
     - ${SONATYPE_DIR}
 
+stages:
+  - Create tag
+  - Create Maven Central stating repository
+  - Release Activiti Core
+  - Release Activiti Cloud
+  - Release Activiti Cloud Examples
+  - Release Activi Cloud Dependencies
+  - Release Docker Images
+
 jobs:
   include:
-    - stage: create tag
+    - stage: Create tag
       if: (commit_message =~ /\[Release\] .+/) AND (tag IS blank)
       script: ./create-tag.sh
 
