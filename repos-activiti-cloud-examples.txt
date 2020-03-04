@@ -1,6 +1,0 @@
-activiti-cloud-modeling 7.1.663
-example-runtime-bundle 7.1.374
-example-cloud-connector 7.1.326
-activiti-cloud-audit 7.1.311
-activiti-cloud-query 7.1.319
-activiti-cloud-notifications-graphql 7.1.344
