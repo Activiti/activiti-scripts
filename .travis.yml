@@ -43,7 +43,7 @@ jobs:
     - stage: Release Activiti Core
       if: tag =~ /v7\..+/
       env:
-        - PROJECTS=Activiti
+        - PROJECTS=activiti
       script: ./release-ci.sh
 
     - stage: Release Activiti Cloud
