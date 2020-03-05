@@ -23,5 +23,14 @@
         <gpg.passphrase>${env.GPG_PASSPHRASE}</gpg.passphrase>
       </properties>
     </profile>
+    <profile>
+      <id>staging</id>
+      <repositories>
+        <repository>
+          <id>activiti-staging</id>
+          <url>https://oss.sonatype.org/service/local/repositories/STAGING_ID/content</url>
+        </repository>
+      </repositories>
+    </profile>
   </profiles>
 </settings>

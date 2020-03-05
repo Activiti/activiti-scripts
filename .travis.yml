@@ -6,8 +6,7 @@ services:
 
 env:
   global:
-    - SONATYPE_DIR=${HOME}/sonatype
-    - SONATYPE_STAGING_FILE=${SONATYPE_DIR}/staging-repository.txt
+    - SONATYPE_STAGING_FILE=staging-repository.txt
     - MAVEN_PUSH=true
     - GIT_PUSH=true
     - IGNORE_TAG_CHECKOUT_FAILURE=false
@@ -23,31 +22,16 @@ before_install:
   - echo "$DOCKER_REGISTRY_PASSWORD" | docker login -u "$DOCKER_REGISTRY_USERNAME" --password-stdin "$DOCKER_REGISTRY"
   - mkdir -p ${HOME}/.m2
   - cp settings.xml $HOME/.m2
-  - mkdir -p $SONATYPE_DIR
 
 cache:
   directories:
     - ${HOME}/.m2/repository
-    - ${SONATYPE_DIR}
-
-stages:
-  - Create tag
-  - Create Maven Central stating repository
-  - Release Activiti Core
-  - Release Activiti Cloud
-  - Release Activiti Cloud Examples
-  - Release Activi Cloud Dependencies
-  - Release Docker Images
 
 jobs:
   include:
     - stage: Create tag
       if: (commit_message =~ /\[Release\] .+/) AND (tag IS blank)
       script: ./create-tag.sh
-
-    - stage: Create Maven Central stating repository
-      if: tag =~ /v7\..+/
-      script: ./create-staging-repository.sh
 
     - stage: Release Activiti Core
       if: tag =~ /v7\..+/
