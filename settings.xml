@@ -25,6 +25,13 @@
     </profile>
     <profile>
       <id>staging</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+        <property>
+          <name>performRelease</name>
+          <value>true</value>
+        </property>
+      </activation>
       <repositories>
         <repository>
           <id>activiti-staging</id>
