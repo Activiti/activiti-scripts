@@ -47,7 +47,9 @@ updateRepoFile() {
 
 original_directory=$(pwd)
 
-if [ ! -z "$1" ]; then
+activiti_core_file=repos-activiti.txt
+
+if [ -n "$1" ]; then
   if [ "$1" = "Activiti" ] || [ "$1" = "activiti-cloud" ] || [ "$1" = "activiti-cloud-dependencies" ]; then
     projects=$1
   else
@@ -59,13 +61,13 @@ else
   projects=(Activiti activiti-cloud activiti-cloud-dependencies)
 fi
 
-for i in "${projects[@]}"; do
+for project in "${projects[@]}"; do
   mkdir /tmp/release-versions && cd /tmp/release-versions
-  git clone -q https://github.com/Activiti/$i.git && cd $i
+  git clone -q https://github.com/Activiti/$project.git && cd $project
 
-  case "$i" in
+  case "$project" in
   'Activiti')
-    file=repos-activiti.txt
+    file=${activiti_core_file}
     ;;
   'activiti-cloud')
     file=repos-activiti-cloud-mono.txt
@@ -78,11 +80,11 @@ for i in "${projects[@]}"; do
     ;;
   esac
 
-  name_dependency_aggregator=$i
+  name_dependency_aggregator=$project
   echo "Handling $name_dependency_aggregator"
   git fetch --tags
 
-  if [ ! -z "$2" ]; then
+  if [ -n "$2" ]; then
     # adding 'v' to tag to align it with the format of internal versions: 'v7.1.68'
     for k in $(git tag --list 'v*' | cut -d'v' -f 2); do
       if [ "$k" = "$2" ]; then
@@ -119,7 +121,7 @@ for i in "${projects[@]}"; do
 
   # name and version of the projects in this aggregator
   parseVersions pom.xml "activiti" $file "$name_dependency_aggregator"
-  if [ ! -z "$examples_file" ]; then
+  if [ -n "$examples_file" ]; then
     parseVersions dependencies-tests/pom.xml "activiti\|example-" $examples_file
   fi
 
@@ -133,6 +135,12 @@ for i in "${projects[@]}"; do
     echo -n "activiti-modeling-app " >>"$modeling_app_file"
     echo "$modeling_app_version" >>"$modeling_app_file"
 
+    activiti_core_version=$(mvn dependency:tree | grep "activiti-dependencies:pom:" -m1 | grep -o "7\.[[:digit:]]\{1,3\}\.[[:digit:]]\{1,5\}")
+
+    echo -n "Activiti " >>"${activiti_core_file}"
+    echo "${activiti_core_version}" >>"${activiti_core_file}"
+
+
     echo -n "$name_dependency_aggregator " >>${bom_file}
     echo "$version_dependency_aggregator" >>${bom_file}
   else
@@ -141,13 +149,14 @@ for i in "${projects[@]}"; do
   fi
 
   cd ../..
-  updateRepoFile $i $file $original_directory
+  updateRepoFile "${project}" $file "${original_directory}"
   if [ "$name_dependency_aggregator" == "activiti-cloud-dependencies" ]; then
-    updateRepoFile $i ${bom_file} "${original_directory}"
-    updateRepoFile $i $modeling_app_file "${original_directory}"
+    updateRepoFile "${project}" ${bom_file} "${original_directory}"
+    updateRepoFile "${project}" ${modeling_app_file} "${original_directory}"
+    updateRepoFile "${project}" ${activiti_core_file} "${original_directory}"
   fi
-  if [ ! -z "$examples_file" ]; then
-    updateRepoFile $i ${examples_file} "${original_directory}"
+  if [ -n "$examples_file" ]; then
+    updateRepoFile "${project}" ${examples_file} "${original_directory}"
   fi
 
   rm -rf release-versions

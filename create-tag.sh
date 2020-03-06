@@ -6,11 +6,10 @@ echo "Version to release ${VERSION_TO_RELEASE}"
 git remote rm origin
 git remote add origin https://"${GITHUB_TOKEN}":x-oauth-basic@github.com/Activiti/activiti-scripts.git
 
-./fetch-versions.sh Activiti "${ACTIVITI_CORE_VERSION}"
 ./fetch-versions.sh activiti-cloud-dependencies "${ACTIVITI_CLOUD_DEPENDENCIES_VERSION}"
 
 git add *.txt
-git commit -m "Update versions - Activiti Core: ${ACTIVITI_CORE_VERSION} - Activiti Cloud Dependencies: ${ACTIVITI_CLOUD_DEPENDENCIES_VERSION}"
+git commit -m "Update versions - Activiti Cloud Dependencies: ${ACTIVITI_CLOUD_DEPENDENCIES_VERSION}"
 
 if [ -n "${MAVEN_PUSH}" ]; then
   curl -d @staging-repository-template.xml -u "${SONATYPE_USERNAME}":"${SONATYPE_PASSWORD}" \
