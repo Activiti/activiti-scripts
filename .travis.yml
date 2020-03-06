@@ -52,7 +52,7 @@ jobs:
         - PROJECTS=activiti-cloud-examples
       script: ./release-ci.sh
 
-    - stage: Release Activi Cloud Dependencies
+    - stage: Release Activiti Cloud Dependencies
       if: tag =~ /v7\..+/
       env:
         - PROJECTS=activiti-cloud-bom
@@ -65,8 +65,8 @@ jobs:
         - MAVEN_PUSH=
         - DOCKER_PUSH=true
       name: "Activiti Cloud Examples"
-      script: PROJECTS=activiti-cloud-examples ./dockerpush-all.sh
+      script: PROJECTS=activiti-cloud-examples ./release-docker.sh
 
     - name: "Activiti Modeling App"
       if: tag =~ /v7\..+/
-      script: PROJECTS=activiti-cloud-modeling-app ./dockerpush-all.sh
+      script: PROJECTS=activiti-cloud-modeling-app ./release-docker.sh

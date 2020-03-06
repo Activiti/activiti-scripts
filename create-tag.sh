@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -e
-VERSION_TO_RELEASE=v$(<VERSION)
+VERSION_TO_RELEASE=$(<VERSION)
 echo "Version to release ${VERSION_TO_RELEASE}"
 
 git remote rm origin
