@@ -1,5 +1,7 @@
 language: java
 jdk: openjdk11
+node_js:
+  - "12.13.1"
 
 services:
   - docker
@@ -14,6 +16,7 @@ env:
     - ACTIVITI_CLOUD_DEPENDENCIES_VERSION=7.1.351
     - CHECK_VERSIONS=
     - SRC_DIR=${TRAVIS_BUILD_DIR}/..
+    - NODE_OPTIONS=--max_old_space_size=30000
 before_install:
   - echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
   - echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust

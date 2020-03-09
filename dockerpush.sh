@@ -14,7 +14,7 @@ fi
 
 if [ -e "package.json" ]; then
     npm install
-    npm run build prod || true
+    npm run build -- --prod
 else
     echo "No package.json for $GIT_PROJECT - build straight from Dockerfile"
 fi

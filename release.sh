@@ -8,6 +8,7 @@ mvnDeploy() {
 
 GIT_PROJECT=$(basename $(pwd))
 echo "RELEASING PROJECT $GIT_PROJECT from $(pwd)"
+echo "RELEASE_VERSION: $RELEASE_VERSION"
 echo "SCRIPT_DIR IS $SCRIPT_DIR"
 
 git fetch --tags
