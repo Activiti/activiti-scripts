@@ -1,14 +1,21 @@
 #!/usr/bin/env bash
 set -e
-VERSION_TO_RELEASE=$(<VERSION)
-echo "Version to release ${VERSION_TO_RELEASE}"
 
 git remote rm origin
 git remote add origin https://"${GITHUB_TOKEN}":x-oauth-basic@github.com/Activiti/activiti-scripts.git
 
+if [ "${TRAVIS_EVENT_TYPE}" = "cron" ]
+then
+  SHOULD_INCREMENT_VERSION=true
+  export SHOULD_INCREMENT_VERSION
+fi
+
 ./fetch-versions.sh activiti-cloud-dependencies "${ACTIVITI_CLOUD_DEPENDENCIES_VERSION}"
 
-git add *.txt
+VERSION_TO_RELEASE=$(<VERSION)
+echo "Version to release ${VERSION_TO_RELEASE}"
+
+git add -A
 git commit -m "Update versions - Activiti Cloud Dependencies: ${ACTIVITI_CLOUD_DEPENDENCIES_VERSION}"
 
 if [ -n "${MAVEN_PUSH}" ]; then

@@ -32,7 +32,7 @@ cache:
 jobs:
   include:
     - stage: Create tag
-      if: (commit_message =~ /\[Release\] .+/) AND (tag IS blank)
+      if: (commit_message =~ /\[Release\] .+/ OR type = cron) AND (tag IS blank)
       script: ./create-tag.sh
 
     - stage: Release Activiti Core

@@ -6,7 +6,7 @@ writeVersionOnFile() {
   local current_dependency=$3
   local related_repository=$4
   echo -n "$related_repository " >>"$destination_file"
-  version=$(grep -v "Downloading" < "$pom_path" | grep "$current_dependency.version" | grep -om1 "7.[0-9]*.[0-9]*")
+  version=$(grep -v "Downloading" <"$pom_path" | grep "$current_dependency.version" | grep -om1 "7.[0-9]*.[0-9]*")
   echo "$version" >>"$destination_file"
 
   # check for the existence of such version for current project
@@ -125,13 +125,31 @@ for project in "${projects[@]}"; do
     parseVersions dependencies-tests/pom.xml "activiti\|example-" $examples_file
   fi
 
+  if [ -n "$SHOULD_INCREMENT_VERSION" ]; then
+    ls
+    BETA_SUFFIX_PATTERN="\-beta[[:digit:]]\{1,3\}"
+    VERSION_PREFIX=$(curl https://raw.githubusercontent.com/Activiti/activiti-cloud-dependencies/develop/pom.xml \
+    | grep "<version>" | grep "\-SNAPSHOT" | grep -o -m1 "[[:digit:]]\{1,2\}\.[[:digit:]]\{1,3\}\.[[:digit:]]\{1,3\}")
+    LATEST_BETA_VERSION=$(git tag --sort=-creatordate | grep -m1 "${VERSION_PATTERN}${BETA_SUFFIX_PATTERN}")
+    if [ -z "$LATEST_BETA_VERSION" ]; then
+      NEXT_BETA_VERSION="${VERSION_PREFIX}-beta1"
+    else
+      echo "Latest beta version: ${LATEST_BETA_VERSION}"
+      CURRENT_COUNT=$(echo "${LATEST_BETA_VERSION}" | grep -o "${BETA_SUFFIX_PATTERN}" | grep -o "[[:digit:]]\{1,3\}")
+      echo "Current count: $CURRENT_COUNT"
+      NEXT_BETA_VERSION="${VERSION_PREFIX}-beta$((CURRENT_COUNT + 1))"
+    fi
+    echo "Next version: $NEXT_BETA_VERSION"
+    echo "${NEXT_BETA_VERSION}" >VERSION
+  fi
+
   if [ "$name_dependency_aggregator" == "activiti-cloud-dependencies" ]; then
     # addition of modeling front end project
     modeling_app_version=$(curl -s https://api.github.com/repos/Activiti/activiti-modeling-app/tags | grep name | cut -d'v' -f 2 | cut -d'"' -f 1 | head -n1)
     echo -n "activiti-modeling-app " >>$file
     echo "$modeling_app_version" >>$file
 
-#    write also on repos-activiti-cloud-modeling-app.txt that's used by docker push
+    #    write also on repos-activiti-cloud-modeling-app.txt that's used by docker push
     echo -n "activiti-modeling-app " >>"$modeling_app_file"
     echo "$modeling_app_version" >>"$modeling_app_file"
 
@@ -139,7 +157,6 @@ for project in "${projects[@]}"; do
 
     echo -n "Activiti " >>"${activiti_core_file}"
     echo "${activiti_core_version}" >>"${activiti_core_file}"
-
 
     echo -n "$name_dependency_aggregator " >>${bom_file}
     echo "$version_dependency_aggregator" >>${bom_file}
@@ -157,6 +174,10 @@ for project in "${projects[@]}"; do
   fi
   if [ -n "$examples_file" ]; then
     updateRepoFile "${project}" ${examples_file} "${original_directory}"
+  fi
+
+  if [ -n "$SHOULD_INCREMENT_VERSION" ]; then
+    updateRepoFile "${project}" "VERSION" "${original_directory}"
   fi
 
   rm -rf release-versions
