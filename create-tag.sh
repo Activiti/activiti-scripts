@@ -10,13 +10,13 @@ then
   export SHOULD_INCREMENT_VERSION
 fi
 
-./fetch-versions.sh activiti-cloud-dependencies "${ACTIVITI_CLOUD_DEPENDENCIES_VERSION}"
+./fetch-versions.sh activiti-cloud-dependencies
 
 VERSION_TO_RELEASE=$(<VERSION)
 echo "Version to release ${VERSION_TO_RELEASE}"
 
 git add -A
-git commit -m "Update versions - Activiti Cloud Dependencies: ${ACTIVITI_CLOUD_DEPENDENCIES_VERSION}"
+git commit -m "Update versions - Activiti Cloud Dependencies"
 
 if [ -n "${MAVEN_PUSH}" ]; then
   curl -d @staging-repository-template.xml -u "${SONATYPE_USERNAME}":"${SONATYPE_PASSWORD}" \
