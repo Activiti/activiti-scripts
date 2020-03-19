@@ -104,9 +104,9 @@ Running on Travis, requires the following environment variable to be set:
 ## How to create a new release
 1. Modify the file `VERSION` so that its content is the name of the version to be released
 2. Commit this change with a commit message starting with the prefix `[RELEASE] `. 
-Without this prefix the release will not start.
+Without this prefix, the release will not start.
 
-- Once the commit is pushed the `CI/CD` will create a new tag with the name informed in the file `VERSION`. 
+- Once the commit is pushed the `CI/CD` will create a new tag with the name informed in the file [VERSION](./VERSION). 
 - The `CI/CD` will also create a staging repository on Sonatype where the release artifacts will be published to.
 - The name of the staging repository can be found in the file `staging-repository.txt` on the new created tag.
 - All the internal versions used to create the release can be found in the files `repos-*.txt`.
