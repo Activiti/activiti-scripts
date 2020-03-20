@@ -1,10 +1,14 @@
 #!/usr/bin/env bash
 set -e
 
-echo "BAMBOO_OPTS=${BAMBOO_OPTS}"
+mvnDeploy() {
+  echo "Deploying to repository ${STAGING_REPOSITORY}"
+  mvn clean deploy -DperformRelease -DskipTests -B -DaltReleaseDeploymentRepository=central-releases-staging-fixed::default::https://oss.sonatype.org/service/local/staging/deployByRepositoryId/"${STAGING_REPOSITORY}"
+}
 
 GIT_PROJECT=$(basename $(pwd))
 echo "RELEASING PROJECT $GIT_PROJECT from $(pwd)"
+echo "RELEASE_VERSION: $RELEASE_VERSION"
 echo "SCRIPT_DIR IS $SCRIPT_DIR"
 
 git fetch --tags
@@ -20,7 +24,7 @@ then
       if [ -n "${MAVEN_PUSH}" ] && [ -n "${DEPLOY_EXISTING}" ]
       then
         echo 'deploying existing repo'
-        mvn clean deploy -DperformRelease -DskipTests ${BAMBOO_OPTS}
+        mvnDeploy
       else
         echo 'not deploying ${GIT_PROJECT} to maven - just building'
         mvn ${MAVEN_ARGS:-clean install -DskipTests}
@@ -89,7 +93,7 @@ else
     then
       if [ -n "${MAVEN_PUSH}" ]
       then
-        mvn clean deploy -DperformRelease -DskipTests ${BAMBOO_OPTS}
+        mvnDeploy
       else
         mvn ${MAVEN_ARGS:-clean install -DskipTests}
       fi

@@ -1,4 +1,7 @@
 # activiti-scripts
+
+[![Build Status](https://travis-ci.com/Activiti/activiti-scripts.svg?branch=master)](https://travis-ci.com/Activiti/activiti-scripts)
+
 Activiti Scripts for Building Projects
 
 Includes a script to checkout and build all the Activiti repositories.
@@ -32,8 +35,6 @@ To include pushing first set:
     export GIT_PUSH=true
     export MAVEN_PUSH=true
 
-To resume a release set the RELEASE_VERSION. The release job that invokes this is in bamboo.
-
 To test cloud versions in the txt file are consistent without running tests:
 
     export CHECK_VERSIONS=true
@@ -61,10 +62,10 @@ To test a whole release, not pushing anything to github or nexus (because PUSH f
     export DOCKER_USER=ryandawsonuk
     export RELEASE_VERSION=7.0.0.TEST1
     export CHECK_VERSIONS=true
-    PROJECTS=activiti,activiti-cloud,activiti-cloud-modeling,activiti-cloud-examples,activiti-cloud-modeling-examples ./remove-all.sh
-    PROJECTS=activiti,activiti-cloud,activiti-cloud-modeling,activiti-cloud-examples,activiti-cloud-modeling-examples ./clone-all.sh
-    PROJECTS=activiti,activiti-cloud,activiti-cloud-modeling,activiti-cloud-examples,activiti-cloud-modeling-examples ./build-all.sh
-    PROJECTS=activiti,activiti-cloud,activiti-cloud-modeling,activiti-cloud-examples,activiti-cloud-modeling-examples ./release-all.sh
+    PROJECTS=activiti,activiti-cloud,activiti-cloud-examples,activiti-cloud-modeling-examples ./remove-all.sh
+    PROJECTS=activiti,activiti-cloud,activiti-cloud-examples,activiti-cloud-modeling-examples ./clone-all.sh
+    PROJECTS=activiti,activiti-cloud,activiti-cloud-examples,activiti-cloud-modeling-examples ./build-all.sh
+    PROJECTS=activiti,activiti-cloud,activiti-cloud-examples,activiti-cloud-modeling-examples ./release-all.sh
     PROJECTS=activiti-cloud-examples,activiti-cloud-modeling-images ./dockerpush-all.sh
 
 To build all projects from a branch instead of a tag e.g. `7.0.x`, take the versions out of the text files and set
@@ -72,3 +73,44 @@ To build all projects from a branch instead of a tag e.g. `7.0.x`, take the vers
     export BASEBRANCH=7.0.x
 
 If version replacement is needed ot make the branches build then the `build-all` step may need to be removed.
+
+## CI/CD
+
+Running on Travis, requires the following environment variable to be set:
+
+| Name | Description |
+|------|-------------|
+| CLONE_MODE | Defines if the script should use `HTTPS` or `SSH` while cloning repositories|
+| GPG_EXECUTABLE | |
+| GPG_PASSPHRASE | |
+| GPG_SECRET_KEYS | |
+| GPG_OWNERTRUST | |
+| DOCKER_REGISTRY | Docker registry to publish images to |
+| DOCKER_REGISTRY_USERNAME | Docker registry username |
+| DOCKER_REGISTRY_PASSWORD | Docker registry password |
+| GITHUB_TOKEN | GitHub token to clone and push |
+| GIT_AUTHOR_NAME | |
+| GIT_AUTHOR_EMAIL | |
+| GIT_COMMITTER_NAME | |
+| GIT_COMMITTER_EMAIL | |
+| MAVEN_USERNAME | Internal Maven repository username |
+| MAVEN_PASSWORD | Internal Maven repository password |
+| SRCCLR_API_TOKEN | SourceClear API token |
+| TRAVIS_API_TOKEN | token to launch other builds |
+| SONATYPE_USERNAME | Username to publish artifacts to Sonatype |
+| SONATYPE_PASSWORD | Password to publish artifacts to Sonatype |
+| SONATYPE_PROFILE_ID | Identifier of the staging profile used to create the staging repository for the release |
+
+## How to create a new release
+1. Modify the file `VERSION` so that its content is the name of the version to be released
+2. Commit this change with a commit message starting with the prefix `[RELEASE] `. 
+Without this prefix, the release will not start.
+
+- Once the commit is pushed the `CI/CD` will create a new tag with the name informed in the file [VERSION](./VERSION). 
+- The `CI/CD` will also create a staging repository on Sonatype where the release artifacts will be published to.
+- The name of the staging repository can be found in the file `staging-repository.txt` on the new created tag.
+- All the internal versions used to create the release can be found in the files `repos-*.txt`.
+They are fetched from the latest tag available for [activiti-cloud-dependencies](https://github.com/Activiti/activiti-cloud-dependencies/tags).
+- Once the new tag is created, the `CI/CD` will run the release from this tag. 
+It's safe to restart to build from where it failed in case of failure. However, if you need to restart 
+from scratch you need to delete the artifacts already pushed to the staging repository first.   

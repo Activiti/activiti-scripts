@@ -1,0 +1,77 @@
+language: java
+jdk: openjdk11
+node_js:
+  - "12.13.1"
+
+services:
+  - docker
+
+env:
+  global:
+    - SONATYPE_STAGING_FILE=staging-repository.txt
+    - MAVEN_PUSH=true
+    - GIT_PUSH=true
+    - IGNORE_TAG_CHECKOUT_FAILURE=false
+    - DEPLOY_EXISTING=true
+    - CHECK_VERSIONS=
+    - SRC_DIR=${TRAVIS_BUILD_DIR}/..
+    - NODE_OPTIONS=--max_old_space_size=30000
+before_install:
+  - echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
+  - echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
+  - echo BRANCH=${TRAVIS_PULL_REQUEST_BRANCH:-${TRAVIS_BRANCH}}
+  - echo "$DOCKER_REGISTRY_PASSWORD" | docker login -u "$DOCKER_REGISTRY_USERNAME" --password-stdin "$DOCKER_REGISTRY"
+  - mkdir -p ${HOME}/.m2
+  - cp settings.xml $HOME/.m2
+
+cache:
+  directories:
+    - ${HOME}/.m2/repository
+
+jobs:
+  include:
+    - stage: Create tag
+      if: (commit_message =~ /\[Release\] .+/ OR type = cron) AND (tag IS blank)
+      script: ./create-tag.sh
+
+    - stage: Release Activiti Core
+      if: tag =~ /7\..+/
+      env:
+        - PROJECTS=activiti
+      script: ./release-ci.sh
+
+    - stage: Release Activiti Cloud
+      if: tag =~ /7\..+/
+      env:
+        - PROJECTS=activiti-cloud
+      script: ./release-ci.sh
+
+    - stage: Release Activiti Cloud Examples
+      if: tag =~ /7\..+/
+      env:
+        - MAVEN_PUSH=
+        - PROJECTS=activiti-cloud-examples
+      script: ./release-ci.sh
+
+    - stage: Release Activiti Cloud Dependencies
+      if: tag =~ /7\..+/
+      env:
+        - PROJECTS=activiti-cloud-bom
+      # first build examples that are not published to central, then release BOM
+      script: MAVEN_PUSH= PROJECTS=activiti-cloud-examples ./release-ci.sh && ./release-ci.sh
+
+    - stage: Release Docker Images
+      if: tag =~ /7\..+/
+      env:
+        - MAVEN_PUSH=
+        - DOCKER_PUSH=true
+        - PROJECTS=activiti-cloud-examples
+      name: "Activiti Cloud Examples"
+      script: ./release-docker.sh
+
+    - name: "Activiti Modeling App"
+      if: tag =~ /7\..+/
+      env:
+        - DOCKER_PUSH=true
+        - PROJECTS=activiti-cloud-modeling-app
+      script:  ./release-docker.sh

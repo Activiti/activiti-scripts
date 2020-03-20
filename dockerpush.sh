@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 set -ex
 
-echo "BAMBOO_OPTS=${BAMBOO_OPTS}"
-
 GIT_PROJECT=$(basename $(pwd))
 
 echo "BUILDING IMAGE FOR PROJECT $GIT_PROJECT from $(pwd)"
@@ -16,7 +14,7 @@ fi
 
 if [ -e "package.json" ]; then
     npm install
-    npm run build prod || true
+    npm run build -- --prod
 else
     echo "No package.json for $GIT_PROJECT - build straight from Dockerfile"
 fi
