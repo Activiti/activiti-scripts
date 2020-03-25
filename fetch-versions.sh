@@ -145,7 +145,15 @@ for project in "${projects[@]}"; do
 
   if [ "$name_dependency_aggregator" == "activiti-cloud-dependencies" ]; then
     # addition of modeling front end project
-    modeling_app_version=$(curl -s https://api.github.com/repos/Activiti/activiti-modeling-app/tags | grep name | cut -d'v' -f 2 | cut -d'"' -f 1 | head -n1)
+    modeling_app_tags=$(curl -s https://api.github.com/repos/Activiti/activiti-modeling-app/tags | grep name | head -n10)
+    echo "Latest tags for modeling app:"
+    echo "$modeling_app_tags"
+    modeling_app_version=$(echo "$modeling_app_tags" | cut -d'v' -f 2 | cut -d'"' -f 1 | head -n1)
+    if [ -z "$modeling_app_version" ]; then
+      echo "Error: Unable to delect latest tag for modeling app."
+      exit 1
+    fi
+
     echo -n "activiti-modeling-app " >>$file
     echo "$modeling_app_version" >>$file
 
