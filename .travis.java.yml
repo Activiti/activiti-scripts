@@ -18,7 +18,7 @@ before_install:
   - curl -Ls -o updatebot.jar   https://repo1.maven.org/maven2/io/jenkins/updatebot/updatebot/1.1.53/updatebot-1.1.53.jar
   - sudo cp jx-release-version /usr/bin/jx-release-version
   - sudo cp updatebot.jar  /usr/bin/updatebot.jar
-  - echo "java -jar /usr/bin/updatebot.jar" > updatebot
+  - echo "java -jar /usr/bin/updatebot.jar \$@" > updatebot
   - sudo cp updatebot  /usr/bin/updatebot
   - sudo chmod a+x /usr/bin/updatebot
   - echo $(jx-release-version) > VERSION
