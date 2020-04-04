@@ -1,4 +1,4 @@
-import: Alfresco/alfresco-process-tools:.travis.java.yml@master
+import: Alfresco/alfresco-process-tools:.travis.java.yml@dev-almerico-3212-movepropogation-to-trtavis
 
 stages:
 - name: build
