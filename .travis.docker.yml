@@ -14,9 +14,9 @@ stages:
 jobs:
   include:
   - name: build application
-      stage: build
-      script:
-        - travis_wait ${TRAVIS_WAIT_TIMEOUT} mvn ${MAVEN_CLI_OPTS} clean verify -B -DskipITs=false   -Dlogging.root.level=off -Dspring.main.banner-mode=off     
+    stage: build
+    script:
+    - travis_wait ${TRAVIS_WAIT_TIMEOUT} mvn ${MAVEN_CLI_OPTS} clean verify -B -DskipITs=false   -Dlogging.root.level=off -Dspring.main.banner-mode=off     
 #   - name: Create a tag
 #     stage: tag
 #     script: |
