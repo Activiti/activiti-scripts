@@ -10,6 +10,8 @@ stages:
   if: type != pull_request
 - name: updatebot
   if: type != pull_request
+  - name: docker
+  if: type != pull_request
   
 jobs:
   include:
