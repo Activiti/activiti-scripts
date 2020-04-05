@@ -17,7 +17,7 @@ jobs:
     stage: build
     script:
     - travis_wait ${TRAVIS_WAIT_TIMEOUT} mvn ${MAVEN_CLI_OPTS} clean verify -B -DskipITs=false   -Dlogging.root.level=off -Dspring.main.banner-mode=off     
-#  1 git push -f -q https://${GITHUB_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git v$(cat VERSION)|| travis_terminate 1;
+#   - git push -f -q https://${GITHUB_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git v$(cat VERSION)|| travis_terminate 1;
 #   - name: Deploy to nexus
 #     stage: deploy
 #     script:
