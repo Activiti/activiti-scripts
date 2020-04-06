@@ -59,5 +59,6 @@ jobs:
     - export VERSION=$(cat VERSION)|make -f $MAKEFILE_PATH/Makefile updatebot/push-version|| travis_terminate 1;
     
 before_install:
+  - echo -e "https://$GITHUB_USER:$GITHUB_TOKEN@github.com" >>  ~/.git-credentials
   - source ./build.properties
   - echo "$DOCKER_REGISTRY_PASSWORD" | docker login -u "$DOCKER_REGISTRY_USERNAME" --password-stdin "$DOCKER_REGISTRY"
