@@ -42,16 +42,8 @@ jobs:
     - curl -sSL https://download.sourceclear.com/ci.sh | CACHE_DIR=${HOME}/sourceclear 
     - travis_wait ${TRAVIS_WAIT_TIMEOUT} bash -s -- scan --image "$DOCKER_IMAGE_REPOSITORY:$TRAVIS_BUILD_NUMBER"
     - |
-          if [[ "$TRAVIS_PULL_REQUEST" == "false" ]]
-          then
-            for DOCKER_TAG in $BRANCH $(cat VERSION)
-            do
-              docker tag "$DOCKER_IMAGE_REPOSITORY:$TRAVIS_BUILD_NUMBER" "$DOCKER_REGISTRY/$DOCKER_IMAGE_REPOSITORY:$DOCKER_TAG"
-              docker push "$DOCKER_REGISTRY/$DOCKER_IMAGE_REPOSITORY:$DOCKER_TAG"
-            done
-          else
-            echo skip scan and push docker image on pull request
-          fi
+        docker tag "$DOCKER_IMAGE_REPOSITORY:$TRAVIS_BUILD_NUMBER" "$DOCKER_REGISTRY/$DOCKER_IMAGE_REPOSITORY:$(cat VERSION)"
+        docker push "$DOCKER_REGISTRY/$DOCKER_IMAGE_REPOSITORY:$(cat VERSION)"
   - name: Update versions in other components
     stage: updatebot
     script:
