@@ -55,8 +55,8 @@ jobs:
   - name: Update versions in other components
     stage: updatebot
     script:
-    - echo "VERSION=$(cat VERSION)|cd $MAKEFILE_PATH && make updatebot/push-version|| travis_terminate 1;"
-    - export VERSION=$(cat VERSION)|make -f $MAKEFILE_PATH/Makefile updatebot/push-version|| travis_terminate 1;
+    - echo "cd $MAKEFILE_PATH && make updatebot/push-version|| travis_terminate 1;"
+    - cd $MAKEFILE_PATH && make updatebot/push-version|| travis_terminate 1;
     
 before_install:
   - echo -e "https://$GITHUB_USER:$GITHUB_TOKEN@github.com" >>  ~/.git-credentials
