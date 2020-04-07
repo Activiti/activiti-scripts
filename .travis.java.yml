@@ -5,7 +5,7 @@ jdk:
 
 env:
   global:
-    - MAVEN_CLI_OPTS=" --batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true -DdeployAtEnd=false -U "
+    - MAVEN_CLI_OPTS=" --batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true -DdeployAtEnd=false -U  -q -Dlogging.level.root=off -Droot.log.level=off"
     - MAVEN_TEST_OPTS=" -Dspring.main.banner-mode=off -Denforcer.skip "
     - MAVEN_CMD="mvn ${MAVEN_CLI_OPTS} install ${MAVEN_TEST_OPTS}"
 
