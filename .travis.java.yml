@@ -22,7 +22,7 @@ before_install:
   - sudo cp updatebot  /usr/bin/updatebot
   - sudo chmod a+x /usr/bin/updatebot
   - echo $(jx-release-version) > VERSION
-
+  - export VERSION=$(cat VERSION)
 cache:
   directories:
     - ${HOME}/.m2/repository
