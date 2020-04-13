@@ -33,8 +33,7 @@ services:
   - docker
 branches:
   except:
-    - /.*-skip-ci$/
-    - /^\d*(\.\d+)*(-.+)*$/
+    - /^v?\d+\.\d+(\.\d+)?(-\S*)?$/
 # branches:
 #   only:
 #     - master
