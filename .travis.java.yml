@@ -31,7 +31,10 @@ cache:
 
 services:
   - docker
-
+branches:
+  except:
+    - /.*-skip-ci$/
+    - /^\d*(\.\d+)*(-.+)*$/
 # branches:
 #   only:
 #     - master
