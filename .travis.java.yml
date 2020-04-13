@@ -23,6 +23,7 @@ before_install:
   - sudo chmod a+x /usr/bin/updatebot
   - echo $(jx-release-version) > VERSION
   - export VERSION=$(cat VERSION)
+  - export PREVIEW_NAMESPACE=echo "example-$TRAVIS_BRANCH-$TRAVIS_BUILD_NUMBER"|  tr '[:upper:]' '[:lower:]';
 cache:
   directories:
     - ${HOME}/.m2/repository
