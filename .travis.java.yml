@@ -35,13 +35,13 @@ cache:
 
 services:
   - docker
-branches:
-  except:
-    - /^v?\d+\.\d+(\.\d+)?(-\S*)?$/
 # branches:
-#   only:
-#     - master
-#     - develop
+#   except:
+#     - /^v?\d+\.\d+(\.\d+)?(-\S*)?$/
+branches:
+  only:
+    - master
+    - develop
 
 # Send coverage data
 after_success:
