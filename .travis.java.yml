@@ -23,7 +23,7 @@ before_install:
   - sudo chmod a+x /usr/bin/updatebot
   - echo $(jx-release-version) > VERSION
   - export VERSION=$(cat VERSION)
-  - export PREVIEW_NAMESPACE=$(echo "$$TRAVIS_BRANCH-$TRAVIS_BUILD_NUMBER"|  tr '[:upper:]' '[:lower:]')
+  - export PREVIEW_NAMESPACE=$(echo "$TRAVIS_BRANCH-$TRAVIS_BUILD_NUMBER"|  tr '[:upper:]' '[:lower:]')
   - export GLOBAL_GATEWAY_DOMAIN="35.228.195.195.nip.io"
   - export REALM="activiti"
   - export GATEWAY_HOST="gateway.$PREVIEW_NAMESPACE.$GLOBAL_GATEWAY_DOMAIN"
