@@ -74,7 +74,7 @@ for project in "${projects[@]}"; do
     ;;
   'activiti-cloud-application')
     file=repos-activiti-cloud-application.txt
-#    examples_file=repos-activiti-cloud-examples.txt
+    examples_file=repos-activiti-cloud-examples.txt
     bom_file=repos-activiti-cloud-bom.txt
     modeling_app_file=repos-activiti-cloud-modeling-app.txt
     ;;
@@ -122,7 +122,7 @@ for project in "${projects[@]}"; do
   # name and version of the projects in this aggregator
   parseVersions pom.xml "activiti" $file "$name_dependency_aggregator"
   if [ -n "$examples_file" ]; then
-    parseVersions dependencies-tests/pom.xml "activiti\|example-" $examples_file
+    parseVersions activiti-cloud-dependencies/dependencies-tests/pom.xml "activiti\|example-" $examples_file
   fi
 
   if [ -n "$SHOULD_INCREMENT_VERSION" ]; then
