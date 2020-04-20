@@ -23,7 +23,7 @@ parseVersions() {
   local destination_file=$3
   local name_dependency_aggregator=$4
 
-  if [ "$name_dependency_aggregator" == "activiti-cloud-dependencies" ]; then
+  if [ "$name_dependency_aggregator" == "activiti-cloud-application" ]; then
     for current_dependency in $(cat $pom_path | grep -v "Downloading" | grep $property_pattern | grep "version" | grep "7." | cut -d'<' -f 2 | cut -d'.' -f 1); do
       if [ "$current_dependency" == "activiti-cloud-build" ]; then
         writeVersionOnFile "$pom_path" "$destination_file" "$current_dependency" "activiti-cloud"
@@ -50,15 +50,15 @@ original_directory=$(pwd)
 activiti_core_file=repos-activiti.txt
 
 if [ -n "$1" ]; then
-  if [ "$1" = "Activiti" ] || [ "$1" = "activiti-cloud" ] || [ "$1" = "activiti-cloud-dependencies" ]; then
+  if [ "$1" = "Activiti" ] || [ "$1" = "activiti-cloud" ] || [ "$1" = "activiti-cloud-application" ]; then
     projects=$1
   else
     echo "Incorrect project name '$1'"
-    echo "Choose among: Activiti or activiti-cloud-dependencies"
+    echo "Choose among: Activiti or activiti-cloud or activiti-cloud-application"
     echo "Leave blank to update all projects"
   fi
 else
-  projects=(Activiti activiti-cloud activiti-cloud-dependencies)
+  projects=(Activiti activiti-cloud activiti-cloud-application)
 fi
 
 for project in "${projects[@]}"; do
@@ -70,10 +70,10 @@ for project in "${projects[@]}"; do
     file=${activiti_core_file}
     ;;
   'activiti-cloud')
-    file=repos-activiti-cloud-mono.txt
-    ;;
-  'activiti-cloud-dependencies')
     file=repos-activiti-cloud.txt
+    ;;
+  'activiti-cloud-application')
+    file=repos-activiti-cloud-application.txt
     examples_file=repos-activiti-cloud-examples.txt
     bom_file=repos-activiti-cloud-bom.txt
     modeling_app_file=repos-activiti-cloud-modeling-app.txt
@@ -122,13 +122,13 @@ for project in "${projects[@]}"; do
   # name and version of the projects in this aggregator
   parseVersions pom.xml "activiti" $file "$name_dependency_aggregator"
   if [ -n "$examples_file" ]; then
-    parseVersions dependencies-tests/pom.xml "activiti\|example-" $examples_file
+    parseVersions activiti-cloud-dependencies/dependencies-tests/pom.xml "activiti\|example-" $examples_file
   fi
 
   if [ -n "$SHOULD_INCREMENT_VERSION" ]; then
     ls
     BETA_SUFFIX_PATTERN="\-beta[[:digit:]]\{1,3\}"
-    VERSION_PREFIX=$(curl https://raw.githubusercontent.com/Activiti/activiti-cloud-dependencies/develop/pom.xml \
+    VERSION_PREFIX=$(curl https://raw.githubusercontent.com/Activiti/activiti-cloud-application/develop/pom.xml \
     | grep "<version>" | grep "\-SNAPSHOT" | grep -o -m1 "[[:digit:]]\{1,2\}\.[[:digit:]]\{1,3\}\.[[:digit:]]\{1,3\}")
     LATEST_BETA_VERSION=$(git tag --sort=-creatordate | grep -m1 "${VERSION_PATTERN}${BETA_SUFFIX_PATTERN}")
     if [ -z "$LATEST_BETA_VERSION" ]; then
@@ -143,7 +143,7 @@ for project in "${projects[@]}"; do
     echo "${NEXT_BETA_VERSION}" >VERSION
   fi
 
-  if [ "$name_dependency_aggregator" == "activiti-cloud-dependencies" ]; then
+  if [ "$name_dependency_aggregator" == "activiti-cloud-application" ]; then
     # addition of modeling front end project
     modeling_app_tags=$(curl -s https://api.github.com/repos/Activiti/activiti-modeling-app/tags | grep name | head -n10)
     echo "Latest tags for modeling app:"
@@ -175,7 +175,7 @@ for project in "${projects[@]}"; do
 
   cd ../..
   updateRepoFile "${project}" $file "${original_directory}"
-  if [ "$name_dependency_aggregator" == "activiti-cloud-dependencies" ]; then
+  if [ "$name_dependency_aggregator" == "activiti-cloud-application" ]; then
     updateRepoFile "${project}" ${bom_file} "${original_directory}"
     updateRepoFile "${project}" ${modeling_app_file} "${original_directory}"
     updateRepoFile "${project}" ${activiti_core_file} "${original_directory}"
