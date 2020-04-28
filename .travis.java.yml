@@ -31,7 +31,6 @@ before_install:
 cache:
   directories:
     - ${HOME}/.m2/repository
-    - ${HOME}/sourceclear
 
 services:
   - docker
