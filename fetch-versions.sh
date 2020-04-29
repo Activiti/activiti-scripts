@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
 
 writeVersionOnFile() {
-  local pom_path=$1
-  local destination_file=$2
-  local current_dependency=$3
-  local related_repository=$4
+  local destination_file=$1
+  local version=$2
+  local related_repository=$3
+
   echo -n "$related_repository " >>"$destination_file"
-  version=$(grep -v "Downloading" <"$pom_path" | grep "$current_dependency.version" | grep -om1 "7.[0-9]*.[0-9]*")
   echo "$version" >>"$destination_file"
 
   # check for the existence of such version for current project
@@ -17,23 +16,12 @@ writeVersionOnFile() {
   fi
 }
 
-parseVersions() {
-  local pom_path=$1
-  local property_pattern=$2
-  local destination_file=$3
-  local name_dependency_aggregator=$4
+parseActivitiCloudVersion() {
+  local pom_path="activiti-cloud-dependencies/pom.xml"
+  local property_pattern="activiti-cloud\.version"
 
-  if [ "$name_dependency_aggregator" == "activiti-cloud-application" ]; then
-    for current_dependency in $(cat $pom_path | grep -v "Downloading" | grep $property_pattern | grep "version" | grep "7." | cut -d'<' -f 2 | cut -d'.' -f 1); do
-      if [ "$current_dependency" == "activiti-cloud-build" ]; then
-        writeVersionOnFile "$pom_path" "$destination_file" "$current_dependency" "activiti-cloud"
-      fi
-    done
-  else
-    for current_dependency in $(cat $pom_path | grep -v "Downloading" | grep $property_pattern | grep "version" | grep "7." | cut -d'<' -f 2 | cut -d'.' -f 1); do
-      writeVersionOnFile "$pom_path" "$destination_file" "$current_dependency" "$current_dependency"
-    done
-  fi
+  local activiti_cloud_version=$(grep "activiti-cloud\.version" <"$pom_path" -m1 | grep -om1 "7.[0-9]*.[0-9]*")
+  writeVersionOnFile "$activiti_cloud_file" "$activiti_cloud_version" "activiti-cloud"
 }
 
 updateRepoFile() {
@@ -96,8 +84,7 @@ else
   version_dependency_aggregator=$(echo "$aggregator_tag" | cut -d'v' -f 2)
 fi
 
-# name and version of the projects in this aggregator
-parseVersions "activiti-cloud-dependencies/pom.xml" "activiti" $activiti_cloud_file "$name_dependency_aggregator"
+parseActivitiCloudVersion $activiti_cloud_file
 
 if [ -n "$SHOULD_INCREMENT_VERSION" ]; then
   ls
@@ -127,16 +114,12 @@ if [ -z "$modeling_app_version" ]; then
   exit 1
 fi
 
-echo -n "activiti-modeling-app " >>"$modeling_app_file"
-echo "$modeling_app_version" >>"$modeling_app_file"
+writeVersionOnFile "$modeling_app_file" "$modeling_app_version" "activiti-modeling-app"
 
-activiti_core_version=$(mvn dependency:tree | grep "activiti-dependencies:pom:" -m1 | grep -o "7\.[[:digit:]]\{1,3\}\.[[:digit:]]\{1,5\}")
+activiti_core_version=$(mvn dependency:tree | grep -v "Downloading" | grep "activiti-dependencies:pom:" -m1 | grep -o "7\.[[:digit:]]\{1,3\}\.[[:digit:]]\{1,5\}")
+writeVersionOnFile "${activiti_core_file}" "${activiti_core_version}" "Activiti"
 
-echo -n "Activiti " >>"${activiti_core_file}"
-echo "${activiti_core_version}" >>"${activiti_core_file}"
-
-echo -n "$name_dependency_aggregator " >>${activiti_cloud_application_file}
-echo "$version_dependency_aggregator" >>${activiti_cloud_application_file}
+writeVersionOnFile "${activiti_cloud_application_file}" "${version_dependency_aggregator}" "${name_dependency_aggregator}"
 
 cd ../..
 updateRepoFile "${name_dependency_aggregator}" $activiti_cloud_file "${original_directory}"
