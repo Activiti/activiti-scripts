@@ -40,34 +40,26 @@ jobs:
       if: tag =~ /7\..+/
       env:
         - PROJECTS=activiti-cloud
+        - PROJECTS=activiti-cloud-modeling-app
       script: ./release-ci.sh
 
-    - stage: Release Activiti Cloud Examples
+    - stage: Release Activiti Cloud Application
       if: tag =~ /7\..+/
       env:
-        - MAVEN_PUSH=
-        - PROJECTS=activiti-cloud-examples
+        - PROJECTS=activiti-cloud-application
       script: ./release-ci.sh
-
-    - stage: Release Activiti Cloud Dependencies
-      if: tag =~ /7\..+/
-      env:
-        - PROJECTS=activiti-cloud-bom
-      # first build examples that are not published to central, then release BOM
-      script: MAVEN_PUSH= PROJECTS=activiti-cloud-examples ./release-ci.sh && ./release-ci.sh
 
     - stage: Release Docker Images
       if: tag =~ /7\..+/
       env:
-        - MAVEN_PUSH=
         - DOCKER_PUSH=true
-        - PROJECTS=activiti-cloud-examples
-      name: "Activiti Cloud Examples"
-      script: ./release-docker.sh
+        - PROJECTS=activiti-cloud-application
+      name: "Activiti Cloud Example Images"
+      script: ./release-docker-activiti-cloud-example-images.sh
 
     - name: "Activiti Modeling App"
       if: tag =~ /7\..+/
       env:
         - DOCKER_PUSH=true
         - PROJECTS=activiti-cloud-modeling-app
-      script:  ./release-docker.sh
+      script: ./release-docker.sh
