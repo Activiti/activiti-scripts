@@ -12,19 +12,17 @@ will build all the repositories listed in the index files:
 
 * [activiti](./repos-activiti.txt)
 * [activiti-cloud](./repos-activiti-cloud.txt)
-* [activiti-cloud-modeling](./repos-activiti-cloud-modeling.txt)
-* [activiti-cloud-examples](./repos-activiti-cloud-examples.txt)
-* [activiti-cloud-modeling-examples](./repos-activiti-cloud-modeling-examples.txt)
+* [activiti-cloud-modeling-app](./repos-activiti-cloud-modeling-app.txt)
+* [activiti-cloud-application](./repos-activiti-cloud-application.txt)
 
 To get the set of versions to be released:
 
     ./fetch-versions.sh (fetch latest version for all sets)
-    ./fetch-versions.sh activiti-dependencies (fetch latest versions for the provided set)
-    ./fetch-versions.sh activiti-dependencies 7.1.18 (fetch set of versions for the provided set in the provided version set)
+    ./fetch-versions.sh 7.1.854 (fetch set of versions for all sets based on the provided version of activiti-cloud-application)
     
 To clone all:
 
-    PROJECTS=activiti,activiti-cloud,activiti-cloud-examples ./clone-all.sh
+    PROJECTS=activiti,activiti-cloud,activiti-cloud-application,activiti-cloud-modeling-app ./clone-all.sh
 
 To release non-example projects:
 

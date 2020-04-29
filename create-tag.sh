@@ -10,7 +10,7 @@ then
   export SHOULD_INCREMENT_VERSION
 fi
 
-./fetch-versions.sh activiti-cloud-dependencies
+./fetch-versions.sh
 
 VERSION_TO_RELEASE=$(<VERSION)
 echo "Version to release ${VERSION_TO_RELEASE}"
