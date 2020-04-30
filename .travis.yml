@@ -45,7 +45,7 @@ jobs:
     - stage: Release Activiti Cloud Modeling App
       if: tag =~ /7\..+/
       env:
-        - PROJECTS=activiti-cloud-modeling-app
+        - PROJECTS=activiti-modeling-app
       script: ./release-ci.sh
 
     - stage: Release Activiti Cloud Application
