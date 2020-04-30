@@ -16,6 +16,8 @@ env:
     - CHECK_VERSIONS=
     - SRC_DIR=${TRAVIS_BUILD_DIR}/..
     - NODE_OPTIONS=--max_old_space_size=30000
+
+
 before_install:
   - echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
   - echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
@@ -23,6 +25,16 @@ before_install:
   - echo "$DOCKER_REGISTRY_PASSWORD" | docker login -u "$DOCKER_REGISTRY_USERNAME" --password-stdin "$DOCKER_REGISTRY"
   - mkdir -p ${HOME}/.m2
   - cp settings.xml $HOME/.m2
+
+  - echo -e "https://$GITHUB_USER:$GITHUB_TOKEN@github.com" >>  ~/.git-credentials
+  - curl -s https://kubernetes-helm.storage.googleapis.com/helm-v${HELM_VERSION}-linux-amd64.tar.gz | tar zx
+  - sudo mv linux-amd64/helm /usr/local/bin/
+  - curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/v${KUBERNETES_VERSION}/bin/linux/amd64/kubectl &&
+  - chmod +x kubectl && sudo mv kubectl /usr/local/bin/
+  - kubectl config set-cluster default-cluster --server=${K8S_API_URL} &&
+  - kubectl config set-credentials default-admin --token=${K8S_API_TOKEN} &&
+  - kubectl config set-context default-system --cluster=default-cluster --user=default-admin &&
+  - kubectl config use-context default-system
 
 jobs:
   include:
@@ -66,3 +78,15 @@ jobs:
       env:
         - DOCKER_PUSH=true
       script: ./release-docker-modeling-app.sh
+
+    - stage: Release Helm Chart
+      if: tag =~ /7\..+/
+      env:
+        - HELM_VERSION=2.12.3
+        - KUBERNETES_VERSION=1.14.8
+        - ORG='activiti'
+        - APP_NAME='activiti-cloud-full-example'
+        - PREVIEW_NAMESPACE="example-$TRAVIS_BRANCH-$TRAVIS_BUILD_NUMBER";
+        - HELM_RELEASE_NAME="$TRAVIS_BRANCH-$TRAVIS_BUILD_NUMBER"
+        - GLOBAL_GATEWAY_DOMAIN="35.228.195.195.nip.io"
+      script: ./release-helm-chart.sh
