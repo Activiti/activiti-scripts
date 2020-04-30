@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 set -e
-export activiti-cloud-application
-git clone https://"${GITHUB_TOKEN}":x-oauth-basic@github.com/Activiti/activiti-cloud-application.git
+git clone https://$(GITHUB_TOKEN):x-oauth-basic@github.com/Activiti/activiti-cloud-application.git
 
 cd activiti-cloud-application;
 mvn -DskipITs -DskipTests -q -f  activiti-cloud-acceptance-scenarios/pom.xml
