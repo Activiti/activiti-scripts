@@ -3,7 +3,7 @@ set -e
 
 SCRIPT_DIR="$(cd "$( dirname "$0" )" && pwd)"
 
-export PROJECTS=activiti-cloud-modeling-app
+export PROJECTS=activiti-modeling-app
 ./clone-all.sh
 
 RELEASE_VERSION=$(<VERSION)

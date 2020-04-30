@@ -22,7 +22,7 @@ To get the set of versions to be released:
     
 To clone all:
 
-    PROJECTS=activiti,activiti-cloud,activiti-cloud-application,activiti-cloud-modeling-app ./clone-all.sh
+    PROJECTS=activiti,activiti-cloud,activiti-cloud-application,activiti-modeling-app ./clone-all.sh
 
 To release non-example projects:
 
