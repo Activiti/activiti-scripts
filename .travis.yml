@@ -31,7 +31,7 @@ before_install:
   - echo -e "https://$GITHUB_USER:$GITHUB_TOKEN@github.com" >>  ~/.git-credentials
   - curl -s https://kubernetes-helm.storage.googleapis.com/helm-v${HELM_VERSION}-linux-amd64.tar.gz | tar zx
   - sudo mv linux-amd64/helm /usr/local/bin/
-  - curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/v${KUBERNETES_VERSION}/bin/linux/amd64/kubectl &&
+  - curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/v${KUBERNETES_VERSION}/bin/linux/amd64/kubectl
   - chmod +x kubectl && sudo mv kubectl /usr/local/bin/
   - kubectl config set-cluster default-cluster --server=${K8S_API_URL} &&
   - kubectl config set-credentials default-admin --token=${K8S_API_TOKEN} &&
