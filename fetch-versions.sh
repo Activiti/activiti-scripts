@@ -5,6 +5,7 @@ writeVersionOnFile() {
   local version=$2
   local related_repository=$3
 
+  echo "${related_repository}: ${version}"
   echo -n "$related_repository " >>"$destination_file"
   echo "$version" >>"$destination_file"
 
@@ -20,8 +21,14 @@ parseActivitiCloudVersion() {
   local pom_path="activiti-cloud-dependencies/pom.xml"
   local property_pattern="activiti-cloud\.version"
 
-  local activiti_cloud_version=$(grep "activiti-cloud\.version" <"$pom_path" -m1 | grep -om1 "7.[0-9]*.[0-9]*")
+  local activiti_cloud_version=$(grep "activiti-cloud\.version" <"$pom_path" -m1 | grep -om1 "${activiti_version_pattern}")
   writeVersionOnFile "$activiti_cloud_file" "$activiti_cloud_version" "activiti-cloud"
+
+  local cloud_api_url="https://raw.githubusercontent.com/Activiti/activiti-cloud/v${activiti_cloud_version}/activiti-cloud-api/pom.xml"
+  echo "Getting Activiti core version from: ${cloud_api_url} "
+  local activiti_core_version=$(curl https://raw.githubusercontent.com/Activiti/activiti-cloud/v${activiti_cloud_version}/activiti-cloud-api/pom.xml \
+    | grep "activiti\.version" -m1 | grep -o "${activiti_version_pattern}")
+  writeVersionOnFile "${activiti_core_file}" "${activiti_core_version}" "Activiti"
 }
 
 updateRepoFile() {
@@ -35,6 +42,7 @@ updateRepoFile() {
 
 original_directory=$(pwd)
 name_dependency_aggregator=activiti-cloud-application
+activiti_version_pattern="7\.[[:digit:]]\{1,3\}\.[[:digit:]]\{1,6\}"
 
 mkdir /tmp/release-versions && cd /tmp/release-versions || exit 1
 git clone -q https://github.com/Activiti/$name_dependency_aggregator.git && cd $name_dependency_aggregator || exit 1
@@ -105,19 +113,16 @@ if [ -n "$SHOULD_INCREMENT_VERSION" ]; then
 fi
 
 # addition of modeling front end project
-modeling_app_tags=$(curl -s https://api.github.com/repos/Activiti/activiti-modeling-app/tags | grep name | head -n10)
+modeling_app_tags=$(curl -s https://api.github.com/repos/Activiti/activiti-modeling-app/tags | grep name | head -n3)
 echo "Latest tags for modeling app:"
 echo "$modeling_app_tags"
 modeling_app_version=$(echo "$modeling_app_tags" | cut -d'v' -f 2 | cut -d'"' -f 1 | head -n1)
 if [ -z "$modeling_app_version" ]; then
-  echo "Error: Unable to delect latest tag for modeling app."
+  echo "Error: Unable to detect latest tag for modeling app."
   exit 1
 fi
 
 writeVersionOnFile "$modeling_app_file" "$modeling_app_version" "activiti-modeling-app"
-
-activiti_core_version=$(mvn dependency:tree | grep -v "Downloading" | grep "activiti-dependencies:pom:" -m1 | grep -o "7\.[[:digit:]]\{1,3\}\.[[:digit:]]\{1,5\}")
-writeVersionOnFile "${activiti_core_file}" "${activiti_core_version}" "Activiti"
 
 writeVersionOnFile "${activiti_cloud_application_file}" "${version_dependency_aggregator}" "${name_dependency_aggregator}"
 
