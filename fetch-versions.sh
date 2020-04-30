@@ -50,7 +50,7 @@ git clone -q https://github.com/Activiti/$name_dependency_aggregator.git && cd $
 activiti_core_file=repos-activiti.txt
 activiti_cloud_file=repos-activiti-cloud.txt
 activiti_cloud_application_file=repos-activiti-cloud-application.txt
-modeling_app_file=repos-activiti-cloud-modeling-app.txt
+modeling_app_file=repos-activiti-modeling-app.txt
 
 echo "Handling $name_dependency_aggregator"
 git fetch --tags
