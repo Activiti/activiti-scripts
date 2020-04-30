@@ -4,8 +4,8 @@ git clone https://${GITHUB_TOKEN}:x-oauth-basic@github.com/Activiti/activiti-clo
 
 cd activiti-cloud-application;
 mvn -DskipITs -DskipTests -q clean install -f activiti-cloud-acceptance-scenarios/pom.xml
+cp VERSION  activiti-cloud-dependencies/
 cd -
-cp ../VERSION  activiti-cloud-dependencies/
 cd activiti-cloud-dependencies
 mvn -q versions:set -Droot.log.level=off -DnewVersion=${VERSION}
 make updatebot/push-version-dry
