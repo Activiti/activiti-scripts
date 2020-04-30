@@ -40,6 +40,11 @@ jobs:
       if: tag =~ /7\..+/
       env:
         - PROJECTS=activiti-cloud
+      script: ./release-ci.sh
+
+    - stage: Release Activiti Cloud Modeling App
+      if: tag =~ /7\..+/
+      env:
         - PROJECTS=activiti-cloud-modeling-app
       script: ./release-ci.sh
 
