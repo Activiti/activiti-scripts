@@ -16,5 +16,7 @@ cd ${SRC_DIR}/${PROJECTS} || exit 1
 git fetch --tags
 git checkout "${RELEASE_VERSION}"
 
+cd -
+
 ./dockerpush-all.sh
 
