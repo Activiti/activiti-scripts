@@ -29,6 +29,12 @@ before_install:
   - mkdir -p ${HOME}/.m2
   - cp settings.xml $HOME/.m2
 
+  - curl -Ls -o updatebot.jar   https://repo1.maven.org/maven2/io/jenkins/updatebot/updatebot/1.1.53/updatebot-1.1.53.jar
+  - sudo cp updatebot.jar  /usr/bin/updatebot.jar
+  - echo "java -jar /usr/bin/updatebot.jar \$@" > updatebot
+  - sudo cp updatebot  /usr/bin/updatebot
+  - sudo chmod a+x /usr/bin/updatebot
+
   - echo -e "https://$GITHUB_USER:$GITHUB_TOKEN@github.com" >>  ~/.git-credentials
   - curl -s https://kubernetes-helm.storage.googleapis.com/helm-v${HELM_VERSION}-linux-amd64.tar.gz | tar zx
   - sudo mv linux-amd64/helm /usr/local/bin/
