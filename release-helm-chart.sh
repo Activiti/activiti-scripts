@@ -19,3 +19,7 @@ cd activiti-cloud-acceptance-scenarios
 mvn -pl 'modeling-acceptance-tests' -Droot.log.level=off -q clean verify
 mvn -pl 'runtime-acceptance-tests'  -Droot.log.level=off -q clean verify
 cd -
+cd activiti-cloud-dependencies
+make tag
+make github
+cd -
