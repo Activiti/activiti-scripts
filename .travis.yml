@@ -92,13 +92,14 @@ jobs:
         - GLOBAL_GATEWAY_DOMAIN="35.228.195.195.nip.io"
       script:
         - pwd
-        - source ./release-helm-chart.sh; git_clone
-        - pwd
-        - source ./release-helm-chart.sh; prepare_and_run_helm
-        - pwd
-        - source ./release-helm-chart.sh; run_acceptance_test
-        - pwd
-        - source ./release-helm-chart.sh; upload_helm_chart
-        - pwd
+        - ./release-helm.sh
+        # - source ./release-helm-chart.sh; git_clone
+        # - pwd
+        # - source ./release-helm-chart.sh; prepare_and_run_helm
+        # - pwd
+        # - source ./release-helm-chart.sh; run_acceptance_test
+        # - pwd
+        # - source ./release-helm-chart.sh; upload_helm_chart
+        # - pwd
 
 
