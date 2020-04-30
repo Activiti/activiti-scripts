@@ -3,7 +3,7 @@ set -e
 git clone https://${GITHUB_TOKEN}:x-oauth-basic@github.com/Activiti/activiti-cloud-application.git
 
 cd activiti-cloud-application;
-mvn -DskipITs -DskipTests -q -f clean install activiti-cloud-acceptance-scenarios/pom.xml
+mvn -DskipITs -DskipTests -q clean install -f activiti-cloud-acceptance-scenarios/pom.xml
 cd -
 cp VERSION  activiti-cloud-dependencies/
 cd activiti-cloud-dependencies
