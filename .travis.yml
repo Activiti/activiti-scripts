@@ -90,4 +90,15 @@ jobs:
         - PREVIEW_NAMESPACE="example-$TRAVIS_BRANCH-$TRAVIS_BUILD_NUMBER";
         - HELM_RELEASE_NAME="$TRAVIS_BRANCH-$TRAVIS_BUILD_NUMBER"
         - GLOBAL_GATEWAY_DOMAIN="35.228.195.195.nip.io"
-      script: travis_wait ${TRAVIS_WAIT_TIMEOUT} ./release-helm-chart.sh
+      script:
+        - pwd
+        - ./release-helm-chart.sh git_clone
+        - pwd
+        - travis_wait ${TRAVIS_WAIT_TIMEOUT} ./release-helm-chart.sh prepare_and_run_helm
+        - pwd
+        - travis_wait ${TRAVIS_WAIT_TIMEOUT} ./release-helm-chart.sh run_acceptance_test
+        - pwd
+        - travis_wait ${TRAVIS_WAIT_TIMEOUT} ./release-helm-chart.sh upload_helm_chart
+        - pwd
+
+
