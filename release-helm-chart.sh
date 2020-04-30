@@ -6,7 +6,9 @@ cd activiti-cloud-application;
 mvn -DskipITs -DskipTests -q clean install -f activiti-cloud-acceptance-scenarios/pom.xml
 pwd
 ls
-cp VERSION  activiti-cloud-dependencies/
+cp ../VERSION  activiti-cloud-dependencies/
+echo "____________________________________"
+ls ..
 cd -
 cd activiti-cloud-dependencies
 mvn -q versions:set -Droot.log.level=off -DnewVersion=${VERSION}
