@@ -12,7 +12,7 @@ will build all the repositories listed in the index files:
 
 * [activiti](./repos-activiti.txt)
 * [activiti-cloud](./repos-activiti-cloud.txt)
-* [activiti-cloud-modeling-app](./repos-activiti-cloud-modeling-app.txt)
+* [activiti-modeling-app](repos-activiti-modeling-app.txt)
 * [activiti-cloud-application](./repos-activiti-cloud-application.txt)
 
 To get the set of versions to be released:

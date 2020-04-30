@@ -58,7 +58,6 @@ jobs:
       if: tag =~ /7\..+/
       env:
         - DOCKER_PUSH=true
-        - PROJECTS=activiti-cloud-application
       name: "Activiti Cloud Example Images"
       script: ./release-docker-activiti-cloud-example-images.sh
 
@@ -66,5 +65,4 @@ jobs:
       if: tag =~ /7\..+/
       env:
         - DOCKER_PUSH=true
-        - PROJECTS=activiti-cloud-modeling-app
-      script: ./release-docker.sh
+      script: ./release-docker-modeling-app.sh
