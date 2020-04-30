@@ -35,7 +35,7 @@
       <repositories>
         <repository>
           <id>activiti-staging</id>
-          <url>https://oss.sonatype.org/service/local/repositories/STAGING_ID/content</url>
+          <url>https://oss.sonatype.org/service/local/repositories/orgactiviti-1230/content</url>
         </repository>
       </repositories>
     </profile>
