@@ -94,9 +94,9 @@ jobs:
         - pwd
         - source ./release-helm-chart.sh; git_clone
         - pwd
-        - travis_wait ${TRAVIS_WAIT_TIMEOUT} source ./release-helm-chart.sh; prepare_and_run_helm
+        - source ./release-helm-chart.sh; prepare_and_run_helm
         - pwd
-        - travis_wait ${TRAVIS_WAIT_TIMEOUT} source ./release-helm-chart.sh; run_acceptance_test
+        - source ./release-helm-chart.sh; run_acceptance_test
         - pwd
         - source ./release-helm-chart.sh; upload_helm_chart
         - pwd
