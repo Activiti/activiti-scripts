@@ -14,9 +14,9 @@ set -ex
   cd ..
   make update-version-in-example-charts
   make create-helm-charts-release-and-upload
-  
+
   cd activiti-cloud-dependencies
-  
+
   make prepare-helm-chart
   make run-helm-chart
   sleep 120
