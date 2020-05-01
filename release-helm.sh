@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 set -ex
+  if echo "$VERSION" | grep -q "MOCK"; then
+    export HELM_ACTIVITI_VERSION=$(cat VERSION|rev|sed 's/\./-/2'|rev)
+  if
+
 
   git clone https://${GITHUB_TOKEN}:x-oauth-basic@github.com/Activiti/activiti-cloud-application.git
   cp VERSION  activiti-cloud-application/activiti-cloud-dependencies/
@@ -29,6 +33,7 @@ set -ex
   cd -
 
   cd activiti-cloud-application/activiti-cloud-dependencies
+  make replace-release-full-chart-names
   make tag
   make github
   cd -
