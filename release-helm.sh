@@ -10,10 +10,16 @@ set -ex
   cat .updatebot-repos/github/activiti/activiti-cloud-full-chart/charts/activiti-cloud-full-example/values.yaml
 
   sleep 20
+  cd ..
+  make update-version-in-example-charts
+  make create-helm-charts-release-and-upload
+  
+  cd activiti-cloud-dependencies
+  
   make prepare-helm-chart
   make run-helm-chart
   sleep 120
-  cd -
+  cd ../..
 
   cd activiti-cloud-application/activiti-cloud-acceptance-scenarios
   mvn -DskipITs -DskipTests -q clean install -f activiti-cloud-acceptance-scenarios/pom.xml
