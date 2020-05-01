@@ -7,7 +7,8 @@ set -ex
   cd activiti-cloud-application/activiti-cloud-dependencies
   mvn -q versions:set -Droot.log.level=off -DnewVersion=${VERSION}
   make updatebot/push-version-dry
-  cat .updatebot-repos/github/activiti/activiti-cloud-full-chart/charts/activiti-cloud-full-example/values.yaml
+
+  cat .updatebot-repos/github/activiti/activiti-cloud-full-chart/charts/activiti-cloud-full-example/requirements.yaml
 
   sleep 20
   cd ..
