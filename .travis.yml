@@ -22,7 +22,6 @@ env:
     - GITHUB_CHARTS_REPO="https://github.com/Activiti/activiti-cloud-helm-charts.git"
     - GITHUB_HELM_REPO_URL="https://activiti.github.io/activiti-cloud-helm-charts/"
 
-
 before_install:
   - echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
   - echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
