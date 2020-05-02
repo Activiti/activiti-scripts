@@ -19,6 +19,8 @@ env:
     - HELM_VERSION=2.12.3
     - KUBERNETES_VERSION=1.14.8
     - TRAVIS_WAIT_TIMEOUT=${TRAVIS_WAIT_TIMEOUT:-180}
+    - GITHUB_CHARTS_REPO="https://github.com/Activiti/activiti-cloud-helm-charts.git"
+    - GITHUB_HELM_REPO_URL="https://activiti.github.io/activiti-cloud-helm-charts/"
 
 
 before_install:
