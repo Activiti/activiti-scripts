@@ -9,12 +9,12 @@ git clone https://${GITHUB_TOKEN}:x-oauth-basic@github.com/Activiti/activiti-clo
 cp VERSION  activiti-cloud-application/activiti-cloud-dependencies/
 
 cd activiti-cloud-application/activiti-cloud-dependencies
-mvn -q versions:set -Droot.log.level=off -DnewVersion=${VERSION}
+
+#mvn -q versions:set -Droot.log.level=off -DnewVersion=${VERSION}
 make updatebot/push-version-dry
 
 cat .updatebot-repos/github/activiti/activiti-cloud-full-chart/charts/activiti-cloud-full-example/requirements.yaml
 
-sleep 20
 cd ..
 make update-version-in-example-charts
 make create-helm-charts-release-and-upload
