@@ -19,16 +19,16 @@ git add -A
 git commit -m "Update versions - Activiti Cloud Dependencies"
 
 if [ -n "${MAVEN_PUSH}" ]; then
-  curl -d @staging-repository-template.xml -u "${SONATYPE_USERNAME}":"${SONATYPE_PASSWORD}" \
+  curl -d @staging-repository-template.xml -u "${NEXUS_USERNAME}":"${NEXUS_PASSWORD}" \
     -H "Content-Type:application/xml" -v \
-    https://oss.sonatype.org/service/local/staging/profiles/"${SONATYPE_PROFILE_ID}"/start \
-    grep stagedRepositoryId | grep -o "orgactiviti-[0-9]*" > "${SONATYPE_STAGING_FILE}"
+    "${NEXUS_URL}"/service/local/staging/profiles/"${NEXUS_PROFILE_ID}"/start \
+    grep stagedRepositoryId | grep -o "${NEXUS_STAGING_PROFILE_PATTERN}" > "${NEXUS_STAGING_FILE}"
 
-    echo "Stating repository $(< "${SONATYPE_STAGING_FILE}")"
+    echo "Stating repository $(< "${NEXUS_STAGING_FILE}")"
 
-    sed "s/STAGING_ID/$(<"$SONATYPE_STAGING_FILE")/g" < settings.xml > settings-tmp.xml && mv settings-tmp.xml settings.xml
+    sed "s/STAGING_ID/$(<"$NEXUS_STAGING_FILE")/g" < settings.xml > settings-tmp.xml && mv settings-tmp.xml settings.xml
 
-    git add "${SONATYPE_STAGING_FILE}"
+    git add "${NEXUS_STAGING_FILE}"
     git add settings.xml
     git commit -m "Set staging repository"
 fi
