@@ -12,21 +12,21 @@ cat .updatebot-repos/github/activiti/activiti-cloud-full-chart/charts/activiti-c
 
 cd ..
 
-export HELM_ACTIVITI_VERSION=${VERSION}
-make update-version-in-example-charts
-make create-helm-charts-release-and-upload
+
+# make update-version-in-example-charts
+# make create-helm-charts-release-and-upload
 
 cd activiti-cloud-dependencies
-sleep 20
-make prepare-helm-chart
-make run-helm-chart
-sleep 300
+# sleep 20
+# make prepare-helm-chart
+# make run-helm-chart
+# sleep 300
 cd ../..
 
 cd activiti-cloud-application/activiti-cloud-acceptance-scenarios
-mvn -DskipITs -DskipTests -q clean install
-mvn -pl 'modeling-acceptance-tests' -Droot.log.level=off -q clean verify
-mvn -pl 'runtime-acceptance-tests'  -Droot.log.level=off -q clean verify
+# mvn -DskipITs -DskipTests -q clean install
+# mvn -pl 'modeling-acceptance-tests' -Droot.log.level=off -q clean verify
+# mvn -pl 'runtime-acceptance-tests'  -Droot.log.level=off -q clean verify
 cd -
 
 cd activiti-cloud-application/activiti-cloud-dependencies
