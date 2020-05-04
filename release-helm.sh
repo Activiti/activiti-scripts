@@ -24,7 +24,7 @@ cd activiti-cloud-dependencies
 sleep 20
 make prepare-helm-chart
 make run-helm-chart
-sleep 120
+sleep 300
 cd ../..
 
 cd activiti-cloud-application/activiti-cloud-acceptance-scenarios
