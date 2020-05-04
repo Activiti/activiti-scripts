@@ -12,7 +12,7 @@ cat .updatebot-repos/github/activiti/activiti-cloud-full-chart/charts/activiti-c
 
 cd ..
 
-export HELM_ACTIVITI_VERSION=$(VERSION)
+export HELM_ACTIVITI_VERSION=${VERSION}
 make update-version-in-example-charts
 make create-helm-charts-release-and-upload
 
