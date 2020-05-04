@@ -20,7 +20,7 @@ make update-version-in-example-charts
 make create-helm-charts-release-and-upload
 
 cd activiti-cloud-dependencies
-
+sleep 20
 make prepare-helm-chart
 make run-helm-chart
 sleep 120
