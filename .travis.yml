@@ -30,7 +30,7 @@ before_install:
   - mkdir -p ${HOME}/.m2
   - cp settings.xml $HOME/.m2
 
-  - export PREVIEW_NAMESPACE=$(echo "$TRAVIS_BRANCH-$TRAVIS_BUILD_NUMBER"|  tr '[:upper:]' '[:lower:]'|tr . -)
+  - export PREVIEW_NAMESPACE=$(echo "v$TRAVIS_BRANCH-$TRAVIS_BUILD_NUMBER"|  tr '[:upper:]' '[:lower:]'|tr . -)
   - curl -Ls -o updatebot.jar   https://repo1.maven.org/maven2/io/jenkins/updatebot/updatebot/1.1.53/updatebot-1.1.53.jar
   - sudo cp updatebot.jar  /usr/bin/updatebot.jar
   - echo "java -jar /usr/bin/updatebot.jar \$@" > updatebot
