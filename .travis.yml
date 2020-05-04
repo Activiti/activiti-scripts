@@ -32,7 +32,7 @@ before_install:
 
   - export PREVIEW_NAMESPACE=$(echo "v$TRAVIS_BRANCH-$TRAVIS_BUILD_NUMBER"|  tr '[:upper:]' '[:lower:]'|tr . -)
   - ORG='activiti'
-  - HELM_RELEASE_NAME="$TRAVIS_BRANCH-$TRAVIS_BUILD_NUMBER"
+  - export HELM_RELEASE_NAME="$TRAVIS_BRANCH-$TRAVIS_BUILD_NUMBER"
   - export GLOBAL_GATEWAY_DOMAIN="35.228.195.195.nip.io"
   - export GATEWAY_HOST="gateway.$PREVIEW_NAMESPACE.$GLOBAL_GATEWAY_DOMAIN"
   - export SSO_HOST="identity.$PREVIEW_NAMESPACE.$GLOBAL_GATEWAY_DOMAIN"
@@ -101,6 +101,7 @@ jobs:
       script:
         - pwd
         - export VERSION=$(cat VERSION)
+        - export HELM_ACTIVITI_VERSION=$(cat VERSION)
         - ./release-helm.sh
         # - source ./release-helm-chart.sh; git_clone
         # - pwd
