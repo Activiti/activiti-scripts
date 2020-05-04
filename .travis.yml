@@ -31,6 +31,9 @@ before_install:
   - cp settings.xml $HOME/.m2
 
   - export PREVIEW_NAMESPACE=$(echo "v$TRAVIS_BRANCH-$TRAVIS_BUILD_NUMBER"|  tr '[:upper:]' '[:lower:]'|tr . -)
+  - ORG='activiti'
+  - HELM_RELEASE_NAME="$TRAVIS_BRANCH-$TRAVIS_BUILD_NUMBER"
+  - GLOBAL_GATEWAY_DOMAIN="35.228.195.195.nip.io"
   - export GATEWAY_HOST="gateway.$PREVIEW_NAMESPACE.$GLOBAL_GATEWAY_DOMAIN"
   - export SSO_HOST="identity.$PREVIEW_NAMESPACE.$GLOBAL_GATEWAY_DOMAIN"
   - curl -Ls -o updatebot.jar   https://repo1.maven.org/maven2/io/jenkins/updatebot/updatebot/1.1.53/updatebot-1.1.53.jar
@@ -93,10 +96,7 @@ jobs:
 
     - stage: Release Helm Chart
       if: tag =~ /7\..+/
-      env:
-        - ORG='activiti'
-        - HELM_RELEASE_NAME="v$TRAVIS_BRANCH-$TRAVIS_BUILD_NUMBER"
-        - GLOBAL_GATEWAY_DOMAIN="35.228.195.195.nip.io"
+     
       script:
         - pwd
         - export VERSION=$(cat VERSION)
