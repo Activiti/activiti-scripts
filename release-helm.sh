@@ -28,7 +28,7 @@ sleep 300
 cd ../..
 
 cd activiti-cloud-application/activiti-cloud-acceptance-scenarios
-mvn -DskipITs -DskipTests -q clean install -f activiti-cloud-acceptance-scenarios/pom.xml
+mvn -DskipITs -DskipTests -q clean install
 mvn -pl 'modeling-acceptance-tests' -Droot.log.level=off -q clean verify
 mvn -pl 'runtime-acceptance-tests'  -Droot.log.level=off -q clean verify
 cd -
