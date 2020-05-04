@@ -16,8 +16,9 @@ make updatebot/push-version-dry
 cat .updatebot-repos/github/activiti/activiti-cloud-full-chart/charts/activiti-cloud-full-example/requirements.yaml
 
 cd ..
-make update-version-in-example-charts
-make create-helm-charts-release-and-upload
+#TODO comment
+# make update-version-in-example-charts
+# make create-helm-charts-release-and-upload
 
 cd activiti-cloud-dependencies
 sleep 20
