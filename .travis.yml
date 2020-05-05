@@ -103,13 +103,10 @@ jobs:
         - export VERSION=$(cat VERSION)
         - export HELM_ACTIVITI_VERSION=$(cat VERSION)
         - ./release-helm.sh
-        # - source ./release-helm-chart.sh; git_clone
-        # - pwd
-        # - source ./release-helm-chart.sh; prepare_and_run_helm
-        # - pwd
-        # - source ./release-helm-chart.sh; run_acceptance_test
-        # - pwd
-        # - source ./release-helm-chart.sh; upload_helm_chart
-        # - pwd
 
-
+after_failure:
+  - cd activiti-cloud-application/activiti-cloud-dependencies && make delete|| echo "Trying to delete helm chart" &&  cd - 
+  - kubectl delete ns ${PREVIEW_NAMESPACE} || echo "Trying to delete namespace"
+after_success:
+  - cd activiti-cloud-application/activiti-cloud-dependencies && make delete|| echo "Trying to delete helm chart" &&  cd - 
+  - kubectl delete ns ${PREVIEW_NAMESPACE} || echo "Trying to delete namespace"
