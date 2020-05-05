@@ -29,6 +29,7 @@ cd -
 
 cd activiti-cloud-application/activiti-cloud-dependencies
 make replace-release-full-chart-names
+make prepare-helm-chart
 make tag
 make github
 cd -
