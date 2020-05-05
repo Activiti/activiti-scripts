@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -ex
 
-git clone https://${GITHUB_TOKEN}:x-oauth-basic@github.com/Activiti/activiti-cloud-application.git
+git clone -b dev-almerico-AAE-2501-helm https://${GITHUB_TOKEN}:x-oauth-basic@github.com/Activiti/activiti-cloud-application.git
 cp VERSION  activiti-cloud-application/activiti-cloud-dependencies/
 
 cd activiti-cloud-application/activiti-cloud-dependencies
@@ -11,7 +11,6 @@ make updatebot/push-version-dry
 cat .updatebot-repos/github/activiti/activiti-cloud-full-chart/charts/activiti-cloud-full-example/requirements.yaml
 
 cd ..
-
 
 make create-helm-charts-release-and-upload
 
