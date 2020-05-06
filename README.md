@@ -95,9 +95,9 @@ Running on Travis, requires the following environment variable to be set:
 | MAVEN_PASSWORD | Internal Maven repository password |
 | SRCCLR_API_TOKEN | SourceClear API token |
 | TRAVIS_API_TOKEN | token to launch other builds |
-| SONATYPE_USERNAME | Username to publish artifacts to Sonatype |
-| SONATYPE_PASSWORD | Password to publish artifacts to Sonatype |
-| SONATYPE_PROFILE_ID | Identifier of the staging profile used to create the staging repository for the release |
+| NEXUS_USERNAME | Username to publish artifacts to Nexus |
+| NEXUS_PASSWORD | Password to publish artifacts to Nexus |
+| NEXUS_PROFILE_ID | Identifier of the staging profile used to create the staging repository for the release |
 
 ## How to create a new release
 1. Modify the file `VERSION` so that its content is the name of the version to be released

@@ -8,7 +8,7 @@ services:
 
 env:
   global:
-    - SONATYPE_STAGING_FILE=staging-repository.txt
+    - NEXUS_STAGING_FILE=staging-repository.txt
     - MAVEN_PUSH=true
     - GIT_PUSH=true
     - IGNORE_TAG_CHECKOUT_FAILURE=false
@@ -110,3 +110,4 @@ after_failure:
 after_success:
   - cd activiti-cloud-application/activiti-cloud-dependencies && make delete|| echo "Trying to delete helm chart" &&  cd - 
   - kubectl delete ns ${PREVIEW_NAMESPACE} || echo "Trying to delete namespace"
+

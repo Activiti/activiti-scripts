@@ -3,9 +3,9 @@
   xsi:schemalocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
   <servers>
     <server>
-      <id>central-releases-staging-fixed</id>
-      <username>${env.SONATYPE_USERNAME}</username>
-      <password>${env.SONATYPE_PASSWORD}</password>
+      <id>nexus-releases-staging-fixed</id>
+      <username>${env.NEXUS_USERNAME}</username>
+      <password>${env.NEXUS_PASSWORD}</password>
     </server>
   </servers>
   <profiles>
@@ -35,7 +35,7 @@
       <repositories>
         <repository>
           <id>activiti-staging</id>
-          <url>https://oss.sonatype.org/service/local/repositories/orgactiviti-1230/content</url>
+          <url>${env.NEXUS_URL}/service/local/repositories/STAGING_ID/content</url>
         </repository>
       </repositories>
     </profile>
