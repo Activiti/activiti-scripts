@@ -13,11 +13,11 @@ before_install:
   - mkdir -p $HOME/.m2
   - cp settings.xml $HOME/.m2
   - echo MAVEN_OPTS=-Xmx1536m > ~/.mavenrc
-  - curl -Ls https://github.com/jenkins-x/jx-release-version/releases/download/v1.0.24/jx-release-version_1.0.24_linux_amd64.tar.gz|  tar
-    xvz -C .
-  - curl -Ls -o updatebot.jar   https://repo1.maven.org/maven2/io/jenkins/updatebot/updatebot/1.1.53/updatebot-1.1.53.jar
-  - sudo cp jx-release-version /usr/bin/jx-release-version
-  - sudo cp updatebot.jar  /usr/bin/updatebot.jar
+  - mkdir $HOME/bin
+  - if ! [ -f $HOME/bin/jx-release-version ]; then curl -Ls https://github.com/jenkins-x/jx-release-version/releases/download/v1.0.24/jx-release-version_1.0.24_linux_amd64.tar.gz|  tar xvz -C $HOME/bin; fi 
+  - if ! [ -f $HOME/bin/jx-release-version ]; then curl -Ls -o $HOME/bin/updatebot.jar   https://repo1.maven.org/maven2/io/jenkins/updatebot/updatebot/1.1.53/updatebot-1.1.53.jar; fi
+  - sudo cp $HOME/bin/jx-release-version /usr/bin/jx-release-version
+  - sudo cp $HOME/bin/updatebot.jar  /usr/bin/updatebot.jar
   - echo "java -jar /usr/bin/updatebot.jar \$@" > updatebot
   - sudo cp updatebot  /usr/bin/updatebot
   - sudo chmod a+x /usr/bin/updatebot
@@ -31,7 +31,7 @@ before_install:
 cache:
   directories:
     - ${HOME}/.m2/repository
-
+    - ${HOME}/bin/
 services:
   - docker
 # branches:
