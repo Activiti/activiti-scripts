@@ -31,7 +31,7 @@ before_install:
 cache:
   directories:
     - ${HOME}/.m2/repository
-    - ${HOME}/$HOME/bin/
+    - ${HOME}/bin/
 
 services:
   - docker
