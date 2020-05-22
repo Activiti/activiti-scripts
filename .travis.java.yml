@@ -12,7 +12,7 @@ env:
 before_install:
   - mkdir -p $HOME/.m2
   - cp settings.xml $HOME/.m2
-  - echo MAVEN_OPTS=-Xmx1536m > ~/.mavenrc
+  - echo MAVEN_OPTS=-Xmx1536m > ~/.mavenrc  
   - mkdir $HOME/bin
   - if ! [ -f $HOME/bin/jx-release-version ]; then curl -Ls https://github.com/jenkins-x/jx-release-version/releases/download/v${JX_RELEASE_VERSION}/jx-release-version_${JX_RELEASE_VERSION}_linux_amd64.tar.gz|  tar xvz -C $HOME/bin; fi 
   - if ! [ -f $HOME/bin/jx-release-version ]; then curl -Ls -o $HOME/bin/updatebot.jar   https://repo1.maven.org/maven2/io/jenkins/updatebot/updatebot/${UPDATEBOT_VERSION}/updatebot-${UPDATEBOT_VERSION}.jar; fi
