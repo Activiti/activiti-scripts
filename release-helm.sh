@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -ex
 
-git clone -b dev-almerico-AAE-2501-helm https://${GITHUB_TOKEN}:x-oauth-basic@github.com/Activiti/activiti-cloud-application.git
+git clone -b develop https://${GITHUB_TOKEN}:x-oauth-basic@github.com/Activiti/activiti-cloud-application.git
 cp VERSION  activiti-cloud-application/activiti-cloud-dependencies/
 
 cd activiti-cloud-application/activiti-cloud-dependencies
