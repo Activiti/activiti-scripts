@@ -8,6 +8,8 @@ env:
     - MAVEN_CLI_OPTS=" --batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true -DdeployAtEnd=false -U  -q -Dlogging.level.root=off -Droot.log.level=off"
     - MAVEN_TEST_OPTS=" -Dspring.main.banner-mode=off -Denforcer.skip -q "
     - MAVEN_CMD="mvn ${MAVEN_CLI_OPTS} install ${MAVEN_TEST_OPTS}"
+    - UPDATEBOT_VERSION="1.1.53"
+    - JX_RELEASE_VERSION="1.0.24"
 
 before_install:
   - mkdir -p $HOME/.m2
@@ -32,9 +34,7 @@ cache:
     - ${HOME}/tmp/
 services:
   - docker
-# branches:
-#   except:
-#     - /^v?\d+\.\d+(\.\d+)?(-\S*)?$/
+
 branches:
   only:
     - master
