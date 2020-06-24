@@ -21,3 +21,8 @@ target
 
 .factorypath
 .springBeans
+
+#helm
+linux-amd64
+updatebot
+updatebot.jar
