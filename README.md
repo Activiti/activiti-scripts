@@ -106,7 +106,7 @@ Without this prefix, the release will not start.
 
 - Once the commit is pushed the `CI/CD` will create a new tag with the name informed in the file [VERSION](./VERSION). 
 - The `CI/CD` will also create a staging repository on Sonatype where the release artifacts will be published to.
-- The name of the staging repository can be found in the file `staging-repository.txt` on the new created tag.
+- The name of the staging repository can be found in the file `maven-config/staging-repository.txt` on the new created tag.
 - All the internal versions used to create the release can be found in the files `repos-*.txt`.
 They are fetched from the latest tag available for [activiti-cloud-dependencies](https://github.com/Activiti/activiti-cloud-dependencies/tags).
 - Once the new tag is created, the `CI/CD` will run the release from this tag. 

@@ -8,7 +8,8 @@ services:
 
 env:
   global:
-    - NEXUS_STAGING_FILE=staging-repository.txt
+    - NEXUS_STAGING_FILE=maven-config/staging-repository.txt
+    - SETTINGS_XML_FILE_PATH=maven-config/settings.xml
     - MAVEN_PUSH=true
     - GIT_PUSH=true
     - IGNORE_TAG_CHECKOUT_FAILURE=false
@@ -28,7 +29,7 @@ before_install:
   - echo BRANCH=${TRAVIS_PULL_REQUEST_BRANCH:-${TRAVIS_BRANCH}}
   - echo "$DOCKER_REGISTRY_PASSWORD" | docker login -u "$DOCKER_REGISTRY_USERNAME" --password-stdin "$DOCKER_REGISTRY"
   - mkdir -p ${HOME}/.m2
-  - cp settings.xml $HOME/.m2
+  - cp ${SETTINGS_XML_FILE_PATH} $HOME/.m2
 
   - export PREVIEW_NAMESPACE=$(echo "v$TRAVIS_BRANCH-$TRAVIS_BUILD_NUMBER"|  tr '[:upper:]' '[:lower:]'|tr . -)
   - ORG='activiti'
@@ -97,7 +98,7 @@ jobs:
 
     - stage: Release Helm Chart
       if: tag =~ /7\..+/
-     
+
       script:
         - pwd
         - export VERSION=$(cat VERSION)
@@ -105,9 +106,9 @@ jobs:
         - ./release-helm.sh
 
 after_failure:
-  - cd activiti-cloud-application/activiti-cloud-dependencies && make delete|| echo "Trying to delete helm chart" &&  cd - 
+  - cd activiti-cloud-application/activiti-cloud-dependencies && make delete|| echo "Trying to delete helm chart" &&  cd -
   - kubectl delete ns ${PREVIEW_NAMESPACE} || echo "Trying to delete namespace"
 after_success:
-  - cd activiti-cloud-application/activiti-cloud-dependencies && make delete|| echo "Trying to delete helm chart" &&  cd - 
+  - cd activiti-cloud-application/activiti-cloud-dependencies && make delete|| echo "Trying to delete helm chart" &&  cd -
   - kubectl delete ns ${PREVIEW_NAMESPACE} || echo "Trying to delete namespace"
 
