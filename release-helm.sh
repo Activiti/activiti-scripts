@@ -35,6 +35,7 @@ cd activiti-cloud-application/activiti-cloud-dependencies
 cd ${MY_WORK_DIR}/activiti-cloud-application/activiti-cloud-dependencies/.updatebot-repos/github/activiti/activiti-cloud-full-chart/charts/activiti-cloud-full-example
 make version
 make tag
+make release
 make github
 cd -
 
