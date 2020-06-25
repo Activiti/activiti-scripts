@@ -80,13 +80,7 @@ if [ -n "${tag_to_fetch}" ]; then
 
 else
   # if no second argument is provided, we get the latest tag
-  latest_tag=$(git tag --sort=-creatordate | head -n 1)
-
-  if [[ ${latest_tag::1} == "v" ]]; then
-    aggregator_tag=$(git tag --sort=-creatordate | head -n 1)
-  else
-    aggregator_tag=$(git tag --sort=-creatordate | head -n 2 | grep "v")
-  fi
+  aggregator_tag=$(git tag --sort=-creatordate | grep "v" | head -n 1)
 
   git checkout -q tags/"$aggregator_tag"
   version_dependency_aggregator=$(echo "$aggregator_tag" | cut -d'v' -f 2)
@@ -113,7 +107,7 @@ if [ -n "$SHOULD_INCREMENT_VERSION" ]; then
 fi
 
 # addition of modeling front end project
-modeling_app_tags=$(curl -s https://api.github.com/repos/Activiti/activiti-modeling-app/tags | grep name | head -n3)
+modeling_app_tags=$(curl -s https://api.github.com/repos/Activiti/activiti-modeling-app/tags | grep name | grep "v" | head -n3)
 echo "Latest tags for modeling app:"
 echo "$modeling_app_tags"
 modeling_app_version=$(echo "$modeling_app_tags" | cut -d'v' -f 2 | cut -d'"' -f 1 | head -n1)
