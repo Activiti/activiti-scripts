@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -ex
-
+export MY_WORK_DIR=`pwd`
 git clone -b develop https://${GITHUB_TOKEN}:x-oauth-basic@github.com/Activiti/activiti-cloud-application.git
 cp VERSION  activiti-cloud-application/activiti-cloud-dependencies/
 
@@ -30,6 +30,8 @@ cd -
 cd activiti-cloud-application/activiti-cloud-dependencies
 #make replace-release-full-chart-names
 #make prepare-helm-chart
+cd $(MY_WORK_DIR)/.updatebot-repos/github/activiti/activiti-cloud-full-chart/charts/activiti-cloud-full-example
+make version
 make tag
 make github
 cd -
