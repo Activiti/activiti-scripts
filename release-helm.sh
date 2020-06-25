@@ -30,7 +30,7 @@ cd -
 cd activiti-cloud-application/activiti-cloud-dependencies
 #make replace-release-full-chart-names
 #make prepare-helm-chart
-cd $(MY_WORK_DIR)/.updatebot-repos/github/activiti/activiti-cloud-full-chart/charts/activiti-cloud-full-example
+cd ${MY_WORK_DIR}/.updatebot-repos/github/activiti/activiti-cloud-full-chart/charts/activiti-cloud-full-example
 make version
 make tag
 make github
