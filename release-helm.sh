@@ -12,7 +12,17 @@ make updatebot/push-version-dry
 cat .updatebot-repos/github/activiti/activiti-cloud-full-chart/charts/activiti-cloud-full-example/requirements.yaml
 
 cd ..
-
+#creating new common chart version and update dependencies in charts
+git clone -b https://${GITHUB_TOKEN}:x-oauth-basic@github.com/Activiti/activiti-cloud-common-chart.git
+cd activiti-cloud-common-chart/charts/common
+make version
+make tag
+make release
+make github
+make updatebot/push-version
+cd - #return to activiti-cloud-application folder
+make common-helm-chart-version
+# end work with common
 make create-helm-charts-release-and-upload
 
 cd activiti-cloud-dependencies
@@ -37,5 +47,6 @@ make version
 make tag
 make release
 make github
+
 cd -
 
