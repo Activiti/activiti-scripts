@@ -32,9 +32,9 @@ before_install:
   - echo "Version=$VERSION"
   - export GATEWAY_HOST="gateway.$PREVIEW_NAMESPACE.$GLOBAL_GATEWAY_DOMAIN"
   - export SSO_HOST="identity.$PREVIEW_NAMESPACE.$GLOBAL_GATEWAY_DOMAIN"
-cache:
-  directories:
-    - ${HOME}/.m2/repository
+# cache:
+#   directories:
+#     - ${HOME}/.m2/repository
 services:
   - docker
 
