@@ -35,8 +35,6 @@ before_install:
 cache:
   directories:
     - ${HOME}/.m2/repository
-    - ${HOME}/tmp/
-    - ${HOME}/.helm/
 services:
   - docker
 
