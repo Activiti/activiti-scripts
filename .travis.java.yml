@@ -26,12 +26,13 @@ before_install:
   - echo "java -jar /usr/bin/updatebot.jar \$@" > updatebot
   - sudo cp updatebot  /usr/bin/updatebot
   - sudo chmod a+x /usr/bin/updatebot
-  - export PREVIEW_NAMESPACE=$(echo "$TRAVIS_BRANCH-$TRAVIS_BUILD_NUMBER-$TRAVIS_JOB_ID"|  tr '[:upper:]' '[:lower:]'|tr . -|tr - "0")
+  - export PREVIEW_NAMESPACE=$(echo "$TRAVIS_BRANCH-$TRAVIS_BUILD_NUMBER-$TRAVIS_JOB_ID"|  tr '[:upper:]' '[:lower:]'|tr . -|tr - "0"|cut -c 1-62)
   - if [[ $TRAVIS_PULL_REQUEST == "false" ]]; then  echo $(jx-release-version) > VERSION; else echo 0.0.${TRAVIS_BUILD_ID:(-4)}> VERSION;fi
   - export VERSION=$(cat VERSION)
   - echo "Version=$VERSION"
   - export GATEWAY_HOST="gateway.$PREVIEW_NAMESPACE.$GLOBAL_GATEWAY_DOMAIN"
   - export SSO_HOST="identity.$PREVIEW_NAMESPACE.$GLOBAL_GATEWAY_DOMAIN"
+  
 # cache:
 #   directories:
 #     - ${HOME}/.m2/repository
