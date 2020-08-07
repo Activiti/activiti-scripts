@@ -6,7 +6,7 @@ jdk:
 env:
   global:
     - MAVEN_CLI_OPTS=" --batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true -DdeployAtEnd=false -U -Dmaven.wagon.http.retryHandler.count=3"
-    - MAVEN_TEST_OPTS=" -Dspring.main.banner-mode=off -Denforcer.skip "
+    - MAVEN_TEST_OPTS=" -Dspring.main.banner-mode=off -Denforcer.skip -Dmaven.wagon.http.retryHandler.count=3"
     - MAVEN_CMD="mvn ${MAVEN_CLI_OPTS} install ${MAVEN_TEST_OPTS}"
 
 before_install:
