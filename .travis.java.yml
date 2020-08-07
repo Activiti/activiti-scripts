@@ -41,10 +41,10 @@ before_install:
 services:
   - docker
 
-branches:
-  only:
-    - master
-    - develop
+# branches:
+#   only:
+#     - master
+#     - develop
 
 # Send coverage data
 after_success:
