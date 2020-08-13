@@ -26,7 +26,7 @@ before_install:
   - echo "java -jar /usr/bin/updatebot.jar \$@" > updatebot
   - sudo cp updatebot  /usr/bin/updatebot
   - sudo chmod a+x /usr/bin/updatebot
-  - if [[ $TRAVIS_PULL_REQUEST == "false" ]]; then  echo $(jx-release-version) > VERSION; else echo ${TRAVIS_BUILD_NUMBER:(-4)}> VERSION;fi
+  - if [[ $TRAVIS_PULL_REQUEST == "false" ]]; then  echo $(jx-release-version) > VERSION; else echo ${TRAVIS_BUILD_ID:(-4)}> VERSION;fi
   - export VERSION=$(cat VERSION)
   - echo "Version=$VERSION"
   - export PREVIEW_NAMESPACE=$(echo "$TRAVIS_BRANCH-$VERSION"|  tr '[:upper:]' '[:lower:]'|tr . -|tr - "0")
