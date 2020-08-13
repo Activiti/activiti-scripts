@@ -13,7 +13,7 @@ cat .updatebot-repos/github/activiti/activiti-cloud-full-chart/charts/activiti-c
 
 cd ..
 #creating new common chart version and update dependencies in charts
-git clone -b https://${GITHUB_TOKEN}:x-oauth-basic@github.com/Activiti/activiti-cloud-common-chart.git
+git clone https://${GITHUB_TOKEN}:x-oauth-basic@github.com/Activiti/activiti-cloud-common-chart.git
 cd activiti-cloud-common-chart/charts/common
 make version
 make tag
