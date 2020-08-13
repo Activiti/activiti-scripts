@@ -31,10 +31,9 @@ before_install:
   - mkdir -p ${HOME}/.m2
   - cp ${SETTINGS_XML_FILE_PATH} $HOME/.m2
 
-  - export PREVIEW_NAMESPACE=$(echo "v$TRAVIS_BRANCH-$TRAVIS_BUILD_NUMBER"|  tr '[:upper:]' '[:lower:]'|tr . -)
+  - export PREVIEW_NAMESPACE=$(echo "v$TRAVIS_BRANCH-$TRAVIS_BUILD_ID"|  tr '[:upper:]' '[:lower:]'|tr . -)
   - ORG='activiti'
   - export HELM_RELEASE_NAME="$TRAVIS_BRANCH-$TRAVIS_BUILD_NUMBER"
-  - export GLOBAL_GATEWAY_DOMAIN="35.228.195.195.nip.io"
   - export GATEWAY_HOST="gateway.$PREVIEW_NAMESPACE.$GLOBAL_GATEWAY_DOMAIN"
   - export SSO_HOST="identity.$PREVIEW_NAMESPACE.$GLOBAL_GATEWAY_DOMAIN"
   - curl -Ls -o updatebot.jar   https://repo1.maven.org/maven2/io/jenkins/updatebot/updatebot/1.1.53/updatebot-1.1.53.jar
@@ -51,7 +50,7 @@ before_install:
   - kubectl config set-credentials default-admin --token=${K8S_API_TOKEN}
   - kubectl config set-context default-system --cluster=default-cluster --user=default-admin
   - kubectl config use-context default-system
-  - kubectl get ns
+  - kubectl get ns|| return 1
 
 jobs:
   include:
