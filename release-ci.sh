@@ -9,4 +9,4 @@ export STAGING_REPOSITORY
 RELEASE_VERSION=$(<VERSION)
 export RELEASE_VERSION
 
-MAVEN_ARGS="clean install -DskipTests" ./release-all.sh
+MAVEN_ARGS="clean install -DskipTests -q " ./release-all.sh
