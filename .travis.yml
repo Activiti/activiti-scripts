@@ -97,17 +97,19 @@ jobs:
 
     - stage: Release Helm Chart
       if: tag =~ /7\..+/
-
       script:
         - pwd
         - export VERSION=$(cat VERSION)
         - export HELM_ACTIVITI_VERSION=$(cat VERSION)
         - ./release-helm.sh
+    - stage: Remove Helm Chart
+      if: tag =~ /7\..+/
+      script:
+        - cd activiti-cloud-application/activiti-cloud-dependencies && make delete|| echo "Trying to delete helm chart" &&  cd -
+        - kubectl delete ns ${PREVIEW_NAMESPACE} || echo "Trying to delete namespace"
+
 
 after_failure:
-  - cd activiti-cloud-application/activiti-cloud-dependencies && make delete|| echo "Trying to delete helm chart" &&  cd -
-  - kubectl delete ns ${PREVIEW_NAMESPACE} || echo "Trying to delete namespace"
-after_success:
   - cd activiti-cloud-application/activiti-cloud-dependencies && make delete|| echo "Trying to delete helm chart" &&  cd -
   - kubectl delete ns ${PREVIEW_NAMESPACE} || echo "Trying to delete namespace"
 
