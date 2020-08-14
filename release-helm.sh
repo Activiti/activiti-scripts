@@ -20,7 +20,6 @@ make tag
 make release
 make github
 cd - #return to activiti-cloud-application folder
-make update-common-chart-version
 make common-helm-chart-version
 # end work with common
 make create-helm-charts-release-and-upload
