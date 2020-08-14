@@ -105,11 +105,11 @@ jobs:
     - stage: Remove Helm Chart
       if: tag =~ /7\..+/
       script:
-        - cd activiti-cloud-application/activiti-cloud-dependencies && make delete|| echo "Trying to delete helm chart" &&  cd -
+        - helm delete --purge --no-hooks ${PREVIEW_NAMESPACE}|| echo "Trying to delete chart"
         - kubectl delete ns ${PREVIEW_NAMESPACE} || echo "Trying to delete namespace"
 
 
 after_failure:
-  - cd activiti-cloud-application/activiti-cloud-dependencies && make delete|| echo "Trying to delete helm chart" &&  cd -
+  - helm delete --purge --no-hooks ${PREVIEW_NAMESPACE}|| echo "Trying to delete chart"
   - kubectl delete ns ${PREVIEW_NAMESPACE} || echo "Trying to delete namespace"
 
