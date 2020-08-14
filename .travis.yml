@@ -15,13 +15,7 @@ env:
     - IGNORE_TAG_CHECKOUT_FAILURE=false
     - DEPLOY_EXISTING=true
     - CHECK_VERSIONS=
-    - SRC_DIR=${
-    
-    
-    
-    
-    
-    _DIR}/..
+    - SRC_DIR=${TRAVIS_BUILD_DIR}/..
     - NODE_OPTIONS=--max_old_space_size=30000
     - HELM_VERSION=2.12.3
     - KUBERNETES_VERSION=1.14.8
