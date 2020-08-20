@@ -1,7 +1,5 @@
 language: java
 jdk: openjdk11
-node_js:
-  - "12.13.1"
 
 services:
   - docker
@@ -24,6 +22,8 @@ env:
     - GITHUB_HELM_REPO_URL="https://activiti.github.io/activiti-cloud-helm-charts/"
 
 before_install:
+  - nvm install 12.18.1
+  - nvm use 12.18.1
   - echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
   - echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
   - echo BRANCH=${TRAVIS_PULL_REQUEST_BRANCH:-${TRAVIS_BRANCH}}
