@@ -15,7 +15,7 @@ initializeS3Variables(){
 
 downloadFromS3(){
   echo "Downloading cache from S3: aws s3 sync ${S3_M2_REPOSITORY_RELEASE_DIR} ${M2_REPOSITORY_DIR} ${S3_CLIENT_OPTS}"
-  time aws s3 sync "${S3_M2_REPOSITORY_RELEASE_DIR}" "${M2_REPOSITORY_DIR}" "${S3_CLIENT_OPTS}"
+  time aws s3 sync ${S3_M2_REPOSITORY_RELEASE_DIR} ${M2_REPOSITORY_DIR} ${S3_CLIENT_OPTS}
 }
 
 initializeReleaseVariables(){
