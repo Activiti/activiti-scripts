@@ -7,4 +7,4 @@ set -e
 
 initializeReleaseVariables
 
-MAVEN_ARGS="clean install -DskipTests -q " ./release-all.sh
+SCRIPT="${SCRIPT_DIR}/prepare-release.sh" "${SCRIPT_DIR}"/run.sh

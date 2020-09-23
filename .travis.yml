@@ -4,6 +4,8 @@ jdk: openjdk11
 services:
   - docker
 
+fail_fast: true
+
 env:
   global:
     - NEXUS_STAGING_FILE=maven-config/staging-repository.txt
@@ -20,6 +22,9 @@ env:
     - TRAVIS_WAIT_TIMEOUT=${TRAVIS_WAIT_TIMEOUT:-180}
     - GITHUB_CHARTS_REPO="https://github.com/Activiti/activiti-cloud-helm-charts.git"
     - GITHUB_HELM_REPO_URL="https://activiti.github.io/activiti-cloud-helm-charts/"
+    - S3_M2_REPOSITORY_DIR="${S3_BASE_DIR}/act-m2/repo"
+    - M2_DIR=${HOME}/.m2
+    - M2_REPOSITORY_DIR=${M2_DIR}/repository
 
 before_install:
   - nvm install 12.18.1
@@ -28,8 +33,8 @@ before_install:
   - echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
   - echo BRANCH=${TRAVIS_PULL_REQUEST_BRANCH:-${TRAVIS_BRANCH}}
   - echo "$DOCKER_REGISTRY_PASSWORD" | docker login -u "$DOCKER_REGISTRY_USERNAME" --password-stdin "$DOCKER_REGISTRY"
-  - mkdir -p ${HOME}/.m2
-  - cp ${SETTINGS_XML_FILE_PATH} $HOME/.m2
+  - mkdir -p ${M2_DIR}
+  - cp ${SETTINGS_XML_FILE_PATH} ${M2_DIR}
 
   - export PREVIEW_NAMESPACE=$(echo "v$TRAVIS_BRANCH-$TRAVIS_BUILD_ID"|  tr '[:upper:]' '[:lower:]'|tr . -)
   - ORG='activiti'
@@ -51,59 +56,93 @@ before_install:
   - kubectl config set-context default-system --cluster=default-cluster --user=default-admin
   - kubectl config use-context default-system
   - kubectl get ns|| return 1
+  - pip install --user awscli
+
+stages:
+  - name: Create tag
+    if: (commit_message =~ /\[Release\] .+/ OR type = cron) AND (tag IS blank)
+  - name: Prepare and build Activiti Core
+    if: tag =~ /7\..+/
+  - name: Prepare and build Activiti Cloud
+    if: tag =~ /7\..+/
+  - name: Prepare and build Activiti Cloud Application
+    if: tag =~ /7\..+/
+  - name: Prepare Activiti Cloud Modeling App
+    if: tag =~ /7\..+/
+  - name: Release projects
+    if: tag =~ /7\..+/
+  - name: Release Docker Images
+    if: tag =~ /7\..+/
+  - name: Release Helm Chart
+    if: tag =~ /7\..+/
+  - name: Remove Helm Chart
+    if: tag =~ /7\..+/
 
 jobs:
   include:
     - stage: Create tag
-      if: (commit_message =~ /\[Release\] .+/ OR type = cron) AND (tag IS blank)
       script: ./create-tag.sh
 
-    - stage: Release Activiti Core
-      if: tag =~ /7\..+/
+    - stage: Prepare and build Activiti Core
+      env:
+        - PROJECTS=activiti
+      script: ./prepare-release-ci.sh
+
+    - stage: Prepare and build Activiti Cloud
+      env:
+        - PROJECTS=activiti-cloud
+      script: ./prepare-release-ci.sh
+
+    - stage: Prepare and build Activiti Cloud Application
+      env:
+        - PROJECTS=activiti-cloud-application
+      script: ./prepare-release-ci.sh
+
+    - stage: Prepare Activiti Cloud Modeling App
+      env:
+        - PROJECTS=activiti-modeling-app
+      script: ./prepare-release-ci.sh
+
+    - stage: Release projects
+      name: Release Activiti Core
       env:
         - PROJECTS=activiti
       script: ./release-ci.sh
 
-    - stage: Release Activiti Cloud
-      if: tag =~ /7\..+/
+    - name: Release Activiti Cloud
       env:
         - PROJECTS=activiti-cloud
       script: ./release-ci.sh
 
-    - stage: Release Activiti Cloud Modeling App
-      if: tag =~ /7\..+/
-      env:
-        - PROJECTS=activiti-modeling-app
-      script: ./release-ci.sh
-
-    - stage: Release Activiti Cloud Application
-      if: tag =~ /7\..+/
+    - name: Release Activiti Cloud Application
       env:
         - PROJECTS=activiti-cloud-application
       script: ./release-ci.sh
 
+    - name: Release Activiti Cloud Modeling App
+      env:
+        - PROJECTS=activiti-modeling-app
+      script: ./release-ci.sh
+
     - stage: Release Docker Images
-      if: tag =~ /7\..+/
       env:
         - DOCKER_PUSH=true
       name: "Activiti Cloud Example Images"
       script: ./release-docker-activiti-cloud-example-images.sh
 
     - name: "Activiti Modeling App"
-      if: tag =~ /7\..+/
       env:
         - DOCKER_PUSH=true
       script: ./release-docker-modeling-app.sh
 
     - stage: Release Helm Chart
-      if: tag =~ /7\..+/
       script:
         - pwd
         - export VERSION=$(cat VERSION)
+        - export RELEASE_VERSION=$(cat VERSION)
         - export HELM_ACTIVITI_VERSION=$(cat VERSION)
         - ./release-helm.sh
     - stage: Remove Helm Chart
-      if: tag =~ /7\..+/
       script:
         - helm delete --purge --no-hooks ${PREVIEW_NAMESPACE}|| echo "Trying to delete chart"
         - kubectl delete ns ${PREVIEW_NAMESPACE} || echo "Trying to delete namespace"
