@@ -86,16 +86,19 @@ jobs:
     - stage: Prepare and build Activiti Core
       env:
         - PROJECTS=activiti
+        - USE_CACHE=true
       script: ./prepare-release-ci.sh
 
     - stage: Prepare and build Activiti Cloud
       env:
         - PROJECTS=activiti-cloud
+        - USE_CACHE=true
       script: ./prepare-release-ci.sh
 
     - stage: Prepare and build Activiti Cloud Application
       env:
         - PROJECTS=activiti-cloud-application
+        - USE_CACHE=true
       script: ./prepare-release-ci.sh
 
     - stage: Prepare Activiti Cloud Modeling App
@@ -107,16 +110,19 @@ jobs:
       name: Release Activiti Core
       env:
         - PROJECTS=activiti
+        - USE_CACHE=true
       script: ./release-ci.sh
 
     - name: Release Activiti Cloud
       env:
         - PROJECTS=activiti-cloud
+        - USE_CACHE=true
       script: ./release-ci.sh
 
     - name: Release Activiti Cloud Application
       env:
         - PROJECTS=activiti-cloud-application
+        - USE_CACHE=true
       script: ./release-ci.sh
 
     - name: Release Activiti Cloud Modeling App

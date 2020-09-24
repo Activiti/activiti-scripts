@@ -10,7 +10,7 @@ checkNoSnapshots() {
 
 initializeS3Variables(){
   S3_M2_REPOSITORY_RELEASE_DIR="${S3_M2_REPOSITORY_DIR}/${RELEASE_VERSION}"
-  S3_CLIENT_OPTS="--quiet --exclude *SNAPSHOT --expires $(date -d '+10 days' --utc +'%Y-%m-%dT%H:%M:%SZ')"
+  S3_CLIENT_OPTS="--quiet --exclude * --include *activiti*${RELEASE_VERSION}* --expires $(date -d '+10 days' --utc +'%Y-%m-%dT%H:%M:%SZ')"
 }
 
 downloadFromS3(){

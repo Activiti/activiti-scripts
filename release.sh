@@ -15,9 +15,6 @@ echo "SCRIPT_DIR IS $SCRIPT_DIR"
 
 RELEASE_BRANCH=release-${RELEASE_VERSION}
 
-initializeS3Variables
-downloadFromS3
-
 git fetch --tags
 if  git tag --list | egrep -q "^$RELEASE_VERSION$"
 then

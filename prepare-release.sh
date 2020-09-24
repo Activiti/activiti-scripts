@@ -61,10 +61,6 @@ else
       git checkout tags/v${TAG} -b "${RELEASE_BRANCH}"
     fi
 
-    initializeS3Variables
-    downloadFromS3
-
-
     VERSION=${SNAPSHOT_VERSION} NEXT_VERSION=${RELEASE_VERSION} . ${SCRIPT_DIR}/update-pom-version.sh
     checkNoSnapshots
 
@@ -82,8 +78,6 @@ else
     if [ -e "pom.xml" ];
     then
       mvnInstall
-      echo "Uploading cache to S3: aws s3 sync ${M2_REPOSITORY_DIR} ${S3_M2_REPOSITORY_RELEASE_DIR} ${S3_CLIENT_OPTS}"
-      time aws s3 sync ${M2_REPOSITORY_DIR} ${S3_M2_REPOSITORY_RELEASE_DIR} ${S3_CLIENT_OPTS}
     else
       echo "No pom.xml - not building"
     fi
