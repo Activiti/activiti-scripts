@@ -61,15 +61,13 @@ before_install:
 stages:
   - name: Create tag
     if: (commit_message =~ /\[Release\] .+/ OR type = cron) AND (tag IS blank)
-  - name: Prepare and build Activiti Core
+  - name: Release Activiti Core
     if: tag =~ /7\..+/
-  - name: Prepare and build Activiti Cloud
+  - name: Release Activiti Cloud
     if: tag =~ /7\..+/
-  - name: Prepare and build Activiti Cloud Application
+  - name: Release Activiti Cloud Application
     if: tag =~ /7\..+/
-  - name: Prepare Activiti Cloud Modeling App
-    if: tag =~ /7\..+/
-  - name: Release projects
+  - name: Release Activiti Cloud Modeling App
     if: tag =~ /7\..+/
   - name: Release Docker Images
     if: tag =~ /7\..+/
@@ -83,49 +81,25 @@ jobs:
     - stage: Create tag
       script: ./create-tag.sh
 
-    - stage: Prepare and build Activiti Core
-      env:
-        - PROJECTS=activiti
-        - USE_CACHE=true
-      script: ./prepare-release-ci.sh
-
-    - stage: Prepare and build Activiti Cloud
-      env:
-        - PROJECTS=activiti-cloud
-        - USE_CACHE=true
-      script: ./prepare-release-ci.sh
-
-    - stage: Prepare and build Activiti Cloud Application
-      env:
-        - PROJECTS=activiti-cloud-application
-        - USE_CACHE=true
-      script: ./prepare-release-ci.sh
-
-    - stage: Prepare Activiti Cloud Modeling App
-      env:
-        - PROJECTS=activiti-modeling-app
-      script: ./prepare-release-ci.sh
-
-    - stage: Release projects
-      name: Release Activiti Core
+    - stage: Release Activiti Core
       env:
         - PROJECTS=activiti
         - USE_CACHE=true
       script: ./release-ci.sh
 
-    - name: Release Activiti Cloud
+    - stage: Release Activiti Cloud
       env:
         - PROJECTS=activiti-cloud
         - USE_CACHE=true
       script: ./release-ci.sh
 
-    - name: Release Activiti Cloud Application
+    - stage: Release Activiti Cloud Application
       env:
         - PROJECTS=activiti-cloud-application
         - USE_CACHE=true
       script: ./release-ci.sh
 
-    - name: Release Activiti Cloud Modeling App
+    - stage: Release Activiti Cloud Modeling App
       env:
         - PROJECTS=activiti-modeling-app
       script: ./release-ci.sh
