@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
+. "$(dirname "$0")/shared-lib.sh"
+
 mvnDeploy() {
   echo "Deploying to repository ${STAGING_REPOSITORY}"
   mvn clean deploy -DperformRelease -DskipTests -B -DaltReleaseDeploymentRepository=nexus-releases-staging-fixed::default::"${NEXUS_URL}"/service/local/staging/deployByRepositoryId/"${STAGING_REPOSITORY}"
@@ -37,7 +39,6 @@ else
   echo RELEASE_VERSION=${RELEASE_VERSION}
   echo NEXT_SNAPSHOT_VERSION=${NEXT_SNAPSHOT_VERSION}
 
-  echo $GIT_AUTHOR_NAME
   git config user.name "$GIT_AUTHOR_NAME"
   git config user.email "$GIT_AUTHOR_EMAIL"
 
@@ -61,7 +62,7 @@ else
     then
       echo 'using' $BASEBRANCH 'as base branch'
     else
-      BASEBRANCH=master
+      BASEBRANCH=develop
   fi
 
   if [ -z "${TAG}" ];
@@ -75,8 +76,8 @@ else
 
   VERSION=${SNAPSHOT_VERSION} NEXT_VERSION=${RELEASE_VERSION} . ${SCRIPT_DIR}/update-pom-version.sh
 
-   if [ -n "${GIT_PUSH}" ]
-   then
+  if [ -n "${GIT_PUSH}" ]
+  then
     git add .
     if [ -e "pom.xml" ];
       then
@@ -86,29 +87,29 @@ else
     fi
     git tag -a ${RELEASE_VERSION} -m "tagging release ${RELEASE_VERSION}"
     git checkout ${RELEASE_VERSION}
-   fi
+  fi
 
 
+  if [ -e "pom.xml" ];
+  then
+    if [ -n "${MAVEN_PUSH}" ]
+    then
+      mvnDeploy
+    else
+      mvn "${MAVEN_ARGS:-clean install -DskipTests}"
+    fi
+  else
+    echo "No pom.xml - not building"
+  fi
+
+  if [ -n "${GIT_PUSH}" ]
+  then
     if [ -e "pom.xml" ];
     then
-      if [ -n "${MAVEN_PUSH}" ]
-      then
-        mvnDeploy
-      else
-        mvn ${MAVEN_ARGS:-clean install -DskipTests}
-      fi
+      git push --atomic origin ${RELEASE_VERSION}
     else
-      echo "No pom.xml - not building"
+      git push --atomic origin ${RELEASE_VERSION} || true
     fi
-
-    if [ -n "${GIT_PUSH}" ]
-    then
-      if [ -e "pom.xml" ];
-      then
-        git push --atomic origin ${RELEASE_VERSION}
-      else
-        git push --atomic origin ${RELEASE_VERSION} || true
-      fi
-    fi
+  fi
 
 fi

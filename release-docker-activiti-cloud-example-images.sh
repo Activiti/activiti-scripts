@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
+. "$(dirname "$0")/shared-lib.sh"
+
 SCRIPT_DIR="$(cd "$( dirname "$0" )" && pwd)"
 
 export PROJECTS=activiti-cloud-application
@@ -17,6 +19,9 @@ git fetch --tags
 git checkout "${RELEASE_VERSION}"
 
 export DOCKER_IMAGES="example-runtime-bundle,activiti-cloud-query,example-cloud-connector,activiti-cloud-modeling"
+
+initializeS3Variables
+downloadFromS3
 
 for DOCKER_IMAGE in ${DOCKER_IMAGES//,/ }
 do

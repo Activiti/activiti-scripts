@@ -1,12 +1,18 @@
 #!/usr/bin/env bash
 set -ex
+
+. "$(dirname "$0")/shared-lib.sh"
+
 export MY_WORK_DIR=`pwd`
-git clone -b develop https://${GITHUB_TOKEN}:x-oauth-basic@github.com/Activiti/activiti-cloud-application.git
+git clone -b "${VERSION}" https://${GITHUB_TOKEN}:x-oauth-basic@github.com/Activiti/activiti-cloud-application.git
 ls -la
 cp VERSION  activiti-cloud-application/activiti-cloud-dependencies/
 
+initializeS3Variables
+downloadFromS3
+
 cd activiti-cloud-application/activiti-cloud-dependencies
-ls -la 
+ls -la
 make updatebot/push-version-dry
 
 cat .updatebot-repos/github/activiti/activiti-cloud-full-chart/charts/activiti-cloud-full-example/requirements.yaml
