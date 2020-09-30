@@ -17,7 +17,7 @@ before_install:
   - git config --global user.email "${GIT_EMAIL}"
   - mkdir -p $HOME/.m2
   - cp settings.xml $HOME/.m2
-  - echo MAVEN_OPTS=-Xmx1536m > ~/.mavenrc  
+  - echo MAVEN_OPTS=-Xmx1536m > ~/.mavenrc
   - mkdir $HOME/tmp || echo "~/tmp creation"
   - if ! [ -f $HOME/tmp/jx-release-version ]; then curl -Ls https://github.com/jenkins-x/jx-release-version/releases/download/v${JX_RELEASE_VERSION}/jx-release-version_${JX_RELEASE_VERSION}_linux_amd64.tar.gz|  tar xvz -C $HOME/tmp; fi
   - if ! [ -f $HOME/tmp/updatebot.jar ]; then curl -Ls -o $HOME/tmp/updatebot.jar   https://repo1.maven.org/maven2/io/jenkins/updatebot/updatebot/${UPDATEBOT_VERSION}/updatebot-${UPDATEBOT_VERSION}.jar; fi
@@ -28,7 +28,7 @@ before_install:
   - sudo chmod a+x /usr/bin/updatebot
   - echo "TRAVIS_BUILD_NUMBER=$TRAVIS_BUILD_NUMBER"
   - echo "TRAVIS_BUILD_ID=$TRAVIS_BUILD_ID"
-  - if [[ $TRAVIS_PULL_REQUEST == "false" ]]; then  echo $(jx-release-version) > VERSION; else echo ${TRAVIS_BUILD_ID:(-4)}> VERSION;fi
+  - if [[ $TRAVIS_PULL_REQUEST == "false" ]]; then  echo $(jx-release-version) > VERSION; else echo 0.0.1-${TRAVIS_BUILD_ID:(-4)}> VERSION;fi
   - export VERSION=$(cat VERSION)
   - echo "Version=$VERSION"
   - export PREVIEW_NAMESPACE=$(echo "$TRAVIS_BRANCH-$VERSION"|  tr '[:upper:]' '[:lower:]'|tr . -|tr - "0")
