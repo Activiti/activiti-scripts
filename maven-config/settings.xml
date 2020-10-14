@@ -44,7 +44,7 @@
         </repository>
         <repository>
           <id>activiti-staging</id>
-          <url>${env.NEXUS_URL}/service/local/repositories/STAGING_ID/content</url>
+          <url>${env.NEXUS_URL}/service/local/repositories/activiti-7-community-staging-profile-1028/content</url>
         </repository>
       </repositories>
     </profile>
