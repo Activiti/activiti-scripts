@@ -1,1 +1,1 @@
-activiti-modeling-app 7.1.9
+activiti-modeling-app 7.1.10
