@@ -4,8 +4,9 @@ stages:
 env:
   global:
     - M2_REPOSITORY_DIR=${HOME}/.m2/repository
-    - S3_M2_REPOSITORY_DIR={S3_BASE_DIR}/${TRAVIS_REPO_SLUG}/${TRAVIS_BUILD_ID}/m2/repo
-    - S3_JACCO_DIR={S3_BASE_DIR}/${TRAVIS_REPO_SLUG}/${TRAVIS_BUILD_ID}/jacoco
+    - S3_BUILD_DIR=${S3_BASE_DIR}/${TRAVIS_REPO_SLUG}/${TRAVIS_BUILD_ID}
+    - S3_M2_REPOSITORY_DIR=${S3_BUILD_DIR}/m2/repo
+    - S3_JACCO_DIR=${S3_BUILD_DIR}/jacoco
 
 before_cache:
   #  do not cache snapshots as they will come from AWS S3
