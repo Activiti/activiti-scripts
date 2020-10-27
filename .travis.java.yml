@@ -38,6 +38,9 @@ before_install:
 # cache:
 #   directories:
 #     - ${HOME}/.m2/repository
+
+install: skip
+
 services:
   - docker
 
