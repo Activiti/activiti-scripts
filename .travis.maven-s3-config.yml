@@ -11,7 +11,8 @@ before_cache:
   #  do not cache snapshots as they will come from AWS S3
   - find ${M2_REPOSITORY_DIR} -type d -name "*SNAPSHOT" -exec rm -rf {} +
 
-before_script: aws s3 sync ${S3_M2_REPOSITORY_DIR} ${M2_REPOSITORY_DIR} --quiet
+before_script:
+  - aws s3 sync ${S3_M2_REPOSITORY_DIR} ${M2_REPOSITORY_DIR} --quiet
 
 jobs:
   include:

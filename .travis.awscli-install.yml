@@ -1,1 +1,2 @@
-before_install: pip install --user awscli
+before_install:
+  - pip install --user awscli
