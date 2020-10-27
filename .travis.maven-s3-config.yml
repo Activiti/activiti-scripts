@@ -12,6 +12,7 @@ before_cache:
   - find ${M2_REPOSITORY_DIR} -type d -name "*SNAPSHOT" -exec rm -rf {} +
 
 before_script:
+  - echo aws s3 sync ${S3_M2_REPOSITORY_DIR} ${M2_REPOSITORY_DIR} --quiet
   - aws s3 sync ${S3_M2_REPOSITORY_DIR} ${M2_REPOSITORY_DIR} --quiet
 
 jobs:
