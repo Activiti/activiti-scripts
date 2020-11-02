@@ -1,0 +1,28 @@
+stages:
+  - name: build
+
+env:
+  global:
+    - M2_REPOSITORY_DIR=${HOME}/.m2/repository
+    - S3_BUILD_DIR=${S3_BASE_DIR}/${TRAVIS_REPO_SLUG}/${TRAVIS_BUILD_ID}
+    - S3_M2_REPOSITORY_DIR=${S3_BUILD_DIR}/m2/repo
+    - S3_JACCO_DIR=${S3_BUILD_DIR}/jacoco
+
+before_cache:
+  #  do not cache snapshots as they will come from AWS S3
+  - find ${M2_REPOSITORY_DIR} -type d -name "*SNAPSHOT" -exec rm -rf {} +
+
+before_script:
+  - echo aws s3 sync ${S3_M2_REPOSITORY_DIR} ${M2_REPOSITORY_DIR} --quiet
+  - aws s3 sync ${S3_M2_REPOSITORY_DIR} ${M2_REPOSITORY_DIR} --quiet
+
+jobs:
+  include:
+    - name: build
+      stage: build
+      script: |
+        (
+        set -e
+        mvn install -B -DskipTests -DskipSwaggerGen -Dmaven.javadoc.skip=true
+        aws s3 sync ${M2_REPOSITORY_DIR} ${S3_M2_REPOSITORY_DIR} --quiet --exclude "*" --include "org/activiti/*SNAPSHOT*" --exclude "*javadoc.jar*" --exclude "*sources.jar*"
+        )
