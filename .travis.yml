@@ -1,3 +1,8 @@
+import:
+  - source: Activiti/activiti-scripts:.travis.awscli-install.yml@master
+  - source: Activiti/activiti-scripts:.travis.helm_install.yml@master
+  - source: Activiti/activiti-scripts:.travis.kubernetes_config.yml@master
+  - source: Activiti/activiti-scripts:.travis.kubernetes_install.yml@master
 language: java
 jdk: openjdk11
 
@@ -17,8 +22,6 @@ env:
     - CHECK_VERSIONS=
     - SRC_DIR=${TRAVIS_BUILD_DIR}/..
     - NODE_OPTIONS=--max_old_space_size=30000
-    - HELM_VERSION=2.12.3
-    - KUBERNETES_VERSION=1.14.8
     - TRAVIS_WAIT_TIMEOUT=${TRAVIS_WAIT_TIMEOUT:-180}
     - GITHUB_CHARTS_REPO="https://github.com/Activiti/activiti-cloud-helm-charts.git"
     - GITHUB_HELM_REPO_URL="https://activiti.github.io/activiti-cloud-helm-charts/"
@@ -47,16 +50,7 @@ before_install:
   - sudo cp updatebot  /usr/bin/updatebot
   - sudo chmod a+x /usr/bin/updatebot
   - echo -e "https://$GITHUB_USER:$GITHUB_TOKEN@github.com" >>  ~/.git-credentials
-  - curl -s https://kubernetes-helm.storage.googleapis.com/helm-v${HELM_VERSION}-linux-amd64.tar.gz | tar zx
-  - sudo mv linux-amd64/helm /usr/local/bin/
-  - curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/v${KUBERNETES_VERSION}/bin/linux/amd64/kubectl
-  - chmod +x kubectl && sudo mv kubectl /usr/local/bin/
-  - kubectl config set-cluster default-cluster --server=${K8S_API_URL}
-  - kubectl config set-credentials default-admin --token=${K8S_API_TOKEN}
-  - kubectl config set-context default-system --cluster=default-cluster --user=default-admin
-  - kubectl config use-context default-system
   - kubectl get ns|| return 1
-  - pip install --user awscli
 
 stages:
   - name: Create tag
@@ -122,13 +116,14 @@ jobs:
         - export RELEASE_VERSION=$(cat VERSION)
         - export HELM_ACTIVITI_VERSION=$(cat VERSION)
         - ./release-helm.sh
+    -
     - stage: Remove Helm Chart
       script:
-        - helm delete --purge --no-hooks ${PREVIEW_NAMESPACE}|| echo "Trying to delete chart"
+        - helm delete --no-hooks ${PREVIEW_NAMESPACE} --namespace ${PREVIEW_NAMESPACE} || echo "Trying to delete chart"
         - kubectl delete ns ${PREVIEW_NAMESPACE} || echo "Trying to delete namespace"
 
 
 after_failure:
-  - helm delete --purge --no-hooks ${PREVIEW_NAMESPACE}|| echo "Trying to delete chart"
+  - helm delete --no-hooks ${PREVIEW_NAMESPACE} --namespace ${PREVIEW_NAMESPACE} || echo "Trying to delete chart"
   - kubectl delete ns ${PREVIEW_NAMESPACE} || echo "Trying to delete namespace"
 
