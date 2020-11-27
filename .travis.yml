@@ -1,5 +1,5 @@
 import:
-  - source: Activiti/activiti-scripts:.travis.awscli-install.yml@master
+  - source: Activiti/activiti-scripts:.travis.awscli-install.yml@elias-test-release
   - source: Activiti/activiti-scripts:.travis.helm_install.yml@master
   - source: Activiti/activiti-scripts:.travis.kubernetes_config.yml@master
   - source: Activiti/activiti-scripts:.travis.kubernetes_install.yml@master
