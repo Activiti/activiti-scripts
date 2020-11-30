@@ -115,7 +115,6 @@ jobs:
         - export RELEASE_VERSION=$(cat VERSION)
         - export HELM_ACTIVITI_VERSION=$(cat VERSION)
         - ./release-helm.sh
-    -
     - stage: Remove Helm Chart
       script:
         - helm delete --no-hooks ${PREVIEW_NAMESPACE} --namespace ${PREVIEW_NAMESPACE} || echo "Trying to delete chart"
