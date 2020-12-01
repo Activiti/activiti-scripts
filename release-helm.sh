@@ -54,8 +54,21 @@ make test/runtime-acceptance-tests
 make publish
 cd .updatebot-repos/github/activiti/activiti-cloud-full-chart/charts/activiti-cloud-full-example
 make version
-make tag
+attempt_counter=0
+max_attempts=10
+echo "Waiting for chart dependencies..."
+until make build; do
+  if [ ${attempt_counter} -eq ${max_attempts} ];then
+    echo "/!\ Max attempts reached!"
+    break
+  fi
+  attempt_counter=$((attempt_counter+1))
+  sleep 5
+  echo "/!\.... Retrying building activiti-cloud-full-example: $attempt_counter out $max_attempts ...."
+  helm repo update
+done
 make release
+make tag
 make github
 
 cd -
