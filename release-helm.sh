@@ -6,18 +6,13 @@ set -ex
 export MY_WORK_DIR=`pwd`
 git clone -b "${VERSION}" https://${GITHUB_TOKEN}:x-oauth-basic@github.com/Activiti/activiti-cloud-application.git
 ls -la
-cp VERSION  activiti-cloud-application/activiti-cloud-dependencies/
+cp VERSION  activiti-cloud-application/
 
 initializeS3Variables
 downloadFromS3
 
-cd activiti-cloud-application/activiti-cloud-dependencies
-ls -la
-make updatebot/push-version-dry
+cd activiti-cloud-application
 
-cat .updatebot-repos/github/activiti/activiti-cloud-full-chart/charts/activiti-cloud-full-example/requirements.yaml
-
-cd ..
 #creating new common chart version and update dependencies in charts
 git clone https://${GITHUB_TOKEN}:x-oauth-basic@github.com/Activiti/activiti-cloud-common-chart.git
 cd activiti-cloud-common-chart/charts/common
