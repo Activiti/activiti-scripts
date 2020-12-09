@@ -25,6 +25,7 @@ make update-common-helm-chart-version
 # end work with common
 sleep 20
 
+sed -i -e "s/tag: .*/tag: $VERSION/" activiti-cloud-modeling/charts/activiti-cloud-modeling/values.yaml
 make install
 
 attempt_counter=0
