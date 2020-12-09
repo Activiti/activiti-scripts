@@ -15,7 +15,7 @@ fi
 VERSION_TO_RELEASE=$(<VERSION)
 echo "Version to release ${VERSION_TO_RELEASE}"
 
-git add -A
+git add repos-*.txt
 git commit -m "Update versions - Activiti Cloud Dependencies"
 
 if [ -n "${MAVEN_PUSH}" ]; then

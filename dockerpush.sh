@@ -23,7 +23,11 @@ if [ -e "Dockerfile" ]; then
     DOCKER_USER=${DOCKER_USER:-activiti}
     if [ -z "${SKIP_DOCKER_BUILD}" ]
     then
-      docker build -t ${DOCKER_USER}/${GIT_PROJECT}:${RELEASE_VERSION} .
+      if [ -e "package.json" ]; then
+        docker build --build-arg PROJECT_NAME=modeling-ce -t ${DOCKER_USER}/${GIT_PROJECT}:${RELEASE_VERSION} .
+      else
+        docker build -t ${DOCKER_USER}/${GIT_PROJECT}:${RELEASE_VERSION} .
+      fi
     fi
     if [ -n "${DOCKER_PUSH}" ]
     then
