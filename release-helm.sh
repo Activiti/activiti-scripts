@@ -66,7 +66,6 @@ until make build; do
   attempt_counter=$((attempt_counter+1))
   sleep 5
   echo "/!\.... Retrying building activiti-cloud-full-example: $attempt_counter out $max_attempts ...."
-  helm repo update
 done
 make release
 make tag
