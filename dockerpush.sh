@@ -13,6 +13,8 @@ else
 fi
 
 if [ -e "package.json" ]; then
+    sed -i -e "s/\"commit\": \".*\"/\"commit\": \"$(git rev-parse HEAD)\"/g" package.json
+    sed -i -e "s/\"version\": \".*\"/\"version\": \"$RELEASE_VERSION\"/g" package.json
     npm install
     npm run build -- --prod
 else
