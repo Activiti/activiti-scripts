@@ -28,12 +28,16 @@ before_install:
   - sudo chmod a+x /usr/bin/updatebot
   - echo "TRAVIS_BUILD_NUMBER=$TRAVIS_BUILD_NUMBER"
   - echo "TRAVIS_BUILD_ID=$TRAVIS_BUILD_ID"
-  - if [[ $TRAVIS_PULL_REQUEST == "false" ]]; then  echo $(jx-release-version) > VERSION; else echo 0.0.1-${TRAVIS_BUILD_ID:(-4)}> VERSION;fi
+  - if [[ $TRAVIS_PULL_REQUEST == "false" ]]; then export BRANCH_NAME=${TRAVIS_BRANCH}; else export BRANCH_NAME=PR-${TRAVIS_PULL_REQUEST}; fi
+  - if [[ $TRAVIS_PULL_REQUEST == "false" ]]; then echo $(jx-release-version) > VERSION; else echo 0.0.1-${BRANCH_NAME}-${TRAVIS_BUILD_NUMBER} > VERSION; fi  
   - export VERSION=$(cat VERSION)
-  - echo "Version=$VERSION"
-  - export PREVIEW_NAMESPACE=$(echo "$TRAVIS_BRANCH-$VERSION"|  tr '[:upper:]' '[:lower:]'|tr . -|tr - "0")
+  - echo "VERSION=$VERSION"
+  - export PREVIEW_NAMESPACE=$(echo "${BRANCH_NAME}-${TRAVIS_BUILD_NUMBER}" | tr '[:upper:]' '[:lower:]')  
+  - echo "PREVIEW_NAMESPACE=$PREVIEW_NAMESPACE"
   - export GATEWAY_HOST="gateway.$PREVIEW_NAMESPACE.$GLOBAL_GATEWAY_DOMAIN"
+  - echo GATEWAY_HOST=$GATEWAY_HOST  
   - export SSO_HOST="identity.$PREVIEW_NAMESPACE.$GLOBAL_GATEWAY_DOMAIN"
+  - echo SSO_HOST=$SSO_HOST
 # cache:
 #   directories:
 #     - ${HOME}/.m2/repository
