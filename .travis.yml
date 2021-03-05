@@ -4,7 +4,7 @@ import:
   - source: Alfresco/alfresco-build-tools:.travis.awscli_install.yml@v1.1.0
   - source: Alfresco/alfresco-build-tools:.travis.helm_install.yml@v1.1.0
   - source: Alfresco/alfresco-build-tools:.travis.rancher_cli_install.yml@v1.1.0
-  - source: Alfresco/alfresco-build-tools:.travis.yq_install.yml@AAE-4310
+  - source: Alfresco/alfresco-build-tools:.travis.yq_install.yml@AAE-4310-update-yq
 
 language: java
 jdk: openjdk11
