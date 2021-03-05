@@ -3,6 +3,8 @@ import:
   - source: Activiti/activiti-scripts:.travis.helm_install.yml@master
   - source: Activiti/activiti-scripts:.travis.kubernetes_config.yml@master
   - source: Activiti/activiti-scripts:.travis.kubernetes_install.yml@master
+  - source: Alfresco/alfresco-build-tools:.travis.yq_install.yml@AAE-4310
+
 language: java
 jdk: openjdk11
 
