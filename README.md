@@ -19,7 +19,7 @@ To get the set of versions to be released:
 
     ./fetch-versions.sh (fetch latest version for all sets)
     ./fetch-versions.sh 7.1.854 (fetch set of versions for all sets based on the provided version of activiti-cloud-application)
-    
+
 To clone all:
 
     PROJECTS=activiti,activiti-cloud,activiti-cloud-application,activiti-modeling-app ./clone-all.sh
@@ -49,7 +49,7 @@ To test that a release can replace the versions with a release version, follow t
     PROJECTS=activiti-cloud ./clone-all.sh
     PROJECTS=activiti-cloud ./build-all.sh
     PROJECTS=activiti-cloud ./release-all.sh
-   
+
 Nothing should be pushed or released unless PUSH=true is set - see release.sh. Your local SRC_DIR (default to home/src/) will then contain the product.
 The text files for the example projects do not require version numbers as for these a tag is created from develop.
 
@@ -101,14 +101,14 @@ Running on Travis, requires the following environment variable to be set:
 
 ## How to create a new release
 1. Modify the file `VERSION` so that its content is the name of the version to be released
-2. Commit this change with a commit message starting with the prefix `[RELEASE] `. 
+2. Commit this change with a commit message starting with the prefix `[RELEASE] `.
 Without this prefix, the release will not start.
 
-- Once the commit is pushed the `CI/CD` will create a new tag with the name informed in the file [VERSION](./VERSION). 
+- Once the commit is pushed the `CI/CD` will create a new tag with the name informed in the file [VERSION](./VERSION).
 - The `CI/CD` will also create a staging repository on Sonatype where the release artifacts will be published to.
 - The name of the staging repository can be found in the file `maven-config/staging-repository.txt` on the new created tag.
 - All the internal versions used to create the release can be found in the files `repos-*.txt`.
 They are fetched from the latest tag available for [activiti-cloud-dependencies](https://github.com/Activiti/activiti-cloud-dependencies/tags).
-- Once the new tag is created, the `CI/CD` will run the release from this tag. 
-It's safe to restart to build from where it failed in case of failure. However, if you need to restart 
-from scratch you need to delete the artifacts already pushed to the staging repository first.   
+- Once the new tag is created, the `CI/CD` will run the release from this tag.
+It's safe to restart to build from where it failed in case of failure. However, if you need to restart
+from scratch you need to delete the artifacts already pushed to the staging repository first.

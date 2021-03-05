@@ -19,4 +19,3 @@ git checkout "${RELEASE_VERSION}"
 cd -
 
 ./dockerpush-all.sh
-

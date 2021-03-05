@@ -29,4 +29,3 @@ do
   ${SCRIPT_DIR}/dockerpush.sh
   cd .. || exit 1
 done
-

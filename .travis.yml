@@ -1,8 +1,9 @@
 import:
-  - source: Activiti/activiti-scripts:.travis.awscli-install.yml@elias-test-release
-  - source: Activiti/activiti-scripts:.travis.helm_install.yml@master
-  - source: Activiti/activiti-scripts:.travis.kubernetes_config.yml@master
-  - source: Activiti/activiti-scripts:.travis.kubernetes_install.yml@master
+  - source: Alfresco/alfresco-build-tools:.travis.pre-commit.yml@v1.1.0
+  - source: Alfresco/alfresco-build-tools:.travis.rancher_cli_kubernetes_config.yml@v1.1.0
+  - source: Alfresco/alfresco-build-tools:.travis.awscli_install.yml@v1.1.0
+  - source: Alfresco/alfresco-build-tools:.travis.helm_install.yml@v1.1.0
+  - source: Alfresco/alfresco-build-tools:.travis.rancher_cli_install.yml@v1.1.0
   - source: Alfresco/alfresco-build-tools:.travis.yq_install.yml@AAE-4310
 
 language: java
@@ -54,6 +55,7 @@ before_install:
   - echo -e "https://$GITHUB_USER:$GITHUB_TOKEN@github.com" >>  ~/.git-credentials
 
 stages:
+  - name: lint
   - name: Create tag
     if: (commit_message =~ /\[Release\] .+/ OR type = cron) AND (tag IS blank)
   - name: Release Activiti Core
