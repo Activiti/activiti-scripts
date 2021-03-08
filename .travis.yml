@@ -118,6 +118,8 @@ jobs:
           export VERSION=$(cat VERSION)
           export RELEASE_VERSION=$(cat VERSION)
           export HELM_ACTIVITI_VERSION=$(cat VERSION)
+          export SSO_PROTOCOL=https
+          export GATEWAY_PROTOCOL=https
           ./release-helm.sh
         )
       after_script:
