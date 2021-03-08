@@ -46,8 +46,8 @@ before_install:
   - export PREVIEW_NAMESPACE=$(echo "v$TRAVIS_BRANCH-$TRAVIS_BUILD_ID"|  tr '[:upper:]' '[:lower:]'|tr . -)
   - ORG='activiti'
   - export HELM_RELEASE_NAME="$TRAVIS_BRANCH-$TRAVIS_BUILD_ID"
-  - export GATEWAY_HOST="gateway.$PREVIEW_NAMESPACE.$GLOBAL_GATEWAY_DOMAIN"
-  - export SSO_HOST="identity.$PREVIEW_NAMESPACE.$GLOBAL_GATEWAY_DOMAIN"
+  - export GATEWAY_HOST="gateway-$PREVIEW_NAMESPACE.$GLOBAL_GATEWAY_DOMAIN"
+  - export SSO_HOST="identity-$PREVIEW_NAMESPACE.$GLOBAL_GATEWAY_DOMAIN"
   - curl -Ls -o updatebot.jar   https://repo1.maven.org/maven2/io/jenkins/updatebot/updatebot/1.1.53/updatebot-1.1.53.jar
   - sudo cp updatebot.jar  /usr/bin/updatebot.jar
   - echo "java -jar /usr/bin/updatebot.jar \$@" > updatebot
