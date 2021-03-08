@@ -7,6 +7,7 @@ echo "BUILDING IMAGE FOR PROJECT $GIT_PROJECT from $(pwd)"
 echo "SCRIPT_DIR IS $SCRIPT_DIR"
 
 if [ -e "pom.xml" ]; then
+    [ -d "liquibase" ] && cd liquibase && mvn clean install && cd -
     mvn ${MAVEN_ARGS:-clean install -DskipTests}
 else
     echo "No pom.xml for $GIT_PROJECT - build straight from Dockerfile"
