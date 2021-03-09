@@ -50,8 +50,9 @@ make test/modeling-acceptance-tests
 make test/runtime-acceptance-tests
 
 cd .git/activiti-cloud-full-chart/charts/activiti-cloud-full-example
-yq e '{"dependencies": (.dependencies.[] | [select(.name == "common").version = env(VERSION)])}' -i requirements.yaml
-yq e '.activiti-modeling-app.image.tag = env(VERSION)' -i values.yaml
+yq e -i '{"dependencies": (.dependencies.[] | [select(.name == "common").version = env(VERSION)])}' requirements.yaml
+echo "Files to be committed"
+git status
 make release
 make tag
 make github
