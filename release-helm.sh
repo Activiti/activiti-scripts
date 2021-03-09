@@ -51,6 +51,7 @@ make test/runtime-acceptance-tests
 
 cd .git/activiti-cloud-full-chart/charts/activiti-cloud-full-example
 yq e '{"dependencies": (.dependencies.[] | [select(.name == "common").version = env(VERSION)])}' -i requirements.yaml
+yq e '.activiti-modeling-app.image.tag = env(VERSION)' -i values.yaml
 make release
 make tag
 make github
