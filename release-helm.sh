@@ -21,12 +21,9 @@ make tag
 make release
 make github
 cd - #return to activiti-cloud-application folder
-make update-common-helm-chart-version
-# end work with common
-sleep 20
 
-sed -i -e "s/tag: .*/tag: $VERSION/" activiti-cloud-modeling/charts/activiti-cloud-modeling/values.yaml
-make install
+# override FRONT_RELEASE_VERSION otherwise it will use master tag for the docker image
+FRONTEND_VERSION=${VERSION} make install
 
 attempt_counter=0
 max_attempts=50
@@ -52,24 +49,10 @@ kubectl get po -n ${PREVIEW_NAMESPACE}
 make test/modeling-acceptance-tests
 make test/runtime-acceptance-tests
 
-make publish
-cd .updatebot-repos/github/activiti/activiti-cloud-full-chart/charts/activiti-cloud-full-example
-make version
-attempt_counter=0
-max_attempts=10
-echo "Waiting for chart dependencies..."
-until make build; do
-  if [ ${attempt_counter} -eq ${max_attempts} ];then
-    echo "/!\ Max attempts reached!"
-    break
-  fi
-  attempt_counter=$((attempt_counter+1))
-  sleep 5
-  echo "/!\.... Retrying building activiti-cloud-full-example: $attempt_counter out $max_attempts ...."
-done
+cd .git/activiti-cloud-full-chart/charts/activiti-cloud-full-example
+yq e '{"dependencies": (.dependencies.[] | [select(.name == "common").version = env(VERSION)])}' -i requirements.yaml
 make release
 make tag
 make github
 
 cd -
-

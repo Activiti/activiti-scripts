@@ -1,7 +1,0 @@
-env:
-  global:
-    - M2_REPOSITORY_DIR=${HOME}/.m2/repository
-
-cache:
-  directories:
-    - "${M2_REPOSITORY_DIR}"

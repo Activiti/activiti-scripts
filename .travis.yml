@@ -1,8 +1,12 @@
 import:
-  - source: Activiti/activiti-scripts:.travis.awscli-install.yml@elias-test-release
-  - source: Activiti/activiti-scripts:.travis.helm_install.yml@master
-  - source: Activiti/activiti-scripts:.travis.kubernetes_config.yml@master
-  - source: Activiti/activiti-scripts:.travis.kubernetes_install.yml@master
+  - source: Alfresco/alfresco-build-tools:.travis.pre-commit.yml@v1.1.0
+  - source: Alfresco/alfresco-build-tools:.travis.rancher_cli_kubernetes_config.yml@v1.1.0
+  - source: Alfresco/alfresco-build-tools:.travis.awscli_install.yml@v1.1.0
+  - source: Alfresco/alfresco-build-tools:.travis.helm_install.yml@v1.1.0
+  - source: Alfresco/alfresco-build-tools:.travis.rancher_cli_install.yml@v1.1.0
+  - source: Alfresco/alfresco-build-tools:.travis.yq_install.yml@v1.1.0
+  - source: Alfresco/alfresco-build-tools:.travis.kubernetes_install.yml@v1.1.0
+
 language: java
 jdk: openjdk11
 
@@ -32,8 +36,8 @@ env:
 before_install:
   - nvm install 12.18.1
   - nvm use 12.18.1
-  - echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
-  - echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
+  - echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import --no-tty --batch --yes
+  - echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust  --no-tty --batch --yes
   - echo BRANCH=${TRAVIS_PULL_REQUEST_BRANCH:-${TRAVIS_BRANCH}}
   - echo "$DOCKER_REGISTRY_PASSWORD" | docker login -u "$DOCKER_REGISTRY_USERNAME" --password-stdin "$DOCKER_REGISTRY"
   - mkdir -p ${M2_DIR}
@@ -42,8 +46,8 @@ before_install:
   - export PREVIEW_NAMESPACE=$(echo "v$TRAVIS_BRANCH-$TRAVIS_BUILD_ID"|  tr '[:upper:]' '[:lower:]'|tr . -)
   - ORG='activiti'
   - export HELM_RELEASE_NAME="$TRAVIS_BRANCH-$TRAVIS_BUILD_ID"
-  - export GATEWAY_HOST="gateway.$PREVIEW_NAMESPACE.$GLOBAL_GATEWAY_DOMAIN"
-  - export SSO_HOST="identity.$PREVIEW_NAMESPACE.$GLOBAL_GATEWAY_DOMAIN"
+  - export GATEWAY_HOST="gateway-$PREVIEW_NAMESPACE.$GLOBAL_GATEWAY_DOMAIN"
+  - export SSO_HOST="identity-$PREVIEW_NAMESPACE.$GLOBAL_GATEWAY_DOMAIN"
   - curl -Ls -o updatebot.jar   https://repo1.maven.org/maven2/io/jenkins/updatebot/updatebot/1.1.53/updatebot-1.1.53.jar
   - sudo cp updatebot.jar  /usr/bin/updatebot.jar
   - echo "java -jar /usr/bin/updatebot.jar \$@" > updatebot
@@ -52,6 +56,7 @@ before_install:
   - echo -e "https://$GITHUB_USER:$GITHUB_TOKEN@github.com" >>  ~/.git-credentials
 
 stages:
+  - name: lint
   - name: Create tag
     if: (commit_message =~ /\[Release\] .+/ OR type = cron) AND (tag IS blank)
   - name: Release Activiti Core
@@ -113,6 +118,8 @@ jobs:
           export VERSION=$(cat VERSION)
           export RELEASE_VERSION=$(cat VERSION)
           export HELM_ACTIVITI_VERSION=$(cat VERSION)
+          export SSO_PROTOCOL=https
+          export GATEWAY_PROTOCOL=https
           ./release-helm.sh
         )
       after_script:
