@@ -43,11 +43,11 @@ before_install:
   - mkdir -p ${M2_DIR}
   - cp ${SETTINGS_XML_FILE_PATH} ${M2_DIR}
 
-  - export PREVIEW_NAMESPACE=$(echo "v$TRAVIS_BRANCH-$TRAVIS_BUILD_ID"|  tr '[:upper:]' '[:lower:]'|tr . -)
+  - export PREVIEW_NAME=$(echo "v$TRAVIS_BRANCH-$TRAVIS_BUILD_ID"|  tr '[:upper:]' '[:lower:]'|tr . -)
   - ORG='activiti'
   - export HELM_RELEASE_NAME="$TRAVIS_BRANCH-$TRAVIS_BUILD_ID"
-  - export GATEWAY_HOST="gateway-$PREVIEW_NAMESPACE.$GLOBAL_GATEWAY_DOMAIN"
-  - export SSO_HOST="identity-$PREVIEW_NAMESPACE.$GLOBAL_GATEWAY_DOMAIN"
+  - export GATEWAY_HOST="gateway-$PREVIEW_NAME.$GLOBAL_GATEWAY_DOMAIN"
+  - export SSO_HOST="identity-$PREVIEW_NAME.$GLOBAL_GATEWAY_DOMAIN"
   - curl -Ls -o updatebot.jar   https://repo1.maven.org/maven2/io/jenkins/updatebot/updatebot/1.1.53/updatebot-1.1.53.jar
   - sudo cp updatebot.jar  /usr/bin/updatebot.jar
   - echo "java -jar /usr/bin/updatebot.jar \$@" > updatebot
@@ -123,5 +123,5 @@ jobs:
           ./release-helm.sh
         )
       after_script:
-        - helm delete --no-hooks ${PREVIEW_NAMESPACE} --namespace ${PREVIEW_NAMESPACE} || echo "Trying to delete chart"
-        - kubectl delete ns ${PREVIEW_NAMESPACE} || echo "Trying to delete namespace"
+        - helm delete --no-hooks ${PREVIEW_NAME} --namespace ${PREVIEW_NAME} || echo "Trying to delete chart"
+        - kubectl delete ns ${PREVIEW_NAME} || echo "Trying to delete namespace"

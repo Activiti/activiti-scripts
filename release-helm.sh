@@ -44,7 +44,7 @@ until curl --silent --head --fail \
     sleep 5
 done
 
-kubectl get po -n ${PREVIEW_NAMESPACE}
+kubectl get po -n ${PREVIEW_NAME}
 
 make test/modeling-acceptance-tests
 make test/runtime-acceptance-tests
