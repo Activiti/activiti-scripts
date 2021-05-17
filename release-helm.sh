@@ -23,7 +23,7 @@ make github
 cd - #return to activiti-cloud-application folder
 
 # override FRONT_RELEASE_VERSION otherwise it will use master tag for the docker image
-FRONTEND_VERSION=${VERSION} make install
+FRONTEND_VERSION=${VERSION} MESSAGING_BROKER=rabbitmq MESSAGING_PARTITIONED=partitioned make install
 
 attempt_counter=0
 max_attempts=50
