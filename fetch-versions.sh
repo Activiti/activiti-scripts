@@ -17,6 +17,14 @@ writeVersionOnFile() {
   fi
 }
 
+writeRepositoryWithoutVersionOnFile() {
+  local destination_file=$1
+  local related_repository=$2
+
+  echo "${related_repository}: ${version}"
+  echo "$related_repository" >>"$destination_file"
+}
+
 parseActivitiCloudVersion() {
   local pom_path="activiti-cloud-dependencies/pom.xml"
   local property_pattern="activiti-cloud\.version"
@@ -106,17 +114,7 @@ if [ -n "$SHOULD_INCREMENT_VERSION" ]; then
   echo "${NEXT_BETA_VERSION}" >VERSION
 fi
 
-# addition of modeling front end project
-modeling_app_tags=$(curl -s https://api.github.com/repos/Activiti/activiti-modeling-app/tags | grep name | grep "v" | head -n3)
-echo "Latest tags for modeling app:"
-echo "$modeling_app_tags"
-modeling_app_version=$(echo "$modeling_app_tags" | cut -d'v' -f 2 | cut -d'"' -f 1 | head -n1)
-if [ -z "$modeling_app_version" ]; then
-  echo "Error: Unable to detect latest tag for modeling app."
-  exit 1
-fi
-
-writeVersionOnFile "$modeling_app_file" "$modeling_app_version" "activiti-modeling-app"
+writeRepositoryWithoutVersionOnFile "$modeling_app_file" "activiti-modeling-app"
 
 writeVersionOnFile "${activiti_cloud_application_file}" "${version_dependency_aggregator}" "${name_dependency_aggregator}"
 
