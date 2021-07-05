@@ -17,6 +17,7 @@ cd activiti-cloud-application
 git clone https://${GITHUB_TOKEN}:x-oauth-basic@github.com/Activiti/activiti-cloud-common-chart.git
 cd activiti-cloud-common-chart/charts/common
 make version
+helm-docs
 make tag
 make release
 make github
@@ -51,6 +52,8 @@ make test/runtime-acceptance-tests
 
 cd .git/activiti-cloud-full-chart/charts/activiti-cloud-full-example
 yq e '{"dependencies": (.dependencies.[] | [select(.name == "common").version = env(VERSION)])}' -i requirements.yaml
+make version
+helm-docs
 make release
 make tag
 make github
