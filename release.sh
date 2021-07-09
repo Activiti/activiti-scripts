@@ -5,7 +5,8 @@ set -e
 
 mvnDeploy() {
   echo "Deploying to repository ${STAGING_REPOSITORY}"
-  mvn clean deploy -DperformRelease -DskipTests -B -DaltReleaseDeploymentRepository=nexus-releases-staging-fixed::default::"${NEXUS_URL}"/service/local/staging/deployByRepositoryId/"${STAGING_REPOSITORY}"
+  mvn clean deploy -DperformRelease -DskipTests -B -DaltReleaseDeploymentRepository=nexus-releases-staging-fixed::default::"${NEXUS_URL}"/service/local/staging/deployByRepositoryId/"${STAGING_REPOSITORY}" \
+  -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
 }
 
 GIT_PROJECT=$(basename $(pwd))
@@ -29,7 +30,7 @@ then
         mvnDeploy
       else
         echo 'not deploying ${GIT_PROJECT} to maven - just building'
-        mvn ${MAVEN_ARGS:-clean install -DskipTests}
+        mvn ${MAVEN_ARGS:-clean install -DskipTests -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120}
       fi
     else
       echo "No pom.xml - not building"
@@ -96,7 +97,7 @@ else
     then
       mvnDeploy
     else
-      mvn "${MAVEN_ARGS:-clean install -DskipTests}"
+      mvn "${MAVEN_ARGS:-clean install -DskipTests -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120}"
     fi
   else
     echo "No pom.xml - not building"

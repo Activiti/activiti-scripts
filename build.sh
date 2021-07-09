@@ -91,7 +91,7 @@ then
 fi
 
 if [ -e "pom.xml" ]; then
-    mvn ${MAVEN_ARGS:-clean install}
+    mvn ${MAVEN_ARGS:-clean install -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120}
 else
     echo "No pom.xml - not building"
 fi
