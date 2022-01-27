@@ -30,7 +30,7 @@ env:
     - TRAVIS_WAIT_TIMEOUT=${TRAVIS_WAIT_TIMEOUT:-180}
     - GITHUB_CHARTS_REPO="https://github.com/Activiti/activiti-cloud-helm-charts.git"
     - GITHUB_HELM_REPO_URL="https://activiti.github.io/activiti-cloud-helm-charts/"
-    - S3_M2_REPOSITORY_DIR=${S3_BASE_DIR}/act-m2/repo
+    - S3_M2_REPOSITORY_DIR=${S3_BASE_DIR}/aae-m2/repository
     - M2_DIR=${HOME}/.m2
     - M2_REPOSITORY_DIR=${M2_DIR}/repository
 
