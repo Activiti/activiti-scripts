@@ -10,7 +10,7 @@ writeVersionOnFile() {
   echo "$version" >>"$destination_file"
 
   # check for the existence of such version for current project
-  if [ "$(curl -s -o /dev/null -w "%{http_code}" https://github.com/Activiti/"$related_repository"/releases/tag/v"$version")" != "200" ]; then
+  if [ "$(curl -s -o /dev/null -w "%{http_code}" https://github.com/Activiti/"$related_repository"/releases/tag/"$version")" != "200" ]; then
     echo "No tag $version was found for project $related_repository"
     echo "Script interrupted due to non existent version" >>"$destination_file"
     exit 1
@@ -32,9 +32,9 @@ parseActivitiCloudVersion() {
   local activiti_cloud_version=$(grep "activiti-cloud\.version" <"$pom_path" -m1 | grep -om1 "${activiti_version_pattern}")
   writeVersionOnFile "$activiti_cloud_file" "$activiti_cloud_version" "activiti-cloud"
 
-  local cloud_api_url="https://raw.githubusercontent.com/Activiti/activiti-cloud/v${activiti_cloud_version}/activiti-cloud-api/pom.xml"
+  local cloud_api_url="https://raw.githubusercontent.com/Activiti/activiti-cloud/${activiti_cloud_version}/activiti-cloud-api/pom.xml"
   echo "Getting Activiti core version from: ${cloud_api_url} "
-  local activiti_core_version=$(curl https://raw.githubusercontent.com/Activiti/activiti-cloud/v${activiti_cloud_version}/activiti-cloud-api/pom.xml \
+  local activiti_core_version=$(curl https://raw.githubusercontent.com/Activiti/activiti-cloud/${activiti_cloud_version}/activiti-cloud-api/pom.xml \
     | grep "activiti\.version" -m1 | grep -o "${activiti_version_pattern}")
   writeVersionOnFile "${activiti_core_file}" "${activiti_core_version}" "Activiti"
 }
@@ -50,7 +50,7 @@ updateRepoFile() {
 
 original_directory=$(pwd)
 name_dependency_aggregator=activiti-cloud-application
-activiti_version_pattern="7\.[[:digit:]]\{1,3\}\.[[:digit:]]\{1,6\}"
+activiti_version_pattern="[[:digit:]]\{2\}\.[[:digit:]]*\.[[:digit:]]*\-alpha\.[[:digit:]]*"
 
 mkdir /tmp/release-versions && cd /tmp/release-versions || exit 1
 git clone -q https://github.com/Activiti/$name_dependency_aggregator.git && cd $name_dependency_aggregator || exit 1
@@ -64,10 +64,9 @@ echo "Handling $name_dependency_aggregator"
 git fetch --tags
 
 tag_to_fetch="$1"
-
+tag_pattern="$(date +%y)*\.[0-9]*\.[0-9]*\-alpha\.[0-9]*"
 if [ -n "${tag_to_fetch}" ]; then
-  # adding 'v' to tag to align it with the format of internal versions: 'v7.1.68'
-  for k in $(git tag --list 'v*' | cut -d'v' -f 2); do
+  for k in $(git tag --list "$tag_pattern"); do
     if [ "$k" = "${tag_to_fetch}" ]; then
       exist=1
       break
@@ -77,7 +76,7 @@ if [ -n "${tag_to_fetch}" ]; then
   done
 
   if [ "$exist" -eq 1 ]; then
-    git checkout -q tags/v"${tag_to_fetch}"
+    git checkout -q tags/"${tag_to_fetch}"
     version_dependency_aggregator=${tag_to_fetch}
   else
     echo "The provided version '${tag_to_fetch}' does not exist"
@@ -88,10 +87,10 @@ if [ -n "${tag_to_fetch}" ]; then
 
 else
   # if no second argument is provided, we get the latest tag
-  aggregator_tag=$(git tag --sort=-creatordate | grep "v" | head -n 1)
+  aggregator_tag=$(git tag --list "$tag_pattern" --sort=-creatordate | head -n 1)
 
   git checkout -q tags/"$aggregator_tag"
-  version_dependency_aggregator=$(echo "$aggregator_tag" | cut -d'v' -f 2)
+  version_dependency_aggregator=$(echo "$aggregator_tag")
 fi
 
 parseActivitiCloudVersion $activiti_cloud_file

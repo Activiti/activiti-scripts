@@ -71,8 +71,8 @@ else
     echo "Creating release branch from origin/${BASEBRANCH}..."
     git checkout origin/${BASEBRANCH} -b release/${RELEASE_VERSION}
   else
-    echo "Creating release branch from tags/v${TAG}..."
-    git checkout tags/v${TAG} -b release/${RELEASE_VERSION}
+    echo "Creating release branch from tags/${TAG}..."
+    git checkout tags/${TAG} -b release/${RELEASE_VERSION}
   fi
 
   VERSION=${SNAPSHOT_VERSION} NEXT_VERSION=${RELEASE_VERSION} . ${SCRIPT_DIR}/update-pom-version.sh
