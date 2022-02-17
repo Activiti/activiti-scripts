@@ -61,17 +61,17 @@ stages:
   - name: Create tag
     if: (commit_message =~ /\[Release\] .+/ OR type = cron) AND (tag IS blank)
   - name: Release Activiti Core
-    if: tag =~ /7\..+/
+    if: tag =~ /.+\..+\..+/
   - name: Release Activiti Cloud
-    if: tag =~ /7\..+/
+    if: tag =~ /.+\..+\..+/
   - name: Release Activiti Cloud Application
-    if: tag =~ /7\..+/
+    if: tag =~ /.+\..+\..+/
   - name: Release Activiti Cloud Modeling App
-    if: tag =~ /7\..+/
+    if: tag =~ /.+\..+\..+/
   - name: Release Docker Images
-    if: tag =~ /7\..+/
+    if: tag =~ /.+\..+\..+/
   - name: Release Helm Chart
-    if: tag =~ /7\..+/
+    if: tag =~ /.+\..+\..+/
 
 jobs:
   include:
