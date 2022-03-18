@@ -6,7 +6,8 @@ set -e
 mvnDeploy() {
   echo "Deploying to repository ${STAGING_REPOSITORY}"
   mvn clean deploy -DperformRelease -DskipTests -B -DaltReleaseDeploymentRepository=nexus-releases-staging-fixed::default::"${NEXUS_URL}"/service/local/staging/deployByRepositoryId/"${STAGING_REPOSITORY}" \
-  -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
+  -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 \
+  -Dorg.slf4j.simpleLogger.log.org.codehaus.mojo.license=ERROR
 }
 
 GIT_PROJECT=$(basename $(pwd))

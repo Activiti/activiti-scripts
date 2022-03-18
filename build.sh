@@ -91,7 +91,7 @@ then
 fi
 
 if [ -e "pom.xml" ]; then
-    mvn ${MAVEN_ARGS:-clean install -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120}
+    mvn ${MAVEN_ARGS:-clean install -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Dorg.slf4j.simpleLogger.log.org.codehaus.mojo.license=ERROR}
 else
     echo "No pom.xml - not building"
 fi
