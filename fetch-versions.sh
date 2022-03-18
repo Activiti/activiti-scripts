@@ -50,7 +50,7 @@ updateRepoFile() {
 
 original_directory=$(pwd)
 name_dependency_aggregator=activiti-cloud-application
-activiti_version_pattern="[[:digit:]]\{2\}\.[[:digit:]]*\.[[:digit:]]*\-alpha\.[[:digit:]]*"
+activiti_version_pattern="[0-9]*\.[0-9]*\.[0-9]*\-alpha\.[0-9]*"
 
 mkdir /tmp/release-versions && cd /tmp/release-versions || exit 1
 git clone -q https://github.com/Activiti/$name_dependency_aggregator.git && cd $name_dependency_aggregator || exit 1
@@ -64,7 +64,7 @@ echo "Handling $name_dependency_aggregator"
 git fetch --tags
 
 tag_to_fetch="$1"
-tag_pattern="$(date +%y)*\.[0-9]*\.[0-9]*\-alpha\.[0-9]*"
+tag_pattern=$activiti_version_pattern
 if [ -n "${tag_to_fetch}" ]; then
   for k in $(git tag --list "$tag_pattern"); do
     if [ "$k" = "${tag_to_fetch}" ]; then
