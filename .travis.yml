@@ -99,7 +99,7 @@ jobs:
     - stage: Release Activiti Cloud Modeling App
       env:
         - PROJECTS=activiti-modeling-app
-        - BASEBRANCH=hotfix-M17.4
+        - BASEBRANCH=hotfix-M17.5
       script: ./release-ci.sh
 
     - stage: Release Docker Images
@@ -111,7 +111,7 @@ jobs:
     - name: "Activiti Modeling App"
       env:
         - DOCKER_PUSH=true
-        - BASEBRANCH=hotfix-M17.4
+        - BASEBRANCH=hotfix-M17.5
       script: ./release-docker-modeling-app.sh
 
     - stage: Release Helm Chart
