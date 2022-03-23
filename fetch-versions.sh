@@ -11,9 +11,11 @@ writeVersionOnFile() {
 
   # check for the existence of such version for current project
   if [ "$(curl -s -o /dev/null -w "%{http_code}" https://github.com/Activiti/"$related_repository"/releases/tag/v"$version")" != "200" ]; then
-    echo "No tag $version was found for project $related_repository"
-    echo "Script interrupted due to non existent version" >>"$destination_file"
-    exit 1
+      if [ "$(curl -s -o /dev/null -w "%{http_code}" https://github.com/Activiti/"$related_repository"/releases/tag/"$version")" != "200" ]; then
+        echo "No tag $version was found for project $related_repository"
+        echo "Script interrupted due to non existent version" >>"$destination_file"
+        exit 1
+      fi
   fi
 }
 
@@ -50,7 +52,7 @@ updateRepoFile() {
 
 original_directory=$(pwd)
 name_dependency_aggregator=activiti-cloud-application
-activiti_version_pattern="7\.[[:digit:]]\{1,3\}\.[[:digit:]]\{1,6\}"
+activiti_version_pattern="7\.[[:digit:]]\{1,3\}\.[[:digit:]]\{1,6\}[-M[0-9]*]*"
 
 mkdir /tmp/release-versions && cd /tmp/release-versions || exit 1
 git clone -q https://github.com/Activiti/$name_dependency_aggregator.git && cd $name_dependency_aggregator || exit 1

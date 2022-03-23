@@ -63,7 +63,7 @@ do
         else
           echo "Checking out tag '${TAG}' for $(pwd)";
           git fetch --tags
-          git checkout tags/v$TAG || ${IGNORE_TAG_CHECKOUT_FAILURE:-false}
+          git checkout tags/v$TAG || git checkout tags/$TAG || ${IGNORE_TAG_CHECKOUT_FAILURE:-false}
         fi
       fi
     fi
