@@ -1,12 +1,12 @@
 import:
-  - source: Alfresco/alfresco-build-tools:.travis.pre-commit.yml@v1.1.5
-  - source: Alfresco/alfresco-build-tools:.travis.rancher_cli_kubernetes_config.yml@v1.1.5
-  - source: Alfresco/alfresco-build-tools:.travis.awscli_install.yml@v1.1.5
-  - source: Alfresco/alfresco-build-tools:.travis.helm-docs_install.yml@v1.1.5
-  - source: Alfresco/alfresco-build-tools:.travis.helm_install.yml@v1.1.5
-  - source: Alfresco/alfresco-build-tools:.travis.rancher_cli_install.yml@v1.1.5
-  - source: Alfresco/alfresco-build-tools:.travis.yq_install.yml@v1.1.5
-  - source: Alfresco/alfresco-build-tools:.travis.kubernetes_install.yml@v1.1.5
+  - source: Alfresco/alfresco-build-tools:.travis.pre-commit.yml@v1.3.0
+  - source: Alfresco/alfresco-build-tools:.travis.rancher_cli_kubernetes_config.yml@v1.3.0
+  - source: Alfresco/alfresco-build-tools:.travis.awscli_install.yml@v1.3.0
+  - source: Alfresco/alfresco-build-tools:.travis.helm-docs_install.yml@v1.3.0
+  - source: Alfresco/alfresco-build-tools:.travis.helm_install.yml@v1.3.0
+  - source: Alfresco/alfresco-build-tools:.travis.rancher_cli_install.yml@v1.3.0
+  - source: Alfresco/alfresco-build-tools:.travis.yq_install.yml@v1.3.0
+  - source: Alfresco/alfresco-build-tools:.travis.kubernetes_install.yml@v1.3.0
 
 language: java
 jdk: openjdk11
@@ -33,6 +33,7 @@ env:
     - S3_M2_REPOSITORY_DIR=${S3_BASE_DIR}/aae-m2/repository
     - M2_DIR=${HOME}/.m2
     - M2_REPOSITORY_DIR=${M2_DIR}/repository
+    - YQ_VERSION=4.23.1
 
 before_install:
   - nvm install 12.18.1
