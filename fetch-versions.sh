@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 writeVersionOnFile() {
   local destination_file=$1
@@ -26,16 +27,16 @@ writeRepositoryWithoutVersionOnFile() {
 }
 
 parseActivitiCloudVersion() {
-  local pom_path="activiti-cloud-dependencies/pom.xml"
-  local property_pattern="activiti-cloud\.version"
-
-  local activiti_cloud_version=$(grep "activiti-cloud\.version" <"$pom_path" -m1 | grep -om1 "${activiti_version_pattern}")
+  readonly pom_path="activiti-cloud-dependencies/pom.xml"
+  readonly activiti_cloud_version=$(yq -p=xml e '.project.properties."activiti-cloud.version"' $pom_path)
   writeVersionOnFile "$activiti_cloud_file" "$activiti_cloud_version" "activiti-cloud"
 
   local cloud_api_url="https://raw.githubusercontent.com/Activiti/activiti-cloud/${activiti_cloud_version}/activiti-cloud-api/pom.xml"
   echo "Getting Activiti core version from: ${cloud_api_url} "
-  local activiti_core_version=$(curl https://raw.githubusercontent.com/Activiti/activiti-cloud/${activiti_cloud_version}/activiti-cloud-api/pom.xml \
-    | grep "activiti\.version" -m1 | grep -o "${activiti_version_pattern}")
+  readonly ACTIVITI_CLOUD_POM=$(curl "https://raw.githubusercontent.com/Activiti/activiti-cloud/${activiti_cloud_version}/activiti-cloud-api/pom.xml")
+
+  readonly activiti_core_version=$(echo "$ACTIVITI_CLOUD_POM" | yq -p=xml e '.project.properties."activiti.version"')
+
   writeVersionOnFile "${activiti_core_file}" "${activiti_core_version}" "Activiti"
 }
 
@@ -50,7 +51,6 @@ updateRepoFile() {
 
 original_directory=$(pwd)
 name_dependency_aggregator=activiti-cloud-application
-activiti_version_pattern="[0-9]*\.[0-9]*\.[0-9]*\-alpha\.[0-9]*"
 
 mkdir /tmp/release-versions && cd /tmp/release-versions || exit 1
 git clone -q https://github.com/Activiti/$name_dependency_aggregator.git && cd $name_dependency_aggregator || exit 1
@@ -64,19 +64,12 @@ echo "Handling $name_dependency_aggregator"
 git fetch --tags
 
 tag_to_fetch="$1"
-tag_pattern=$activiti_version_pattern
+tag_pattern=${tag_pattern:-"[0-9]*\.[0-9]*\.[0-9]*\-alpha\.[0-9]*"}
 if [ -n "${tag_to_fetch}" ]; then
-  for k in $(git tag --list "$tag_pattern"); do
-    if [ "$k" = "${tag_to_fetch}" ]; then
-      exist=1
-      break
-    else
-      exist=0
-    fi
-  done
-
-  if [ "$exist" -eq 1 ]; then
-    git checkout -q tags/"${tag_to_fetch}"
+  set +e
+  git checkout -q tags/"${tag_to_fetch}"
+  set -e
+  if [ "$?" -eq "0" ]; then
     version_dependency_aggregator=${tag_to_fetch}
   else
     echo "The provided version '${tag_to_fetch}' does not exist"
