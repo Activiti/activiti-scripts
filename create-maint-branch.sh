@@ -15,4 +15,4 @@ mvn -B versions:set -DnewVersion="$VERSION" -DprocessAllModules=true -DgenerateB
 
 git add -u
 git commit -m "Configure branch $BRANCH"
-#git push origin "$BRANCH"
+git push origin "$BRANCH"
