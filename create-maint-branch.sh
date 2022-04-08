@@ -14,5 +14,7 @@ yq -i e '(.jobs.build.steps[] |  select(.id == "next-release") | .with.next-vers
 mvn -B versions:set -DnewVersion="$VERSION" -DprocessAllModules=true -DgenerateBackupPoms=false
 
 git add -u
+git status
+git --no-pager diff --cached
 git commit -m "Configure branch $BRANCH"
 git push origin "$BRANCH"
