@@ -12,31 +12,64 @@ on:
   workflow_dispatch:
 
 jobs:
-  # pre-commit:
-  #   runs-on: ubuntu-20.04
-  #   steps:
-  #     - uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@master
 
   prepare-release:
     runs-on: ubuntu-20.04
-    # needs: pre-commit
+    outputs:
+      act-cloud-app: ${{ steps.tags.outputs.act-cloud-app }}
+      act-cloud: ${{ steps.tags.outputs.act-cloud }}
+      act: ${{ steps.tags.outputs.act }}
     steps:
+      # - uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@@v1.4.0            - name: Installing tools
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-yq@v1.4.0
       - uses: actions/checkout@v3
       - name: fetch-tags-to-release
+        id: tags
         run: |
-          ./gh-actions-scripts/fetch-versions.sh
+          # ./gh-actions-scripts/fetch-versions.sh
+          echo "::set-output name=act-cloud-application::7.3.0-alpha.5"
+          echo "::set-output name=act-cloud::7.3.0-alpha.7"
+          echo "::set-output name=act::7.3.0-alpha.4"
+          echo "::set-output name=BRANCH::${yq e '.release.branch' release.yaml}"
+          echo "::set-output name=VERSION::${yq e '.release.version' release.yaml}"
+          echo "::set-output name=NEXT_VERSION::${yq e '.release.nextVersion' release.yaml}"
 
   release-docker-images:
     runs-on: ubuntu-20.04
     needs: prepare-release
+    env:
+      REPOS: activiti-cloud-application,activiti-cloud,activiti
+      BRANCH: ${{needs.prepare-release.outputs.BRANCH }}
+      VERSION: ${{needs.prepare-release.outputs.VERSION }}
+      NEXT_VERSION: ${{needs.prepare-release.outputs.NEXT_VERSION }}
     steps:
       - uses: actions/checkout@v3
       - name: tag-docker-images
         run: |
-          ./gh-actions-scripts/dummy-step.sh
+          echo "${{needs.prepare-release.outputs.activiti-cloud-application }}"
+          echo "${{needs.prepare-release.outputs.activiti-cloud }}"
+          echo "${{needs.prepare-release.outputs.activiti }}"
+          echo $REPOS
+          echo $BRANCH
+          echo $VERSION
+          echo $NEXT_VERSION
+
+          # for REPO in ${REPOS//,/ }
+          # do
+          #   BASE_TAG="${{needs.prepare-release.outputs.$REPO }}"
+          #   RELEASE_TAG=${{needs.prepare-release.outputs.VERSION }}
+          #   DOCKER_HUB_ORG=Activiti
+          #   DOCKER_HUB_REPO=Activiti
+          #   DOCKER_HUB_USER=...
+          #   DOCKER_HUB_PASSWORD=...
+
+          #   ./gh-actions-scripts/tag-docker-image.sh
+          # done
+
       - name: update-helm-charts
         run: |
           ./gh-actions-scripts/dummy-step.sh
+
       - name: push-helm-charts
         run: |
           ./gh-actions-scripts/dummy-step.sh
@@ -59,13 +92,18 @@ jobs:
       matrix:
         repo: ['Activiti','activiti-cloud','activiti-cloud-application']
     steps:
+      - name: Installing tools
+        uses: Alfresco/alfresco-build-tools/.github/actions/setup-yq@v1.4.0
+
       - name: Checkout activiti-script
         uses: actions/checkout@v3
+
       - name: Checkout ${{ matrix.repo }}
         uses: actions/checkout@v3
         with:
           repository: 'Activiti/${{ matrix.repo }}'
           path: 'repo/${{ matrix.repo }}'
+
       - name: Set up JDK 11
         uses: actions/setup-java@v3
         with:
