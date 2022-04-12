@@ -33,9 +33,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: tag-docker-images
         run: |
-          echo "Start tag docker images"
-          sleep 10
-          echo "End docker images"
+          ./gh-actions-scripts/dummy-step.sh ${{ github.step }}
       - name: update-helm-charts
         run: |
           echo "Start update helm charts"
@@ -47,7 +45,7 @@ jobs:
           sleep 10
           echo "Start push helm charts"
 
-  create-maven-staging-env:
+  create-artifacts-staging-env:
     runs-on: ubuntu-20.04
     needs: prepare-release
     steps:
@@ -65,9 +63,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: update-and-tag-pom-versions
         run: |
-          echo "Start update and tag pom versions"
-          sleep 10
-          echo "End update and tag pom versions"
+          ./gh-actions-scripts/dummy-step.sh  ${{ github.step }}
       - name: maven-build
         run: |
           echo "Start maven build"
@@ -79,7 +75,7 @@ jobs:
           sleep 10
           echo "End upload artifacts"
 
-  release-maven-staging-env:
+  release-artifacts-staging-env:
     runs-on: ubuntu-20.04
     needs: release-maven-artifacts
     steps:
