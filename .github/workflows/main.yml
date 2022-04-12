@@ -27,9 +27,9 @@ jobs:
         id: tags
         run: |
           # ./gh-actions-scripts/fetch-versions.sh
-          echo "::set-output name=act-cloud-application::7.3.0-alpha.5"
-          echo "::set-output name=act-cloud::7.3.0-alpha.7"
-          echo "::set-output name=act::7.3.0-alpha.4"
+          echo "::set-output name=activiti-cloud-application::7.3.0-alpha.5"
+          echo "::set-output name=activiti-cloud-application::7.3.0-alpha.7"
+          echo "::set-output name=activiti::7.3.0-alpha.4"
           echo "::set-output name=BRANCH::$(yq e '.release.branch' release.yaml)"
           echo "::set-output name=VERSION::$(yq e '.release.version' release.yaml)"
           echo "::set-output name=NEXT_VERSION::$(yq e '.release.nextVersion' release.yaml)"
@@ -50,9 +50,9 @@ jobs:
           echo "${{needs.prepare-release.outputs.activiti-cloud }}"
           echo "${{needs.prepare-release.outputs.activiti }}"
           echo $REPOS
-          echo $BRANCH
-          echo $VERSION
-          echo $NEXT_VERSION
+          echo "$BRANCH - ${{needs.prepare-release.outputs.BRANCH }}"
+          echo "$VERSION - ${{needs.prepare-release.outputs.VERSION }}"
+          echo "$NEXT_VERSION - ${{needs.prepare-release.outputs.NEXT_VERSION }}"
 
           # for REPO in ${REPOS//,/ }
           # do
