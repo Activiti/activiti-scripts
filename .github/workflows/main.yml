@@ -56,7 +56,7 @@ jobs:
 
           # for REPO in ${REPOS//,/ }
           # do
-          #   BASE_TAG="${{needs.prepare-release.outputs.$REPO }}"
+          #   BASE_TAG=
           #   RELEASE_TAG=${{needs.prepare-release.outputs.VERSION }}
           #   DOCKER_HUB_ORG=Activiti
           #   DOCKER_HUB_REPO=Activiti
