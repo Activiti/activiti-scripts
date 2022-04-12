@@ -57,12 +57,21 @@ jobs:
       fail-fast: true
       max-parallel: 1
       matrix:
-        repo: ['Activiti','activiti-cloud','activiti-cloud-application']
+        repo: ['Activiti/Activiti','Activiti/activiti-cloud','Activiti/activiti-cloud-application']
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout activiti-script
+        uses: actions/checkout@v3
+        with:
+          path: "scripts"
+      - name: Checkout ${{ matrix.repo }}
+        uses: actions/checkout@v3
+        with:
+          repo: ${{ matrix.repo }}
+          path: ${{ matrix.repo }}
+
       - name: update-and-tag-pom-versions
         run: |
-          ./gh-actions-scripts/dummy-step.sh ${{ matrix.repo }}
+          ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/   /' -e 's/-/|/'
       - name: maven-build
         run: |
           ./gh-actions-scripts/dummy-step.sh ${{ matrix.repo }}
