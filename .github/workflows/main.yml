@@ -72,7 +72,7 @@ jobs:
           ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/   /' -e 's/-/|/'
       - name: maven-build
         run: |
-          ./gh-actions-scripts/mvn-build.sh
+          ./gh-actions-scripts/mvn-build.sh "repo/${{ matrix.repo }}"
       - name: upload-artifacts
         run: |
           ./gh-actions-scripts/dummy-step.sh ${{ matrix.repo }}
