@@ -2,5 +2,5 @@
 
 MESSAGE=${1:-step}
 echo "start $MESSAGE"
-sleep 10
+sleep 2
 echo "end $MESSAGE"
