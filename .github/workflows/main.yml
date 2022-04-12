@@ -83,6 +83,7 @@ jobs:
         working-directory: repo/${{ matrix.repo }}
         run: |
           mvn ${MAVEN_ARGS:-clean install \
+              -B -V -DinstallAtEnd=true \
               -DskipTests \
               -Dhttp.keepAlive=false \
               -Dmaven.wagon.http.pool=false \
