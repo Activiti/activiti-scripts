@@ -53,17 +53,22 @@ jobs:
   release-maven-artifacts:
     runs-on: ubuntu-20.04
     needs: create-artifacts-staging-env
+    strategy:
+      fail-fast: true
+      max-parallel: 1
+      matrix:
+        repo: ['Activiti','activiti-cloud','activiti-cloud-application']
     steps:
       - uses: actions/checkout@v3
       - name: update-and-tag-pom-versions
         run: |
-          ./gh-actions-scripts/dummy-step.sh
+          ./gh-actions-scripts/dummy-step.sh ${{ matrix.repo }}
       - name: maven-build
         run: |
-          ./gh-actions-scripts/dummy-step.sh
+          ./gh-actions-scripts/dummy-step.sh ${{ matrix.repo }}
       - name: upload-artifacts
         run: |
-          ./gh-actions-scripts/dummy-step.sh
+          ./gh-actions-scripts/dummy-step.sh ${{ matrix.repo }}
 
   release-artifacts-staging-env:
     runs-on: ubuntu-20.04
