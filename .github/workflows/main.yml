@@ -21,6 +21,7 @@ jobs:
     runs-on: ubuntu-20.04
     needs: pre-commit
     steps:
+      - uses: actions/checkout@v3
       - name: fetch-tags-to-release
         run: |
           ./gh-actions-scripts/fetch-versions.sh
@@ -29,6 +30,7 @@ jobs:
     runs-on: ubuntu-20.04
     needs: prepare-release
     steps:
+      - uses: actions/checkout@v3
       - name: tag-docker-images
         run: |
           echo "Start tag docker images"
@@ -49,6 +51,7 @@ jobs:
     runs-on: ubuntu-20.04
     needs: prepare-release
     steps:
+      - uses: actions/checkout@v3
       - name: create-staging-environment
         run: |
           echo "Start create staging environment"
@@ -59,6 +62,7 @@ jobs:
     runs-on: ubuntu-20.04
     needs: create-maven-staging-env
     steps:
+      - uses: actions/checkout@v3
       - name: update-and-tag-pom-versions
         run: |
           echo "Start update and tag pom versions"
@@ -79,6 +83,7 @@ jobs:
     runs-on: ubuntu-20.04
     needs: release-maven-artifacts
     steps:
+      - uses: actions/checkout@v3
       - name: create-staging-environment
         run: |
           echo "Start create staging environment"
