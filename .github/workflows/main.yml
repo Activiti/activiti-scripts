@@ -15,7 +15,7 @@ jobs:
   pre-commit:
     runs-on: ubuntu-20.04
     steps:
-      - uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit
+      - uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@master
 
   prepare-release:
     runs-on: ubuntu-20.04
