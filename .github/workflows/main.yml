@@ -12,14 +12,14 @@ on:
   workflow_dispatch:
 
 jobs:
-  pre-commit:
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@master
+  # pre-commit:
+  #   runs-on: ubuntu-20.04
+  #   steps:
+  #     - uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@master
 
   prepare-release:
     runs-on: ubuntu-20.04
-    needs: pre-commit
+    # needs: pre-commit
     steps:
       - uses: actions/checkout@v3
       - name: fetch-tags-to-release
@@ -57,24 +57,22 @@ jobs:
       fail-fast: true
       max-parallel: 1
       matrix:
-        repo: ['Activiti/Activiti','Activiti/activiti-cloud','Activiti/activiti-cloud-application']
+        repo: ['Activiti','activiti-cloud','activiti-cloud-application']
     steps:
       - name: Checkout activiti-script
         uses: actions/checkout@v3
-        with:
-          path: "scripts"
       - name: Checkout ${{ matrix.repo }}
         uses: actions/checkout@v3
         with:
-          repo: ${{ matrix.repo }}
-          path: ${{ matrix.repo }}
+          repo: 'Activiti/${{ matrix.repo }}'
+          path: 'repo/${{ matrix.repo }}'
 
       - name: update-and-tag-pom-versions
         run: |
           ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/   /' -e 's/-/|/'
       - name: maven-build
         run: |
-          ./gh-actions-scripts/dummy-step.sh ${{ matrix.repo }}
+          ./gh-actions-scripts/mvn-build.sh
       - name: upload-artifacts
         run: |
           ./gh-actions-scripts/dummy-step.sh ${{ matrix.repo }}
