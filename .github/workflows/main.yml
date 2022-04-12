@@ -1,0 +1,86 @@
+name: CI
+
+# Controls when the action will run.
+on:
+  # Triggers the workflow on push or pull request events but only for the default branch
+  push:
+    branches: [ gh-3903-gh-action-workflow ]
+  pull_request:
+    branches: [ gh-3903-gh-action-workflow ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit
+
+  prepare-release:
+    runs-on: ubuntu-20.04
+    needs: pre-commit
+    steps:
+      - name: fetch-tags-to-release
+        run: |
+          ./gh-actions-scripts/fetch-versions.sh
+
+  release-docker-images:
+    runs-on: ubuntu-20.04
+    needs: prepare-release
+    steps:
+      - name: tag-docker-images
+        run: |
+          echo "Start tag docker images"
+          sleep 10
+          echo "End docker images"
+      - name: update-helm-charts
+        run: |
+          echo "Start update helm charts"
+          sleep 10
+          echo "Start update helm charts"
+      - name: push-helm-charts
+        run: |
+          echo "Start push helm charts"
+          sleep 10
+          echo "Start push helm charts"
+
+  create-maven-staging-env:
+    runs-on: ubuntu-20.04
+    needs: prepare-release
+    steps:
+      - name: create-staging-environment
+        run: |
+          echo "Start create staging environment"
+          sleep 10
+          echo "End create staging environment"
+
+  release-maven-artifacts:
+    runs-on: ubuntu-20.04
+    needs: create-maven-staging-env
+    steps:
+      - name: update-and-tag-pom-versions
+        run: |
+          echo "Start update and tag pom versions"
+          sleep 10
+          echo "End update and tag pom versions"
+      - name: maven-build
+        run: |
+          echo "Start maven build"
+          sleep 10
+          echo "End maven build"
+      - name: upload-artifacts
+        run: |
+          echo "Start upload artifacts"
+          sleep 10
+          echo "End upload artifacts"
+
+  release-maven-staging-env:
+    runs-on: ubuntu-20.04
+    needs: release-maven-artifacts
+    steps:
+      - name: create-staging-environment
+        run: |
+          echo "Start create staging environment"
+          sleep 10
+          echo "End create staging environment"
