@@ -26,3 +26,6 @@ target
 linux-amd64
 updatebot
 updatebot.jar
+
+# repos
+repos-activiti*
