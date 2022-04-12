@@ -78,6 +78,7 @@ jobs:
           mvn -version
       - name: maven-build
         run: |
+          env
           ./gh-actions-scripts/mvn-build.sh "repo/${{ matrix.repo }}"
       - name: upload-artifacts
         run: |
