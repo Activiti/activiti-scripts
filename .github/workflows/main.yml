@@ -16,9 +16,13 @@ jobs:
   prepare-release:
     runs-on: ubuntu-20.04
     outputs:
-      act-cloud-app: ${{ steps.tags.outputs.act-cloud-app }}
-      act-cloud: ${{ steps.tags.outputs.act-cloud }}
-      act: ${{ steps.tags.outputs.act }}
+      activiti-cloud-application: ${{ steps.tags.outputs.activiti-cloud-application }}
+      activiti-cloud: ${{ steps.tags.outputs.activiti-cloud }}
+      activiti: ${{ steps.tags.outputs.activiti }}
+      BRANCH: ${{ steps.tags.outputs.BRANCH }}
+      VERSION: ${{ steps.tags.outputs.BRANCH }}
+      NEXT_VERSION: ${{ steps.tags.outputs.BRANCH }}
+
     steps:
       # - uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@@v1.4.0            - name: Installing tools
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-yq@v1.4.0
