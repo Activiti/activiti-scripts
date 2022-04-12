@@ -75,14 +75,23 @@ jobs:
 
       - name: update-and-tag-pom-versions
         run: |
-          mvn -version
-      - name: maven-build
-        run: |
           env
-          ./gh-actions-scripts/mvn-build.sh "repo/${{ matrix.repo }}"
-      - name: upload-artifacts
+          mvn -version
+          java -version
+
+      - name: maven-build
+        working-directory: repo/${{ matrix.repo }}
         run: |
-          ./gh-actions-scripts/dummy-step.sh ${{ matrix.repo }}
+          mvn ${MAVEN_ARGS:-clean install \
+              -DskipTests \
+              -Dhttp.keepAlive=false \
+              -Dmaven.wagon.http.pool=false \
+              -Dmaven.wagon.httpconnectionManager.ttlSeconds=120}
+
+      - name: upload-artifacts
+        working-directory: ./gh-actions-scripts
+        run: |
+          ./dummy-step.sh ${{ matrix.repo }}
 
   release-artifacts-staging-env:
     runs-on: ubuntu-20.04
