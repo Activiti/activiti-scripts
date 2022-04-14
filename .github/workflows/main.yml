@@ -22,6 +22,7 @@ jobs:
       BRANCH: ${{ steps.tags.outputs.BRANCH }}
       VERSION: ${{ steps.tags.outputs.VERSION }}
       NEXT_VERSION: ${{ steps.tags.outputs.NEXT_VERSION }}
+      MOCK: ${{ steps.tags.outputs.MOCK }}
 
     steps:
       # - uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@@v1.4.0            - name: Installing tools
@@ -29,20 +30,24 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: 'Activiti/activiti-cloud-application'
-          path: 'repo/activiti-cloud-application'
+          path: 'repos/activiti-cloud-application'
 
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-yq@v1.4.0
       - uses: actions/checkout@v3
       - name: fetch-tags-to-release
         id: tags
         run: |
-          # ./gh-actions-scripts/fetch-versions.sh
-          echo "::set-output name=activiti-cloud-application::7.3.0-alpha.5"
-          echo "::set-output name=activiti-cloud-application::7.3.0-alpha.7"
-          echo "::set-output name=activiti::7.3.0-alpha.4"
-          echo "::set-output name=BRANCH::$(yq e '.release.branch' release.yaml)"
-          echo "::set-output name=VERSION::$(yq e '.release.version' release.yaml)"
-          echo "::set-output name=NEXT_VERSION::$(yq e '.release.nextVersion' release.yaml)"
+          VERSION=$(yq e '.release.version' release.yaml)
+          BRANCH=$(yq e '.release.version' release.yaml)
+          NEXT_VERSION=$(yq e '.release.nextVersion' release.yaml)
+          MOCK=$(yq e '.release.mock' release.yaml)
+
+          ./gh-actions-scripts/fetch-activiti-tags-from.sh -t "${VERSION}-alpha*" -p repos/activiti-cloud-application
+
+          echo "::set-output name=BRANCH::$BRANCH"
+          echo "::set-output name=VERSION::$VERSION"
+          echo "::set-output name=NEXT_VERSION::$NEXT_VERSION"
+          echo "::set-output name=MOCK::$MOCK"
 
   release-docker-images:
     runs-on: ubuntu-20.04
@@ -66,6 +71,7 @@ jobs:
           do
             BASE_TAG=$DOCKER_IMAGE_TAG
             DOCKER_HUB_REPO=$DOCKER_IMAGE
+            echo "releasing $DOCKER_IMAGE with base tag $BASE_TAG"
           #   ./gh-actions-scripts/tag-docker-image.sh
           done
 
@@ -117,7 +123,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: 'Activiti/${{ matrix.repo }}'
-          path: 'repo/${{ matrix.repo }}'
+          path: 'repos/${{ matrix.repo }}'
 
       - name: Set up JDK 11
         uses: actions/setup-java@v3
