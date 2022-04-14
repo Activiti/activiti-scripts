@@ -26,6 +26,7 @@ jobs:
 
     steps:
       # - uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@@v1.4.0            - name: Installing tools
+      - uses: actions/checkout@v3
       - name: Checkout activiti-cloud-application
         uses: actions/checkout@v3
         with:
@@ -33,7 +34,6 @@ jobs:
           path: 'repos/activiti-cloud-application'
 
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-yq@v1.4.0
-      - uses: actions/checkout@v3
       - name: fetch-tags-to-release
         id: tags
         run: |
