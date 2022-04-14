@@ -59,7 +59,7 @@ jobs:
     env:
       DOCKER_IMAGES: "example-runtime-bundle,activiti-cloud-query,example-cloud-connector,activiti-cloud-modeling"
       BASE_TAG: ${{needs.prepare-release.outputs.activiti-cloud-application }}
-      RELEASE_TAG: ${{needs.prepare-release.outputs.VERSION }}
+      VERSION: ${{needs.prepare-release.outputs.VERSION }}
       DOCKERHUB_ORG: Activiti
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME}}
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD}}
@@ -73,8 +73,10 @@ jobs:
           for DOCKER_IMAGE in ${DOCKER_IMAGES//,/ }
           do
 
+            RELEASE_TAG=$VERSION
+
             if [ "$MOCK" == "true" ]; then
-              RELEASE_TAG=$RELEASE_TAG-mock
+              RELEASE_TAG=$VERSION-mock
             fi
 
             echo "releasing $DOCKER_IMAGE from base tag $BASE_TAG with tag $RELEASE_TAG"
