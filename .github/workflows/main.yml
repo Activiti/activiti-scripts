@@ -37,6 +37,7 @@ jobs:
       - name: fetch-tags-to-release
         id: tags
         run: |
+          ls -R
           VERSION=$(yq e '.release.version' release.yaml)
           BRANCH=$(yq e '.release.version' release.yaml)
           NEXT_VERSION=$(yq e '.release.nextVersion' release.yaml)
