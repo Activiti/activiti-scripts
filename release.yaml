@@ -2,4 +2,5 @@ release:
   branch: develop
   version: 7.3.0
   nextVersion: 7.4.0-SNAPSHOT
+  mock: true
 
