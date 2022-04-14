@@ -48,8 +48,8 @@ jobs:
       RELEASE_TAG: ${{needs.prepare-release.outputs.VERSION }}
       NEXT_VERSION: ${{needs.prepare-release.outputs.NEXT_VERSION }}
       DOCKER_HUB_ORG: Activiti
-      DOCKER_HUB_USER: xxxxxx
-      DOCKER_HUB_PASSWORD: xxxxxx
+      DOCKER_HUB_USER: ${{ secrets.DOCKERHUB_USERNAME}}
+      DOCKER_HUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD}}
     steps:
       - uses: actions/checkout@v3
       - name: tag-docker-images
