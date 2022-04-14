@@ -72,7 +72,6 @@ jobs:
         run: |
           for DOCKER_IMAGE in ${DOCKER_IMAGES//,/ }
           do
-            DOCKERHUB_REPO=$DOCKER_IMAGE
 
             if [ "$MOCK" == "true"]; then
               RELEASE_TAG=$RELEASE_TAG-mock
