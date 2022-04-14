@@ -18,6 +18,8 @@ AUTH_OFFLINE_TOKEN="1"
 AUTH_CLIENT_ID="shell"
 API_DOMAIN="registry-1.docker.io"
 
+# TODO it should skip if the version is already present
+
 # Fetching the TOKEN #########################
 CONTENT_TYPE="application/vnd.docker.distribution.manifest.v2+json"
 TOKEN_URL="https://${AUTH_DOMAIN}/token?service=${AUTH_SERVICE}&scope=${AUTH_SCOPE}&offline_token=${AUTH_OFFLINE_TOKEN}&client_id=${AUTH_CLIENT_ID}"
@@ -34,4 +36,5 @@ curl -X PUT -H "Content-Type: ${CONTENT_TYPE}" \
 
 VERSIONS=$(curl -H "Authorization: Bearer ${TOKEN}" https://${API_DOMAIN}/v2/${DOCKERHUB_ORG}/${DOCKER_IMAGE}/tags/list)
 
+# TODO it should test if the version is now present
 echo $VERSIONS
