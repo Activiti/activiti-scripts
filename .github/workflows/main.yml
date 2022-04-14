@@ -81,8 +81,15 @@ jobs:
             fi
 
             echo "releasing $DOCKER_IMAGE from base tag $BASE_TAG with tag $RELEASE_TAG"
-            ./tag-docker-image.sh
-            echo "released."
+            ./tag-docker-image.sh \
+              $BASE_TAG \
+              $RELEASE_TAG \
+              $DOCKERHUB_ORG \
+              $DOCKER_IMAGE \
+              $DOCKERHUB_USERNAME \
+              $DOCKERHUB_PASSWORD
+
+            echo "$DOCKER_IMAGE released."
           done
 
       - name: update-helm-charts
