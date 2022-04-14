@@ -25,6 +25,12 @@ jobs:
 
     steps:
       # - uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@@v1.4.0            - name: Installing tools
+      - name: Checkout activiti-cloud-application
+        uses: actions/checkout@v3
+        with:
+          repository: 'Activiti/activiti-cloud-application'
+          path: 'repo/activiti-cloud-application'
+
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-yq@v1.4.0
       - uses: actions/checkout@v3
       - name: fetch-tags-to-release
@@ -51,7 +57,9 @@ jobs:
       DOCKER_HUB_USER: ${{ secrets.DOCKERHUB_USERNAME}}
       DOCKER_HUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD}}
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout activiti-scripts
+        uses: actions/checkout@v3
+
       - name: tag-docker-images
         run: |
           for DOCKER_IMAGE in ${DOCKER_IMAGES//,/ }
