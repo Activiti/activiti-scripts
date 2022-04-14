@@ -80,7 +80,7 @@ jobs:
             fi
 
             echo "releasing $DOCKER_IMAGE from base tag $BASE_TAG with tag $RELEASE_TAG"
-            #./gh-actions-scripts/tag-docker-image.sh
+            ./tag-docker-image.sh
             echo "released."
           done
 
