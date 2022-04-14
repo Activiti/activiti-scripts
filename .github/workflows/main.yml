@@ -69,6 +69,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: tag-docker-images
+        working-directory: ./gh-actions-scripts
         run: |
           for DOCKER_IMAGE in ${DOCKER_IMAGES//,/ }
           do
