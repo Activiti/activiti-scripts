@@ -3,12 +3,12 @@
 set -e
 
 # PARAMETERS #################################
-BASE_TAG=${1:-BASE_TAG}
-RELEASE_TAG=${2:-RELEASE_TAG}
-DOCKERHUB_ORG=${3:-DOCKERHUB_ORG}
-DOCKER_IMAGE=${4:-DOCKER_IMAGE}
-DOCKERHUB_USERNAME=${5:-DOCKERHUB_USERNAME}
-DOCKERHUB_PASSWORD=${6:-DOCKERHUB_PASSWORD}
+BASE_TAG=${1:-$BASE_TAG}
+RELEASE_TAG=${2:-$RELEASE_TAG}
+DOCKERHUB_ORG=${3:-$DOCKERHUB_ORG}
+DOCKER_IMAGE=${4:-$DOCKER_IMAGE}
+DOCKERHUB_USERNAME=${5:-$DOCKERHUB_USERNAME}
+DOCKERHUB_PASSWORD=${6:-$DOCKERHUB_PASSWORD}
 
 # DOCKER VARS ################################
 AUTH_DOMAIN="auth.docker.io"
@@ -39,7 +39,7 @@ curl -s -X PUT -H "Content-Type: ${CONTENT_TYPE}" \
          -d "${MANIFEST}" \
          "https://${API_DOMAIN}/v2/${DOCKERHUB_ORG}/${DOCKER_IMAGE}/manifests/${RELEASE_TAG}"
 
-VERSIONS=$(curl -H "Authorization: Bearer ${TOKEN}" https://${API_DOMAIN}/v2/${DOCKERHUB_ORG}/${DOCKER_IMAGE}/tags/list)
+VERSIONS=$(curl -s -H "Authorization: Bearer ${TOKEN}" https://${API_DOMAIN}/v2/${DOCKERHUB_ORG}/${DOCKER_IMAGE}/tags/list)
 
 # TODO it should test if the version is now present
 echo $VERSIONS
