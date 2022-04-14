@@ -21,15 +21,20 @@ API_DOMAIN="registry-1.docker.io"
 # TODO it should skip if the version is already present
 
 # Fetching the TOKEN #########################
+echo "Fetching TOKEN for $DOCKER_IMAGE"
 CONTENT_TYPE="application/vnd.docker.distribution.manifest.v2+json"
 TOKEN_URL="https://${AUTH_DOMAIN}/token?service=${AUTH_SERVICE}&scope=${AUTH_SCOPE}&offline_token=${AUTH_OFFLINE_TOKEN}&client_id=${AUTH_CLIENT_ID}"
-TOKEN=$(curl -X GET -u ${DOCKERHUB_USERNAME}:${DOCKERHUB_PASSWORD} $TOKEN_URL | jq -r '.token') && echo $TOKEN
+TOKEN=$(curl -s -X GET -u ${DOCKERHUB_USERNAME}:${DOCKERHUB_PASSWORD} $TOKEN_URL | jq -r '.token') && \
+  echo "Token downloaded: $TOKEN"
 
 # Fetching the IMAGE MANIFEST ################
+echo "Downloading MANIFEST for $DOCKER_IMAGE"
 MANIFESTS_URL="https://${API_DOMAIN}/v2/${DOCKERHUB_ORG}/${DOCKER_IMAGE}/manifests/${BASE_TAG}"
-MANIFEST=$(curl -H "Accept: ${CONTENT_TYPE}" -H "Authorization: Bearer ${TOKEN}" "${MANIFESTS_URL}") && echo $MANIFEST
+MANIFEST=$(curl -s -H "Accept: ${CONTENT_TYPE}" -H "Authorization: Bearer ${TOKEN}" "${MANIFESTS_URL}") &&
+  echo echo "Manifest downloaded: $MANIFEST"
 
-curl -X PUT -H "Content-Type: ${CONTENT_TYPE}" \
+echo "Tagging $DOCKER_IMAGE with $RELEASE_TAG"
+curl -s -X PUT -H "Content-Type: ${CONTENT_TYPE}" \
          -H "Authorization: Bearer ${TOKEN}" \
          -d "${MANIFEST}" \
          "https://${API_DOMAIN}/v2/${DOCKERHUB_ORG}/${DOCKER_IMAGE}/manifests/${RELEASE_TAG}"
