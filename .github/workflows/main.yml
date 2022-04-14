@@ -73,7 +73,7 @@ jobs:
           for DOCKER_IMAGE in ${DOCKER_IMAGES//,/ }
           do
 
-            if [ "$MOCK" == "true"]; then
+            if [ "$MOCK" == "true" ]; then
               RELEASE_TAG=$RELEASE_TAG-mock
             fi
 
