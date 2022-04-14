@@ -142,7 +142,7 @@ jobs:
           java -version
 
       - name: maven-build
-        working-directory: repo/${{ matrix.repo }}
+        working-directory: repos/${{ matrix.repo }}
         run: |
           mvn ${MAVEN_ARGS:-clean install \
               -B -V -DinstallAtEnd=true \
@@ -154,7 +154,7 @@ jobs:
       - name: upload-artifacts
         working-directory: ./gh-actions-scripts
         run: |
-          ./gh-actions-scripts/dummy-step.sh ${{ matrix.repo }}
+          ./dummy-step.sh ${{ matrix.repo }}
 
   release-artifacts-staging-env:
     runs-on: ubuntu-20.04
