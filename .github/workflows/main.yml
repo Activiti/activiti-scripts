@@ -58,12 +58,12 @@ jobs:
     needs: prepare-release
     env:
       DOCKER_IMAGES: "example-runtime-bundle,activiti-cloud-query,example-cloud-connector,activiti-cloud-modeling"
-      DOCKER_IMAGE_TAG: ${{needs.prepare-release.outputs.activiti-cloud-application }}
-
+      BASE_TAG: ${{needs.prepare-release.outputs.activiti-cloud-application }}
       RELEASE_TAG: ${{needs.prepare-release.outputs.VERSION }}
       DOCKERHUB_ORG: Activiti
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME}}
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD}}
+      MOCK: ${{ needs.prepare-release.outputs.MOCK }}
     steps:
       - name: Checkout activiti-scripts
         uses: actions/checkout@v3
@@ -72,10 +72,15 @@ jobs:
         run: |
           for DOCKER_IMAGE in ${DOCKER_IMAGES//,/ }
           do
-            BASE_TAG=$DOCKER_IMAGE_TAG
             DOCKERHUB_REPO=$DOCKER_IMAGE
+
+            if [ "$MOCK" == "true"]; then
+              RELEASE_TAG=$RELEASE_TAG-mock
+            fi
+
             echo "releasing $DOCKER_IMAGE from base tag $BASE_TAG with tag $RELEASE_TAG"
             #./gh-actions-scripts/tag-docker-image.sh
+            echo "released."
           done
 
       - name: update-helm-charts
