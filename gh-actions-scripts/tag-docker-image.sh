@@ -24,6 +24,7 @@ API_DOMAIN="registry-1.docker.io"
 echo "Fetching TOKEN for $DOCKER_IMAGE"
 CONTENT_TYPE="application/vnd.docker.distribution.manifest.v2+json"
 TOKEN_URL="https://${AUTH_DOMAIN}/token?service=${AUTH_SERVICE}&scope=${AUTH_SCOPE}&offline_token=${AUTH_OFFLINE_TOKEN}&client_id=${AUTH_CLIENT_ID}"
+echo "curl -s -X GET -u ${DOCKERHUB_USERNAME}:${DOCKERHUB_PASSWORD} $TOKEN_URL"
 FOOBAR=$(curl -s -X GET -u ${DOCKERHUB_USERNAME}:${DOCKERHUB_PASSWORD} $TOKEN_URL | jq -r '.token') && \
   echo "T o che n downloaded: $FOOBAR"
 
