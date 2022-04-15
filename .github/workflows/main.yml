@@ -209,6 +209,8 @@ jobs:
       - name: checkout-${{ matrix.repo }}
         working-directory: repos/${{ matrix.repo }}
         run: |
+          pwd
+          ls -l
           git checkout -q "tags/${${{ matrix.repo }}}~1"
 
       - name: update-pom-to-release-version
