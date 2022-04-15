@@ -218,8 +218,8 @@ jobs:
           git checkout -q "tags/${${{ matrix.repo }}}~1"
 
       - name: update-pom-to-release-version
+        working-directory: repos/${{ matrix.repo }}
         run: |
-          cat $M2_DIR/settings.xml
           # TODO Check that the update is updating all the needed dependencies
           # TODO e.g.: activiti-cloud 7.3.1 should refer to Activiti 7.3.1
           mvn versions:set -DnewVersion=$RELEASE_VERSION -DgenerateBackupPoms=false
@@ -232,7 +232,6 @@ jobs:
           # TODO echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import --no-tty --batch --yes
           # TODO echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust  --no-tty --batch --yes
           # TODO we need to understand if the settings.xml substitution of the env variables ${env.GPG_EXECUTABLE} works
-          cat $M2_DIR/settings.xml
           echo "Deploying to repository ${STAGING_REPOSITORY}"
           mvn clean deploy \
             -DperformRelease \
