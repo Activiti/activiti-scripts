@@ -173,14 +173,14 @@ jobs:
         # TODO Should we add also activiti-cloud-modeling?
         repo: ['Activiti','activiti-cloud','activiti-cloud-application']
     env:
-      activiti-cloud-application: ${{ needs.prepare-release.outputs.activiti-cloud-application }}
-      activiti-cloud: ${{ needs.prepare-release.outputs.activiti-cloud }}
-      Activiti: ${{ needs.prepare-release.outputs.activiti }}
-      RELEASE_VERSION: ${{ needs.prepare-release.outputs.VERSION }}
-      MOCK: ${{ needs.prepare-release.outputs.MOCK }}
-      STAGING_REPOSITORY: ${{ needs.create-artifacts-staging-env.outputs.STAGING_REPOSITORY }}
-      SETTINGS_XML: ${{ needs.create-artifacts-staging-env.outputs.SETTINGS_XML }}
-      M2_DIR: ${HOME}/.m2
+      activiti-cloud-application: "${{ needs.prepare-release.outputs.activiti-cloud-application }}"
+      activiti-cloud: "${{ needs.prepare-release.outputs.activiti-cloud }}"
+      Activiti: "${{ needs.prepare-release.outputs.activiti }}"
+      RELEASE_VERSION: "${{ needs.prepare-release.outputs.VERSION }}"
+      MOCK: "${{ needs.prepare-release.outputs.MOCK }}"
+      STAGING_REPOSITORY: "${{ needs.create-artifacts-staging-env.outputs.STAGING_REPOSITORY }}"
+      SETTINGS_XML: "${{ needs.create-artifacts-staging-env.outputs.SETTINGS_XML }}"
+      M2_DIR: "/home/runner/.m2"
 
     steps:
       - name: Installing tools
