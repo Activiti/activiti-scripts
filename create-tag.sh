@@ -10,10 +10,10 @@ then
   export SHOULD_INCREMENT_VERSION
 fi
 
-./fetch-versions.sh
-
 VERSION_TO_RELEASE=$(<VERSION)
 echo "Version to release ${VERSION_TO_RELEASE}"
+
+tag_pattern="${VERSION_TO_RELEASE%-mock*}-alpha*" ./fetch-versions.sh
 
 git add repos-*.txt
 git commit -m "Update versions - Activiti Cloud Dependencies"
