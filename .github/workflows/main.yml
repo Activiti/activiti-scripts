@@ -138,7 +138,7 @@ jobs:
       STAGING_REPOSITORY: ${{ steps.staging.outputs.STAGING_REPOSITORY }}
       SETTINGS_XML: ${{ steps.staging.outputs.SETTINGS_XML }}
     env:
-      RELEASE_VERSION: ${{needs.prepare-release.outputs.VERSION }}
+      RELEASE_VERSION: ${{ needs.prepare-release.outputs.VERSION }}
       MOCK: ${{ needs.prepare-release.outputs.MOCK }}
     steps:
       - uses: actions/checkout@v3
@@ -165,7 +165,7 @@ jobs:
 
   release-maven-artifacts:
     runs-on: ubuntu-20.04
-    needs: create-artifacts-staging-env
+    needs: ["prepare-release","create-artifacts-staging-env"]
     strategy:
       fail-fast: true
       max-parallel: 1
@@ -173,16 +173,12 @@ jobs:
         # TODO Should we add also activiti-cloud-modeling?
         repo: ['Activiti','activiti-cloud','activiti-cloud-application']
     env:
-      DOCKER_IMAGES: "example-runtime-bundle,activiti-cloud-query,example-cloud-connector,activiti-cloud-modeling"
-      BASE_TAG: ${{needs.prepare-release.outputs.activiti-cloud-application }}
-      RELEASE_VERSION: ${{needs.prepare-release.outputs.VERSION }}
-      DOCKERHUB_ORG: Activiti
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME}}
-      DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD}}
+      RELEASE_VERSION: ${{ needs.prepare-release.outputs.VERSION }}
       MOCK: ${{ needs.prepare-release.outputs.MOCK }}
       STAGING_REPOSITORY: ${{ needs.create-artifacts-staging-env.outputs.STAGING_REPOSITORY }}
       SETTINGS_XML: ${{ needs.create-artifacts-staging-env.outputs.SETTINGS_XML }}
       M2_DIR: ${HOME}/.m2
+
     steps:
       - name: Installing tools
         uses: Alfresco/alfresco-build-tools/.github/actions/setup-yq@v1.4.0
@@ -195,7 +191,7 @@ jobs:
         with:
           repository: 'Activiti/${{ matrix.repo }}'
           path: 'repos/${{ matrix.repo }}'
-          ref: 'tags/${{needs.prepare-release.outputs.VERSION }}~1'
+          ref: 'tags/${{ needs.prepare-release.outputs.${{ matrix.repo }} }}~1'
 
       - name: Set up JDK 11
         uses: actions/setup-java@v3
