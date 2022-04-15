@@ -160,8 +160,13 @@ jobs:
           cp settings.xml settings.xml.bak
           sed "s/STAGING_ID/${NEXUS_STAGING_DATA}/g" "settings.xml.bak" > settings.xml
 
+          CONTENT=$(< settings.xml)
+          CONTENT="${CONTENT//'%'/'%25'}"
+          CONTENT="${CONTENT//$'\n'/'%0A'}"
+          CONTENT="${CONTENT//$'\r'/'%0D'}"
+
           echo "::set-output name=STAGING_REPOSITORY::$NEXUS_STAGING_DATA"
-          echo "::set-output name=SETTINGS_XML::$(< settings.xml)"
+          echo "::set-output name=SETTINGS_XML::$CONTENT"
 
   release-maven-artifacts:
     runs-on: ubuntu-20.04
