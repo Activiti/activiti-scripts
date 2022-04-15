@@ -152,13 +152,13 @@ jobs:
           NEXUS_STAGING_DATA=$(curl -d @staging-repository-template.xml \
             -u "${NEXUS_USERNAME}":"${NEXUS_PASSWORD}" \
             -H "Content-Type:application/xml" \
-            -v "${NEXUS_URL}"/service/local/staging/profiles/"${NEXUS_PROFILE_ID}"/start \
+            "${NEXUS_URL}"/service/local/staging/profiles/"${NEXUS_PROFILE_ID}"/start | \
             grep stagedRepositoryId | grep -o "$NEXUS_STAGING_PROFILE_PATTERN")
 
           echo "Stating repository $NEXUS_STAGING_DATA"
 
           cp settings.xml settings.xml.bak
-          sed -i .bck "s/STAGING_ID/${NEXUS_STAGING_DATA}/g" "settings.xml.bak" > settings.xml
+          sed "s/STAGING_ID/${NEXUS_STAGING_DATA}/g" "settings.xml.bak" > settings.xml
 
           echo "::set-output name=STAGING_REPOSITORY::$NEXUS_STAGING_DATA"
           echo "::set-output name=SETTINGS_XML::$(< settings.xml)"
