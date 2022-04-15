@@ -84,8 +84,8 @@ jobs:
       BASE_TAG: "${{ needs.prepare-release.outputs.activiti-cloud-application }}"
       RELEASE_VERSION: "${{ needs.prepare-release.outputs.VERSION }}"
       DOCKERHUB_ORG: Activiti
-      DOCKERHUB_USERNAME: "${{ secrets.DOCKERHUB_USERNAME}}"
-      DOCKERHUB_PASSWORD: "${{ secrets.DOCKERHUB_PASSWORD}}"
+      DOCKERHUB_USERNAME: "${{ secrets.DOCKERHUB_USERNAME }}"
+      DOCKERHUB_PASSWORD: "${{ secrets.DOCKERHUB_PASSWORD }}"
       MOCK: "${{ needs.prepare-release.outputs.MOCK }}"
     steps:
       - name: Checkout activiti-scripts
@@ -102,8 +102,8 @@ jobs:
               $RELEASE_VERSION \
               $DOCKERHUB_ORG \
               $DOCKER_IMAGE \
-              $DOCKERHUB_USERNAME \
-              $DOCKERHUB_PASSWORD
+              ${{ secrets.DOCKERHUB_USERNAME }} \
+              ${{ secrets.DOCKERHUB_PASSWORD }}
             # TODO dockerhub user and password are not working for the purpose
             # TODO of downloading the manifest and uploading a new version
             echo "$DOCKER_IMAGE released."
@@ -222,7 +222,7 @@ jobs:
         run: |
           # TODO Check that the update is updating all the needed dependencies
           # TODO e.g.: activiti-cloud 7.3.1 should refer to Activiti 7.3.1
-          mvn versions:set -DnewVersion=$RELEASE_VERSION -DgenerateBackupPoms=false
+          mvn versions:set -B -DnewVersion=$RELEASE_VERSION -DgenerateBackupPoms=false
 
       - name: maven-build-and-upload
         working-directory: repos/${{ matrix.repo }}
@@ -261,7 +261,7 @@ jobs:
   # TODO should this step be skipped for the mock release?
   finalize-branch:
     runs-on: ubuntu-20.04
-    needs: release-maven-artifacts
+    needs: ["prepare-release","release-maven-artifacts"]
     strategy:
       fail-fast: true
       max-parallel: 1
@@ -276,7 +276,7 @@ jobs:
         with:
           repository: 'Activiti/${{ matrix.repo }}'
           path: 'repos/${{ matrix.repo }}'
-          ref: 'tags/${{needs.prepare-release.outputs.VERSION }}~1'
+          ref: '${{ needs.prepare-release.outputs.BRANCH }}'
 
       - name: update-to-next-version
         working-directory: repos/${{ matrix.repo }}

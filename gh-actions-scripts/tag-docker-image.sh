@@ -25,21 +25,21 @@ echo "Fetching TOKEN for $DOCKER_IMAGE"
 CONTENT_TYPE="application/vnd.docker.distribution.manifest.v2+json"
 TOKEN_URL="https://${AUTH_DOMAIN}/token?service=${AUTH_SERVICE}&scope=${AUTH_SCOPE}&offline_token=${AUTH_OFFLINE_TOKEN}&client_id=${AUTH_CLIENT_ID}"
 FOOBAR=$(curl -s -X GET -u ${DOCKERHUB_USERNAME}:${DOCKERHUB_PASSWORD} $TOKEN_URL | jq -r '.token') && \
-  echo "T o che n downloaded: $TOKEN"
+  echo "T o che n downloaded: $FOOBAR"
 
 # Fetching the IMAGE MANIFEST ################
 echo "Downloading MANIFEST for $DOCKER_IMAGE"
 MANIFESTS_URL="https://${API_DOMAIN}/v2/${DOCKERHUB_ORG}/${DOCKER_IMAGE}/manifests/${BASE_TAG}"
-MANIFEST=$(curl -s -H "Accept: ${CONTENT_TYPE}" -H "Authorization: Bearer ${TOKEN}" "${MANIFESTS_URL}") &&
+MANIFEST=$(curl -s -H "Accept: ${CONTENT_TYPE}" -H "Authorization: Bearer ${FOOBAR}" "${MANIFESTS_URL}") &&
   echo echo "Manifest downloaded: $MANIFEST"
 
 echo "Tagging $DOCKER_IMAGE with $RELEASE_TAG"
 curl -s -X PUT -H "Content-Type: ${CONTENT_TYPE}" \
-         -H "Authorization: Bearer ${TOKEN}" \
+         -H "Authorization: Bearer ${FOOBAR}" \
          -d "${MANIFEST}" \
          "https://${API_DOMAIN}/v2/${DOCKERHUB_ORG}/${DOCKER_IMAGE}/manifests/${RELEASE_TAG}"
 
-VERSIONS=$(curl -s -H "Authorization: Bearer ${TOKEN}" https://${API_DOMAIN}/v2/${DOCKERHUB_ORG}/${DOCKER_IMAGE}/tags/list)
+VERSIONS=$(curl -s -H "Authorization: Bearer ${FOOBAR}" https://${API_DOMAIN}/v2/${DOCKERHUB_ORG}/${DOCKER_IMAGE}/tags/list)
 
 # TODO it should test if the version is now present
 echo $VERSIONS
