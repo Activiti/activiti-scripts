@@ -1,8 +1,18 @@
 name: Release Activiti Cloud
 
-# Controls when the action will run.
+# TODO we should run the pre-commit tasks only in the case of
+# TODO a PR modifying this repo (activiti-scripts) and not
+# TODO when launching a release process
+
+# TODO we should run the release process only when a certain
+# TODO commit message is matched [ci:release]
+
+# TODO we should support the rollback of a release if possible
+# TODO with a commit message [ci:rollback]
+
+# TODO we need to change the branches we use to perform the release
+# TODO we could delete master and use develop.
 on:
-  # Triggers the workflow on push or pull request events but only for the default branch
   push:
     branches: [ gh-3903-gh-action-workflow ]
   pull_request:
@@ -10,6 +20,15 @@ on:
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+
+env:
+  NEXUS_URL: "https://artifacts.alfresco.com/nexus"
+  NEXUS_PROFILE_ID: "${{ secrets.NEXUS_ACTIVITI7_PROFILE_ID }}"
+  NEXUS_USERNAME: "${{ secrets.NEXUS_USERNAME }}"
+  NEXUS_PASSWORD: "${{ secrets.NEXUS_PASSWORD }}"
+  NEXUS_STAGING_PROFILE_PATTERN: "activiti-7-community-staging-profile-[0-9]*"
+  GPG_EXECUTABLE: "gpg"
+  GPG_PASSPHRASE: "${{ secrets.GPG_PASSPHRASE }}"
 
 jobs:
 
@@ -46,7 +65,11 @@ jobs:
           NEXT_VERSION=$(yq e '.release.nextVersion' release.yaml)
           MOCK=$(yq e '.release.mock' release.yaml)
 
-          ./gh-actions-scripts/fetch-activiti-tags-from.sh -t "${VERSION}-alpha*" -p repos/activiti-cloud-application
+          ./gh-actions-scripts/fetch-activiti-tags-from.sh -t "${VERSION%-mock*}-alpha*" -p repos/activiti-cloud-application
+
+          if [ "$MOCK" == "true" ]; then
+            VERSION=$VERSION-mock
+          fi
 
           echo "::set-output name=BRANCH::$BRANCH"
           echo "::set-output name=VERSION::$VERSION"
@@ -58,12 +81,12 @@ jobs:
     needs: prepare-release
     env:
       DOCKER_IMAGES: "example-runtime-bundle,activiti-cloud-query,example-cloud-connector,activiti-cloud-modeling"
-      BASE_TAG: ${{needs.prepare-release.outputs.activiti-cloud-application }}
-      VERSION: ${{needs.prepare-release.outputs.VERSION }}
+      BASE_TAG: "${{ needs.prepare-release.outputs.activiti-cloud-application }}"
+      RELEASE_VERSION: "${{ needs.prepare-release.outputs.VERSION }}"
       DOCKERHUB_ORG: Activiti
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME}}
-      DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD}}
-      MOCK: ${{ needs.prepare-release.outputs.MOCK }}
+      DOCKERHUB_USERNAME: "${{ secrets.DOCKERHUB_USERNAME}}"
+      DOCKERHUB_PASSWORD: "${{ secrets.DOCKERHUB_PASSWORD}}"
+      MOCK: "${{ needs.prepare-release.outputs.MOCK }}"
     steps:
       - name: Checkout activiti-scripts
         uses: actions/checkout@v3
@@ -73,34 +96,30 @@ jobs:
         run: |
           for DOCKER_IMAGE in ${DOCKER_IMAGES//,/ }
           do
-
-            RELEASE_TAG=$VERSION
-
-            if [ "$MOCK" == "true" ]; then
-              RELEASE_TAG=$VERSION-mock
-            fi
-
-            echo "releasing $DOCKER_IMAGE from base tag $BASE_TAG with tag $RELEASE_TAG"
+            echo "releasing $DOCKER_IMAGE from base tag $BASE_TAG with tag $RELEASE_VERSION"
             ./tag-docker-image.sh \
               $BASE_TAG \
-              $RELEASE_TAG \
+              $RELEASE_VERSION \
               $DOCKERHUB_ORG \
               $DOCKER_IMAGE \
               $DOCKERHUB_USERNAME \
               $DOCKERHUB_PASSWORD
-
+            # TODO dockerhub user and password are not working for the purpose
+            # TODO of downloading the manifest and uploading a new version
             echo "$DOCKER_IMAGE released."
           done
 
       - name: update-helm-charts
         env:
           VERSION: $(cat VERSION)
-          RELEASE_VERSION: $(cat VERSION)
+          RELEASE_VERSION: ${{ needs.prepare-release.outputs.VERSION }}
           HELM_ACTIVITI_VERSION: $(cat VERSION)
           SSO_PROTOCOL: https
           GATEWAY_PROTOCOL: https
 
         run: |
+          # TODO the release-helm scripts deploys an activiti cloud application
+          # TODO launches acceptance tests. Is this necessary?
           set -e
           #./release-helm.sh
           #
@@ -115,11 +134,32 @@ jobs:
   create-artifacts-staging-env:
     runs-on: ubuntu-20.04
     needs: prepare-release
+    outputs:
+      STAGING_REPOSITORY: ${{ steps.staging.outputs.STAGING_REPOSITORY }}
+      SETTINGS_XML: ${{ steps.staging.outputs.SETTINGS_XML }}
+    env:
+      RELEASE_VERSION: ${{needs.prepare-release.outputs.VERSION }}
+      MOCK: ${{ needs.prepare-release.outputs.MOCK }}
     steps:
       - uses: actions/checkout@v3
       - name: create-staging-environment
+        id: staging
+        working-directory: "./maven-config"
         run: |
-          ./gh-actions-scripts/dummy-step.sh
+          sed -i .bck "s/RELEASE_VERSION/${RELEASE_VERSION}/g" staging-repository-template.xml
+
+          NEXUS_STAGING_DATA=$(curl -d @staging-repository-template.xml \
+            -u "${NEXUS_USERNAME}":"${NEXUS_PASSWORD}" \
+            -H "Content-Type:application/xml" \
+            -v "${NEXUS_URL}"/service/local/staging/profiles/"${NEXUS_PROFILE_ID}"/start \
+            grep stagedRepositoryId | grep -o "$NEXUS_STAGING_PROFILE_PATTERN")
+
+          echo "Stating repository $NEXUS_STAGING_DATA"
+
+          sed -i .bck "s/STAGING_ID/${NEXUS_STAGING_DATA}/g" "settings.xml"
+
+          echo "::set-output name=STAGING_REPOSITORY::$NEXUS_STAGING_DATA"
+          echo "::set-output name=SETTINGS_XML::$(< settings.xml)"
 
   release-maven-artifacts:
     runs-on: ubuntu-20.04
@@ -128,7 +168,19 @@ jobs:
       fail-fast: true
       max-parallel: 1
       matrix:
+        # TODO Should we add also activiti-cloud-modeling?
         repo: ['Activiti','activiti-cloud','activiti-cloud-application']
+    env:
+      DOCKER_IMAGES: "example-runtime-bundle,activiti-cloud-query,example-cloud-connector,activiti-cloud-modeling"
+      BASE_TAG: ${{needs.prepare-release.outputs.activiti-cloud-application }}
+      RELEASE_VERSION: ${{needs.prepare-release.outputs.VERSION }}
+      DOCKERHUB_ORG: Activiti
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME}}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD}}
+      MOCK: ${{ needs.prepare-release.outputs.MOCK }}
+      STAGING_REPOSITORY: ${{ needs.create-artifacts-staging-env.outputs.STAGING_REPOSITORY }}
+      SETTINGS_XML: ${{ needs.create-artifacts-staging-env.outputs.SETTINGS_XML }}
+      M2_DIR: ${HOME}/.m2
     steps:
       - name: Installing tools
         uses: Alfresco/alfresco-build-tools/.github/actions/setup-yq@v1.4.0
@@ -141,6 +193,7 @@ jobs:
         with:
           repository: 'Activiti/${{ matrix.repo }}'
           path: 'repos/${{ matrix.repo }}'
+          ref: 'tags/${{needs.prepare-release.outputs.VERSION }}~1'
 
       - name: Set up JDK 11
         uses: actions/setup-java@v3
@@ -149,32 +202,77 @@ jobs:
           java-version: 11
           cache: 'maven'
 
-      - name: update-and-tag-pom-versions
+      - name: copy-settings-xml
         run: |
-          env
-          mvn -version
-          java -version
+          echo $SETTINGS_XML > $M2_DIR/settings.xml
+          cat $M2_DIR/settings.xml
 
-      - name: maven-build
+      - name: update-pom-to-release-version
+        run: |
+          # TODO Check that the update is updating all the needed dependencies
+          # TODO e.g.: activiti-cloud 7.3.1 should refer to Activiti 7.3.1
+          mvn versions:set -DnewVersion=$RELEASE_VERSION -DgenerateBackupPoms=false
+
+      - name: maven-build-and-upload
         working-directory: repos/${{ matrix.repo }}
         run: |
-          mvn ${MAVEN_ARGS:-clean install \
-              -B -V -DinstallAtEnd=true \
-              -DskipTests \
-              -Dhttp.keepAlive=false \
-              -Dmaven.wagon.http.pool=false \
-              -Dmaven.wagon.httpconnectionManager.ttlSeconds=120}
+          # TODO we need to properly setup GPG before releaseing
+          # TODO we are missing the following VARIABLES and command
+          # TODO echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import --no-tty --batch --yes
+          # TODO echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust  --no-tty --batch --yes
+          # TODO we need to understand if the settings.xml substitution of the env variables ${env.GPG_EXECUTABLE} works
+          echo "Deploying to repository ${STAGING_REPOSITORY}"
+          mvn clean deploy \
+            -DperformRelease \
+            -DskipTests \
+            -B \
+            -DaltReleaseDeploymentRepository=nexus-releases-staging-fixed::default::"${NEXUS_URL}"/service/local/staging/deployByRepositoryId/"${STAGING_REPOSITORY}" \
+            -Dhttp.keepAlive=false
+            -Dmaven.wagon.http.pool=false
+            -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
 
-      - name: upload-artifacts
-        working-directory: ./gh-actions-scripts
+      - name: tag-updated-repo
         run: |
-          ./dummy-step.sh ${{ matrix.repo }}
+          echo git tag -f -a "${RELEASE_VERSION}" -m "Release version ${RELEASE_VERSION}"
+          echo git push origin "${RELEASE_VERSION}"
 
   release-artifacts-staging-env:
     runs-on: ubuntu-20.04
     needs: release-maven-artifacts
     steps:
       - uses: actions/checkout@v3
-      - name: create-staging-environment
+      - name: close-and-release-staging-environment
         run: |
+          # TODO Should we close and release the nexus artifact staging env?
           ./gh-actions-scripts/dummy-step.sh
+
+  # TODO should this step be skipped for the mock release?
+  finalize-branch:
+    runs-on: ubuntu-20.04
+    needs: release-maven-artifacts
+    strategy:
+      fail-fast: true
+      max-parallel: 1
+      matrix:
+        # TODO Should we add also activiti-cloud-modeling?
+        repo: ['Activiti','activiti-cloud','activiti-cloud-application']
+    env:
+      NEXT_VERSION: "${{ needs.prepare-release.outputs.NEXT_VERSION }}"
+    steps:
+      - name: Checkout ${{ matrix.repo }}
+        uses: actions/checkout@v3
+        with:
+          repository: 'Activiti/${{ matrix.repo }}'
+          path: 'repos/${{ matrix.repo }}'
+          ref: 'tags/${{needs.prepare-release.outputs.VERSION }}~1'
+
+      - name: update-to-next-version
+        run: |
+          # TODO Check that the update is updating all the needed dependencies
+          # TODO e.g.: activiti-cloud 7.3.1-SNAPSHOT should refer to Activiti 7.3.1-SNAPSHOT
+          mvn versions:set -DnewVersion=$NEXT_VERSION -DgenerateBackupPoms=false
+
+      - name: commit-and-push
+        run: |
+          # TODO which user should commit and push?
+          echo "commit and push repository"
