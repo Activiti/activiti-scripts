@@ -211,6 +211,8 @@ jobs:
         run: |
           pwd
           ls -l
+          git fetch --tags
+          git tag
           git checkout -q "tags/${${{ matrix.repo }}}~1"
 
       - name: update-pom-to-release-version
