@@ -146,7 +146,8 @@ jobs:
         id: staging
         working-directory: "./maven-config"
         run: |
-          sed -i .bck "s/RELEASE_VERSION/${RELEASE_VERSION}/g" staging-repository-template.xml
+          cp staging-repository-template.xml staging-repository-template.xml.bak
+          sed "s/RELEASE_VERSION/${RELEASE_VERSION}/g" staging-repository-template.xml.bak > staging-repository-template.xml
 
           NEXUS_STAGING_DATA=$(curl -d @staging-repository-template.xml \
             -u "${NEXUS_USERNAME}":"${NEXUS_PASSWORD}" \
@@ -156,7 +157,8 @@ jobs:
 
           echo "Stating repository $NEXUS_STAGING_DATA"
 
-          sed -i .bck "s/STAGING_ID/${NEXUS_STAGING_DATA}/g" "settings.xml"
+          cp settings.xml settings.xml.bak
+          sed -i .bck "s/STAGING_ID/${NEXUS_STAGING_DATA}/g" "settings.xml.bak" > settings.xml
 
           echo "::set-output name=STAGING_REPOSITORY::$NEXUS_STAGING_DATA"
           echo "::set-output name=SETTINGS_XML::$(< settings.xml)"
