@@ -227,15 +227,11 @@ jobs:
       - name: maven-build-and-upload
         working-directory: repos/${{ matrix.repo }}
         run: |
-          # TODO we need to properly setup GPG before releaseing
-          # TODO we are missing the following VARIABLES and command
-          # TODO echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import --no-tty --batch --yes
-          # TODO echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust  --no-tty --batch --yes
-          # TODO we need to understand if the settings.xml substitution of the env variables ${env.GPG_EXECUTABLE} works
           echo "Deploying to repository ${STAGING_REPOSITORY}"
           mvn clean deploy \
             -DperformRelease \
             -DskipTests \
+            -Dmaven.compiler.release=11
             -B \
             -DaltReleaseDeploymentRepository=nexus-releases-staging-fixed::default::"${NEXUS_URL}"/service/local/staging/deployByRepositoryId/"${STAGING_REPOSITORY}" \
             -Dhttp.keepAlive=false
