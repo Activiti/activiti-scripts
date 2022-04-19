@@ -29,6 +29,8 @@ env:
   NEXUS_STAGING_PROFILE_PATTERN: "activiti-7-community-staging-profile-[0-9]*"
   GPG_EXECUTABLE: "gpg"
   GPG_PASSPHRASE: "${{ secrets.GPG_PASSPHRASE }}"
+  GPG_SECRET_KEYS: "${{ secrets.GPG_SECRET_KEYS }}"
+  GPG_OWNERTRUST: "${{ secrets.GPG_OWNERTRUST }}"
 
 jobs:
 
@@ -178,10 +180,10 @@ jobs:
       activiti-cloud: "${{ needs.prepare-release.outputs.activiti-cloud }}"
       Activiti: "${{ needs.prepare-release.outputs.activiti }}"
       RELEASE_VERSION: "${{ needs.prepare-release.outputs.VERSION }}"
-      MOCK: "${{ needs.prepare-release.outputs.MOCK }}"
       STAGING_REPOSITORY: "${{ needs.create-artifacts-staging-env.outputs.STAGING_REPOSITORY }}"
       SETTINGS_XML: "${{ needs.create-artifacts-staging-env.outputs.SETTINGS_XML }}"
       M2_DIR: "/home/runner/.m2"
+      MOCK: "${{ needs.prepare-release.outputs.MOCK }}"
 
     steps:
       - name: Installing tools
@@ -206,6 +208,8 @@ jobs:
       - name: copy-settings-xml
         run: |
           echo $SETTINGS_XML > $M2_DIR/settings.xml
+          echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import --no-tty --batch --yes
+          echo $GPG_OWNERTRUST | $GPG_EXECUTABLE --import-ownertrust  --no-tty --batch --yes
 
       - name: checkout-${{ matrix.repo }}
         working-directory: repos/${{ matrix.repo }}
