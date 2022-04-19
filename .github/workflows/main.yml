@@ -83,9 +83,9 @@ jobs:
       DOCKER_IMAGES: "example-runtime-bundle,activiti-cloud-query,example-cloud-connector,activiti-cloud-modeling"
       BASE_TAG: "${{ needs.prepare-release.outputs.activiti-cloud-application }}"
       RELEASE_VERSION: "${{ needs.prepare-release.outputs.VERSION }}"
-      DOCKERHUB_ORG: Activiti
+      DOCKERHUB_ORG: activiti
       DOCKERHUB_USERNAME: "${{ secrets.DOCKERHUB_USERNAME }}"
-      DOCKERHUB_PASSWORD: "${{ secrets.DOCKERHUB_PASSWORD }}"
+      DOCKERHUB_ACCESS_TOKEN: "${{ secrets.DOCKERHUB_ACCESS_TOKEN }}"
       MOCK: "${{ needs.prepare-release.outputs.MOCK }}"
     steps:
       - name: Checkout activiti-scripts
@@ -102,13 +102,10 @@ jobs:
               $RELEASE_VERSION \
               $DOCKERHUB_ORG \
               $DOCKER_IMAGE \
-              ${{ secrets.DOCKERHUB_USERNAME }} \
-              ${{ secrets.DOCKERHUB_PASSWORD }}
-            # TODO dockerhub user and password are not working for the purpose
-            # TODO of downloading the manifest and uploading a new version
+              $DOCKERHUB_USERNAME \
+              $DOCKERHUB_ACCESS_TOKEN
             echo "$DOCKER_IMAGE released."
           done
-
       - name: update-helm-charts
         env:
           VERSION: $(cat VERSION)
@@ -126,7 +123,6 @@ jobs:
           # helm delete --no-hooks ${PREVIEW_NAME} --namespace ${PREVIEW_NAME} || echo "Trying to delete chart"
           # kubectl delete ns ${PREVIEW_NAME} || echo "Trying to delete namespace"
           #
-
       - name: push-helm-charts
         run: |
           ./gh-actions-scripts/dummy-step.sh
