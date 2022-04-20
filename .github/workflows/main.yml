@@ -228,7 +228,8 @@ jobs:
         run: |
           git fetch --tags
           # TODO evaluate if to keep the '~1' or not
-          git checkout -q "tags/$REPO_VERSION~1"
+          git checkout -q "tags/${${{ matrix.repo }}}~1"
+          echo "Using the base tag '${${{ matrix.repo }}}' for project '${{ matrix.repo }}'"
 
       - name: update-pom-to-release-version
         working-directory: repos/${{ matrix.repo }}
@@ -250,7 +251,7 @@ jobs:
             -DaltReleaseDeploymentRepository=nexus-releases-staging-fixed::default::"${NEXUS_URL}"/service/local/staging/deployByRepositoryId/"${STAGING_REPOSITORY}" \
             -Dhttp.keepAlive=false \
             -Dmaven.wagon.http.pool=false \
-            -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 \
+            -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
 
       - name: tag-updated-repo
         working-directory: repos/${{ matrix.repo }}
