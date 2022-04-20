@@ -186,6 +186,11 @@ jobs:
       activiti-cloud-application: "${{ needs.prepare-release.outputs.activiti-cloud-application }}"
       activiti-cloud: "${{ needs.prepare-release.outputs.activiti-cloud }}"
       Activiti: "${{ needs.prepare-release.outputs.activiti }}"
+      # REPO_VERSION contains the version of the repo of the matrix
+      # it computes it using the github actions variable ${{ matrix.repo }}
+      # as the name of the environment variable that contains the version
+      # number. e.g. ${${{ matrix.repo }}} -> ${Activiti} -> 7.3.1-alpha.4
+      REPO_VERSION: "${${{ matrix.repo }}}"
       RELEASE_VERSION: "${{ needs.prepare-release.outputs.VERSION }}"
       STAGING_REPOSITORY: "${{ needs.create-artifacts-staging-env.outputs.STAGING_REPOSITORY }}"
       SETTINGS_XML: "${{ needs.create-artifacts-staging-env.outputs.SETTINGS_XML }}"
@@ -226,7 +231,7 @@ jobs:
           git checkout -q "tags/${${{ matrix.repo }}}~1"
 
       - name: update-pom-to-release-version
-        working-directory: repos/${{ matrix.repo }}
+        working-directory: repos/$REPO_VERSION
         run: |
           # TODO Check that the update is updating all the needed dependencies
           # TODO e.g.: activiti-cloud 7.3.1 should refer to Activiti 7.3.1
@@ -240,11 +245,12 @@ jobs:
             -DperformRelease \
             -DskipTests \
             -Dmaven.compiler.release=11 \
+            -Dmaven.artifact.threads=30 \
             -B \
             -DaltReleaseDeploymentRepository=nexus-releases-staging-fixed::default::"${NEXUS_URL}"/service/local/staging/deployByRepositoryId/"${STAGING_REPOSITORY}" \
-            -Dhttp.keepAlive=false
-            -Dmaven.wagon.http.pool=false
-            -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
+            -Dhttp.keepAlive=false \
+            -Dmaven.wagon.http.pool=false \
+            -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 \
 
       - name: tag-updated-repo
         working-directory: repos/${{ matrix.repo }}
