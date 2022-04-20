@@ -228,10 +228,10 @@ jobs:
         run: |
           git fetch --tags
           # TODO evaluate if to keep the '~1' or not
-          git checkout -q "tags/${${{ matrix.repo }}}~1"
+          git checkout -q "tags/$REPO_VERSION~1"
 
       - name: update-pom-to-release-version
-        working-directory: repos/$REPO_VERSION
+        working-directory: repos/${{ matrix.repo }}
         run: |
           # TODO Check that the update is updating all the needed dependencies
           # TODO e.g.: activiti-cloud 7.3.1 should refer to Activiti 7.3.1
