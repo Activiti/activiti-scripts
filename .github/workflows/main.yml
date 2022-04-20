@@ -12,6 +12,10 @@ name: Release Activiti Cloud
 
 # TODO we need to change the branches we use to perform the release
 # TODO we could delete master and use develop.
+
+# TODO after the release process succeeds we need to update the
+# TODO release.yaml file with the versions of Activiti, activiti-cloud,
+# TODO activiti-cloud-application used to create the release
 on:
   push:
     branches: [ gh-3903-gh-action-workflow ]
@@ -166,6 +170,9 @@ jobs:
           echo "::set-output name=STAGING_REPOSITORY::$NEXUS_STAGING_DATA"
           echo "::set-output name=SETTINGS_XML::$CONTENT"
 
+  # TODO check if it is better to call an external workflow
+  # TODO passing as paramters the project and its version
+  # TODO e.g. Activiti, 7.2.1-alpha.3
   release-maven-artifacts:
     runs-on: ubuntu-20.04
     needs: ["prepare-release","create-artifacts-staging-env"]
@@ -215,6 +222,7 @@ jobs:
         working-directory: repos/${{ matrix.repo }}
         run: |
           git fetch --tags
+          # TODO evaluate if to keep the '~1' or not
           git checkout -q "tags/${${{ matrix.repo }}}~1"
 
       - name: update-pom-to-release-version
@@ -231,7 +239,7 @@ jobs:
           mvn clean deploy \
             -DperformRelease \
             -DskipTests \
-            -Dmaven.compiler.release=11
+            -Dmaven.compiler.release=11 \
             -B \
             -DaltReleaseDeploymentRepository=nexus-releases-staging-fixed::default::"${NEXUS_URL}"/service/local/staging/deployByRepositoryId/"${STAGING_REPOSITORY}" \
             -Dhttp.keepAlive=false
