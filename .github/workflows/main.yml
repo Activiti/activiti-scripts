@@ -227,8 +227,7 @@ jobs:
         working-directory: repos/${{ matrix.repo }}
         run: |
           git fetch --tags
-          # TODO evaluate if to keep the '~1' or not
-          git checkout -q "tags/${${{ matrix.repo }}}~1"
+          git checkout -q "tags/${${{ matrix.repo }}}"
           echo "Using the base tag '${${{ matrix.repo }}}' for project '${{ matrix.repo }}'"
 
       - name: update-pom-to-release-version
@@ -236,7 +235,7 @@ jobs:
         run: |
           # TODO Check that the update is updating all the needed dependencies
           # TODO e.g.: activiti-cloud 7.3.1 should refer to Activiti 7.3.1
-          mvn versions:set -B -DnewVersion=$RELEASE_VERSION -DgenerateBackupPoms=false
+          ../../gh-actions-scripts/update-pom-version.sh "$RELEASE_VERSION" "${${{ matrix.repo }}}"
 
       - name: maven-build-and-upload
         working-directory: repos/${{ matrix.repo }}
@@ -253,11 +252,14 @@ jobs:
             -Dmaven.wagon.http.pool=false \
             -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
 
-      - name: tag-updated-repo
+      - name: commit-tag-push-updated-version
         working-directory: repos/${{ matrix.repo }}
         run: |
-          echo git tag -f -a "${RELEASE_VERSION}" -m "Release version ${RELEASE_VERSION}"
-          echo git push origin "${RELEASE_VERSION}"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ matrix.repo }}.git
+          git config user.name "${{ secrets.GIT_AUTHOR_NAME }}"
+          git config user.email "${{ secrets.GIT_AUTHOR_EMAIL }}"
+          git tag -f -a "${RELEASE_VERSION}" -m "Release version ${RELEASE_VERSION}"
+          git push origin "${RELEASE_VERSION}"
 
   release-artifacts-staging-env:
     runs-on: ubuntu-20.04
