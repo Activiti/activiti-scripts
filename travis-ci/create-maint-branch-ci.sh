@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-readonly BASE_TAG=$(yq -e '.release.baseTag' release.yaml)
+readonly BASE_TAG=$(yq -e '.release.version' release.yaml)
 ./fetch-versions.sh "$BASE_TAG"
 
 git add "*.txt"
