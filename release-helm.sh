@@ -14,7 +14,7 @@ downloadFromS3
 cd activiti-cloud-application
 
 #creating new common chart version and update dependencies in charts
-git clone https://${GITHUB_TOKEN}:x-oauth-basic@github.com/Activiti/activiti-cloud-common-chart.git
+git clone -b 7.2.x https://${GITHUB_TOKEN}:x-oauth-basic@github.com/Activiti/activiti-cloud-common-chart.git
 cd activiti-cloud-common-chart/charts/common
 make version
 helm-docs
@@ -28,6 +28,7 @@ FRONTEND_VERSION=${VERSION} \
 MESSAGING_BROKER=rabbitmq \
 MESSAGING_PARTITIONED=partitioned \
 MESSAGING_DESTINATIONS=default-destinations \
+ACTIVITI_CLOUD_FULL_CHART_RELEASE_BRANCH=7.2.x \
 make install
 
 attempt_counter=0
