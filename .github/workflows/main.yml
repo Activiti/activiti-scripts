@@ -130,7 +130,7 @@ jobs:
         run: |
           ./gh-actions-scripts/dummy-step.sh
 
-  create-artifacts-staging-env:
+  create-artifacts-staging-repo:
     runs-on: ubuntu-20.04
     needs: prepare-release
     outputs:
@@ -141,7 +141,7 @@ jobs:
       MOCK: ${{ needs.prepare-release.outputs.MOCK }}
     steps:
       - uses: actions/checkout@v3
-      - name: create-staging-environment
+      - name: create-staging-repository
         id: staging
         working-directory: "./maven-config"
         run: |
@@ -172,7 +172,7 @@ jobs:
   # TODO e.g. Activiti, 7.2.1-alpha.3
   release-maven-artifacts:
     runs-on: ubuntu-20.04
-    needs: ["prepare-release","create-artifacts-staging-env"]
+    needs: ["prepare-release","create-artifacts-staging-repo"]
     strategy:
       fail-fast: true
       max-parallel: 1
@@ -189,8 +189,8 @@ jobs:
       # number. e.g. ${${{ matrix.repo }}} -> ${Activiti} -> 7.3.1-alpha.4
       REPO_VERSION: "${${{ matrix.repo }}}"
       RELEASE_VERSION: "${{ needs.prepare-release.outputs.VERSION }}"
-      STAGING_REPOSITORY: "${{ needs.create-artifacts-staging-env.outputs.STAGING_REPOSITORY }}"
-      SETTINGS_XML: "${{ needs.create-artifacts-staging-env.outputs.SETTINGS_XML }}"
+      STAGING_REPOSITORY: "${{ needs.create-artifacts-staging-repo.outputs.STAGING_REPOSITORY }}"
+      SETTINGS_XML: "${{ needs.create-artifacts-staging-repo.outputs.SETTINGS_XML }}"
       M2_DIR: "/home/runner/.m2"
       MOCK: "${{ needs.prepare-release.outputs.MOCK }}"
 
