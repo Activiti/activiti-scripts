@@ -60,9 +60,6 @@ jobs:
           repository: 'Activiti/activiti-cloud-application'
           path: 'repos/activiti-cloud-application'
 
-      - name: Installing yq
-        uses: Alfresco/alfresco-build-tools/.github/actions/setup-yq@v1.4.0
-
       - name: fetch-tags-to-release
         id: tags
         run: |
@@ -198,8 +195,6 @@ jobs:
       MOCK: "${{ needs.prepare-release.outputs.MOCK }}"
 
     steps:
-      - name: Installing tools
-        uses: Alfresco/alfresco-build-tools/.github/actions/setup-yq@v1.4.0
 
       - name: Checkout activiti-script
         uses: actions/checkout@v3
