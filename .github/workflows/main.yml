@@ -179,6 +179,9 @@ jobs:
       staging-repository-id: ${{ needs.create-artifacts-staging-repo.outputs.STAGING_REPOSITORY }}
     secrets:
       token: ${{ secrets.GITHUB_TOKEN }}
+      gpg-passphrase: "${{ secrets.GPG_PASSPHRASE }}"
+      gpg-secret-keys: "${{ secrets.GPG_SECRET_KEYS }}"
+      gpg-owner-trust: "${{ secrets.GPG_OWNERTRUST }}"
 
   release-activiti-cloud:
     uses: ./.github/workflows/release-maven-artifacts.yml
@@ -190,6 +193,9 @@ jobs:
       staging-repository-id: ${{ needs.create-artifacts-staging-repo.outputs.STAGING_REPOSITORY }}
     secrets:
       token: ${{ secrets.GITHUB_TOKEN }}
+      gpg-passphrase: "${{ secrets.GPG_PASSPHRASE }}"
+      gpg-secret-keys: "${{ secrets.GPG_SECRET_KEYS }}"
+      gpg-owner-trust: "${{ secrets.GPG_OWNERTRUST }}"
 
   release-activiti-cloud-application:
     uses: ./.github/workflows/release-maven-artifacts.yml
@@ -201,6 +207,9 @@ jobs:
       staging-repository-id: ${{ needs.create-artifacts-staging-repo.outputs.STAGING_REPOSITORY }}
     secrets:
       token: ${{ secrets.GITHUB_TOKEN }}
+      gpg-passphrase: "${{ secrets.GPG_PASSPHRASE }}"
+      gpg-secret-keys: "${{ secrets.GPG_SECRET_KEYS }}"
+      gpg-owner-trust: "${{ secrets.GPG_OWNERTRUST }}"
 
   release-artifacts-staging-env:
     runs-on: ubuntu-20.04
