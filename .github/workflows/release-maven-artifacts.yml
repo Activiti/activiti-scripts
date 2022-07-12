@@ -28,7 +28,7 @@ env:
   GPG_PASSPHRASE: "${{ secrets.GPG_PASSPHRASE }}"
   GPG_SECRET_KEYS: "${{ secrets.GPG_SECRET_KEYS }}"
   GPG_OWNERTRUST: "${{ secrets.GPG_OWNERTRUST }}"
-  M2_DIR: "/home/runner/.m2"
+  M2_DIR: ".m2"
   NEXUS_URL: "https://artifacts.alfresco.com/nexus"
   RELEASE_VERSION: ${{ inputs.release-version }}
   BASE_TAG: ${{ inputs.base-tag }}
@@ -60,7 +60,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: maven-settings-xml
-          path: $M2_DIR
+          path: ${{ env.M2_DIR }}
 
       - name: Configure GPG
         run: |
