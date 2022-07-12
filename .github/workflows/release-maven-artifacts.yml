@@ -62,6 +62,10 @@ jobs:
           name: maven-settings-xml
           path: ${{ env.M2_DIR }}
 
+      - name: Display M2 dir
+        run: ls -R
+        working-directory: ${{ env.M2_DIR }}
+
       - name: Configure GPG
         run: |
           echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import --no-tty --batch --yes
