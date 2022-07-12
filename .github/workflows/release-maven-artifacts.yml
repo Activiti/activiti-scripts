@@ -22,12 +22,21 @@ on:
       token:
         description: "The token to used to close the repositories"
         required: true
+      gpg-passphrase:
+        description: "GPG passphrase"
+        required: true
+      gpg-secret-keys:
+        description: "GPG secrets key"
+        required: true
+      gpg-owner-trust:
+        description: "GPG Owner trust"
+        required: true
 
 env:
   GPG_EXECUTABLE: "gpg"
-  GPG_PASSPHRASE: "${{ secrets.GPG_PASSPHRASE }}"
-  GPG_SECRET_KEYS: "${{ secrets.GPG_SECRET_KEYS }}"
-  GPG_OWNERTRUST: "${{ secrets.GPG_OWNERTRUST }}"
+  GPG_PASSPHRASE: "${{ secrets.gpg-passphrase }}"
+  GPG_SECRET_KEYS: "${{ secrets.gpg-secret-keys }}"
+  GPG_OWNERTRUST: "${{ secrets.gpg-owner-trust }}"
   M2_DIR: ".m2"
   NEXUS_URL: "https://artifacts.alfresco.com/nexus"
   RELEASE_VERSION: ${{ inputs.release-version }}
