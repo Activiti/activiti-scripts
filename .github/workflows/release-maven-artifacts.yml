@@ -1,0 +1,103 @@
+name: release Maven artifacts
+on:
+  workflow_call:
+    inputs:
+      repo:
+        description: "Repository to be released"
+        type: string
+        required: true
+      base-tag:
+        description: "The name of the tag from where the release will be created"
+        type: string
+        required: true
+      release-version:
+        description: "The name of the version to be released"
+        type: string
+        required: true
+      staging-repository-id:
+        description: "The id of the staging repository where the release artifacts will be stored"
+        type: string
+        required: true
+    secrets:
+      token:
+        description: "The token to used to close the repositories"
+        required: true
+
+env:
+  GPG_EXECUTABLE: "gpg"
+  GPG_PASSPHRASE: "${{ secrets.GPG_PASSPHRASE }}"
+  GPG_SECRET_KEYS: "${{ secrets.GPG_SECRET_KEYS }}"
+  GPG_OWNERTRUST: "${{ secrets.GPG_OWNERTRUST }}"
+  M2_DIR: "/home/runner/.m2"
+  NEXUS_URL: "https://artifacts.alfresco.com/nexus"
+  RELEASE_VERSION: ${{ inputs.release-version }}
+  BASE_TAG: ${{ inputs.base-tag }}
+  STAGING_REPOSITORY_ID: ${{ inputs.staging-repository-id }}
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout activiti-scripts
+        uses: actions/checkout@v3
+
+      - name: Checkout ${{ inputs.repo }}
+        uses: actions/checkout@v3
+        with:
+          repository: 'Activiti/${{ inputs.repo }}'
+          ref: ${{ inputs.base-tag }}
+          path: 'repos/${{ inputs.repo }}'
+          token: ${{ secrets.token }}
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 11
+          cache: 'maven'
+
+      - name: Download setting.xml
+        uses: actions/download-artifact@v3
+        with:
+          name: maven-settings-xml
+          path: $M2_DIR
+
+      - name: Configure GPG
+        run: |
+          echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import --no-tty --batch --yes
+          echo $GPG_OWNERTRUST | $GPG_EXECUTABLE --import-ownertrust  --no-tty --batch --yes
+
+      - name: update-pom-to-release-version
+        working-directory: repos/${{ inputs.repo }}
+        run: |
+          # TODO Check that the update is updating all the needed dependencies
+          # TODO e.g.: activiti-cloud 7.3.1 should refer to Activiti 7.3.1
+          ../../gh-actions-scripts/update-pom-version.sh "$RELEASE_VERSION" "$BASE_TAG"
+
+      - name: maven-build-and-upload
+        working-directory: repos/${{ inputs.repo }}
+        run: |
+          echo "Deploying to repository $STAGING_REPOSITORY_ID"
+          mvn clean deploy \
+            -DperformRelease \
+            -DskipTests \
+            -Dmaven.compiler.release=11 \
+            -Dmaven.artifact.threads=30 \
+            -B \
+            -DaltReleaseDeploymentRepository=nexus-releases-staging-fixed::default::"${NEXUS_URL}"/service/local/staging/deployByRepositoryId/"$STAGING_REPOSITORY_ID " \
+            -Dhttp.keepAlive=false \
+            -Dmaven.wagon.http.pool=false \
+            -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
+
+      - name: Commit changes
+        uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v1.9.0
+        with:
+          username: ${{ secrets.token }}
+          add-options: -u
+          commit-message: "Release version ${inputs.release-version}"
+
+      - name: create tag
+        working-directory: repos/${{ inputs.repo }}
+        run: |
+          git tag -f -a "${RELEASE_VERSION}" -m "Release version ${RELEASE_VERSION}"
+          git push origin "${RELEASE_VERSION}"

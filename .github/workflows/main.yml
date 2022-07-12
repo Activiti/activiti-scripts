@@ -168,97 +168,43 @@ jobs:
           echo "::set-output name=SETTINGS_XML::$CONTENT"
 
   # TODO check if it is better to call an external workflow
-  # TODO passing as paramters the project and its version
   # TODO e.g. Activiti, 7.2.1-alpha.3
-  release-maven-artifacts:
-    runs-on: ubuntu-20.04
+  release-activiti:
+    uses: ./.github/workflows/release-maven-artifacts.yml
     needs: ["prepare-release","create-artifacts-staging-repo"]
-    strategy:
-      fail-fast: true
-      max-parallel: 1
-      matrix:
-        # TODO Should we add also activiti-cloud-modeling?
-        repo: ['Activiti','activiti-cloud','activiti-cloud-application']
-    env:
-      activiti-cloud-application: "${{ needs.prepare-release.outputs.activiti-cloud-application }}"
-      activiti-cloud: "${{ needs.prepare-release.outputs.activiti-cloud }}"
-      Activiti: "${{ needs.prepare-release.outputs.activiti }}"
-      # REPO_VERSION contains the version of the repo of the matrix
-      # it computes it using the github actions variable ${{ matrix.repo }}
-      # as the name of the environment variable that contains the version
-      # number. e.g. ${${{ matrix.repo }}} -> ${Activiti} -> 7.3.1-alpha.4
-      REPO_VERSION: "${${{ matrix.repo }}}"
-      RELEASE_VERSION: "${{ needs.prepare-release.outputs.VERSION }}"
-      STAGING_REPOSITORY: "${{ needs.create-artifacts-staging-repo.outputs.STAGING_REPOSITORY }}"
-      SETTINGS_XML: "${{ needs.create-artifacts-staging-repo.outputs.SETTINGS_XML }}"
-      M2_DIR: "/home/runner/.m2"
-      MOCK: "${{ needs.prepare-release.outputs.MOCK }}"
+    with:
+      repo: Activiti
+      base-tag: ${{  needs.prepare-release.outputs.activiti }}
+      release-version: ${{ needs.prepare-release.outputs.VERSION }}
+      staging-repository-id: ${{ needs.create-artifacts-staging-repo.outputs.STAGING_REPOSITORY }}
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}
 
-    steps:
+  release-activiti-cloud:
+    uses: ./.github/workflows/release-maven-artifacts.yml
+    needs: ["prepare-release","create-artifacts-staging-repo", "release-activiti"]
+    with:
+      repo: activiti-cloud
+      base-tag: ${{  needs.prepare-release.outputs.activiti-cloud }}
+      release-version: ${{ needs.prepare-release.outputs.VERSION }}
+      staging-repository-id: ${{ needs.create-artifacts-staging-repo.outputs.STAGING_REPOSITORY }}
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Checkout activiti-script
-        uses: actions/checkout@v3
-
-      - name: Checkout ${{ matrix.repo }}
-        uses: actions/checkout@v3
-        with:
-          repository: 'Activiti/${{ matrix.repo }}'
-          path: 'repos/${{ matrix.repo }}'
-
-      - name: Set up JDK 11
-        uses: actions/setup-java@v3
-        with:
-          distribution: temurin
-          java-version: 11
-          cache: 'maven'
-
-      - name: copy-settings-xml
-        run: |
-          echo $SETTINGS_XML > $M2_DIR/settings.xml
-          echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import --no-tty --batch --yes
-          echo $GPG_OWNERTRUST | $GPG_EXECUTABLE --import-ownertrust  --no-tty --batch --yes
-
-      - name: checkout-${{ matrix.repo }}
-        working-directory: repos/${{ matrix.repo }}
-        run: |
-          git fetch --tags
-          git checkout -q "tags/${${{ matrix.repo }}}"
-          echo "Using the base tag '${${{ matrix.repo }}}' for project '${{ matrix.repo }}'"
-
-      - name: update-pom-to-release-version
-        working-directory: repos/${{ matrix.repo }}
-        run: |
-          # TODO Check that the update is updating all the needed dependencies
-          # TODO e.g.: activiti-cloud 7.3.1 should refer to Activiti 7.3.1
-          ../../gh-actions-scripts/update-pom-version.sh "$RELEASE_VERSION" "${${{ matrix.repo }}}"
-
-      - name: maven-build-and-upload
-        working-directory: repos/${{ matrix.repo }}
-        run: |
-          echo "Deploying to repository ${STAGING_REPOSITORY}"
-          mvn clean deploy \
-            -DperformRelease \
-            -DskipTests \
-            -Dmaven.compiler.release=11 \
-            -Dmaven.artifact.threads=30 \
-            -B \
-            -DaltReleaseDeploymentRepository=nexus-releases-staging-fixed::default::"${NEXUS_URL}"/service/local/staging/deployByRepositoryId/"${STAGING_REPOSITORY}" \
-            -Dhttp.keepAlive=false \
-            -Dmaven.wagon.http.pool=false \
-            -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
-
-      - name: commit-tag-push-updated-version
-        working-directory: repos/${{ matrix.repo }}
-        run: |
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ matrix.repo }}.git
-          git config user.name "${{ secrets.GIT_AUTHOR_NAME }}"
-          git config user.email "${{ secrets.GIT_AUTHOR_EMAIL }}"
-          git tag -f -a "${RELEASE_VERSION}" -m "Release version ${RELEASE_VERSION}"
-          git push origin "${RELEASE_VERSION}"
+  release-activiti-cloud-application:
+    uses: ./.github/workflows/release-maven-artifacts.yml
+    needs: ["prepare-release","create-artifacts-staging-repo", "release-activiti-cloud"]
+    with:
+      repo: activiti-cloud-application
+      base-tag: ${{  needs.prepare-release.outputs.activiti-cloud-application }}
+      release-version: ${{ needs.prepare-release.outputs.VERSION }}
+      staging-repository-id: ${{ needs.create-artifacts-staging-repo.outputs.STAGING_REPOSITORY }}
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}
 
   release-artifacts-staging-env:
     runs-on: ubuntu-20.04
-    needs: release-maven-artifacts
+    needs: release-activiti-cloud-application
     steps:
       - uses: actions/checkout@v3
       - name: close-and-release-staging-environment
@@ -269,7 +215,7 @@ jobs:
   # TODO should this step be skipped for the mock release?
   finalize-branch:
     runs-on: ubuntu-20.04
-    needs: ["prepare-release","release-maven-artifacts"]
+    needs: ["prepare-release","release-activiti-cloud-application"]
     strategy:
       fail-fast: true
       max-parallel: 1
