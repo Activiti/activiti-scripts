@@ -103,7 +103,7 @@ jobs:
     - stage: Release Activiti Cloud Modeling App
       env:
         - PROJECTS=activiti-modeling-app
-        - BASEBRANCH=release-7.4.0
+        - BASEBRANCH=master
       script: ./release-ci.sh
 
     - stage: Release Docker Images
