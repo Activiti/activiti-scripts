@@ -31,10 +31,6 @@ env:
   NEXUS_USERNAME: "${{ secrets.NEXUS_USERNAME }}"
   NEXUS_PASSWORD: "${{ secrets.NEXUS_PASSWORD }}"
   NEXUS_STAGING_PROFILE_PATTERN: "activiti-7-community-staging-profile-[0-9]*"
-  GPG_EXECUTABLE: "gpg"
-  GPG_PASSPHRASE: "${{ secrets.GPG_PASSPHRASE }}"
-  GPG_SECRET_KEYS: "${{ secrets.GPG_SECRET_KEYS }}"
-  GPG_OWNERTRUST: "${{ secrets.GPG_OWNERTRUST }}"
   MAVEN_CONFIG_DIR: "maven-config"
 
 jobs:
@@ -182,6 +178,8 @@ jobs:
       gpg-passphrase: "${{ secrets.GPG_PASSPHRASE }}"
       gpg-secret-keys: "${{ secrets.GPG_SECRET_KEYS }}"
       gpg-owner-trust: "${{ secrets.GPG_OWNERTRUST }}"
+      nexus-username: "${{ secrets.NEXUS_USERNAME }}"
+      nexus-password: "${{ secrets.NEXUS_PASSWORD }}"
 
   release-activiti-cloud:
     uses: ./.github/workflows/release-maven-artifacts.yml
@@ -196,6 +194,8 @@ jobs:
       gpg-passphrase: "${{ secrets.GPG_PASSPHRASE }}"
       gpg-secret-keys: "${{ secrets.GPG_SECRET_KEYS }}"
       gpg-owner-trust: "${{ secrets.GPG_OWNERTRUST }}"
+      nexus-username: "${{ secrets.NEXUS_USERNAME }}"
+      nexus-password: "${{ secrets.NEXUS_PASSWORD }}"
 
   release-activiti-cloud-application:
     uses: ./.github/workflows/release-maven-artifacts.yml
@@ -210,6 +210,8 @@ jobs:
       gpg-passphrase: "${{ secrets.GPG_PASSPHRASE }}"
       gpg-secret-keys: "${{ secrets.GPG_SECRET_KEYS }}"
       gpg-owner-trust: "${{ secrets.GPG_OWNERTRUST }}"
+      nexus-username: "${{ secrets.NEXUS_USERNAME }}"
+      nexus-password: "${{ secrets.NEXUS_PASSWORD }}"
 
   release-artifacts-staging-env:
     runs-on: ubuntu-20.04

@@ -31,12 +31,20 @@ on:
       gpg-owner-trust:
         description: "GPG Owner trust"
         required: true
+      nexus-username:
+        description: "Nexus user name"
+        required: true
+      nexus-password:
+        description: "Nexus password"
+        required: true
 
 env:
   GPG_EXECUTABLE: "gpg"
   GPG_PASSPHRASE: "${{ secrets.gpg-passphrase }}"
   GPG_SECRET_KEYS: "${{ secrets.gpg-secret-keys }}"
   GPG_OWNERTRUST: "${{ secrets.gpg-owner-trust }}"
+  NEXUS_USERNAME: "${{ secrets.nexus-username }}"
+  NEXUS_PASSWORD: "${{ secrets.nexus-password }}"
   NEXUS_URL: "https://artifacts.alfresco.com/nexus"
   RELEASE_VERSION: ${{ inputs.release-version }}
   BASE_TAG: ${{ inputs.base-tag }}
