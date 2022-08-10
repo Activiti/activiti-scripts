@@ -19,8 +19,11 @@ on:
         type: string
         required: true
     secrets:
-      token:
-        description: "The token to used to close the repositories"
+      github-token:
+        description: "The token to used to clone the repositories"
+        required: true
+      git-username:
+        description: "The username for git commit"
         required: true
       gpg-passphrase:
         description: "GPG passphrase"
@@ -49,6 +52,7 @@ env:
   RELEASE_VERSION: ${{ inputs.release-version }}
   BASE_TAG: ${{ inputs.base-tag }}
   STAGING_REPOSITORY_ID: ${{ inputs.staging-repository-id }}
+  REPO_DIR: repos/${{ inputs.repo }}
 
 jobs:
   release:
@@ -62,8 +66,8 @@ jobs:
         with:
           repository: 'Activiti/${{ inputs.repo }}'
           ref: ${{ inputs.base-tag }}
-          path: 'repos/${{ inputs.repo }}'
-          token: ${{ secrets.token }}
+          path: '${{ env.REPO_DIR }}'
+          token: ${{ secrets.github-token }}
 
       - name: Set up JDK 11
         uses: actions/setup-java@v3
@@ -94,14 +98,14 @@ jobs:
           echo $GPG_OWNERTRUST | $GPG_EXECUTABLE --import-ownertrust  --no-tty --batch --yes
 
       - name: update-pom-to-release-version
-        working-directory: repos/${{ inputs.repo }}
+        working-directory: ${{ env.REPO_DIR }}
         run: |
           # TODO Check that the update is updating all the needed dependencies
           # TODO e.g.: activiti-cloud 7.3.1 should refer to Activiti 7.3.1
           ../../gh-actions-scripts/update-pom-version.sh "$RELEASE_VERSION" "$BASE_TAG"
 
       - name: maven-build-and-upload
-        working-directory: repos/${{ inputs.repo }}
+        working-directory: ${{ env.REPO_DIR }}
         run: |
           echo "Deploying to repository $STAGING_REPOSITORY_ID"
           mvn clean deploy \
@@ -118,12 +122,13 @@ jobs:
       - name: Commit changes
         uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v1.9.0
         with:
-          username: ${{ secrets.token }}
+          username: ${{ secrets.git-username }}
           add-options: -u
-          commit-message: "Release version ${inputs.release-version}"
+          commit-message: "Release version ${{ inputs.release-version}}"
+          repository-directory: ${{ env.REPO_DIR }}
 
       - name: create tag
-        working-directory: repos/${{ inputs.repo }}
+        working-directory: ${{ env.REPO_DIR }}
         run: |
           git tag -f -a "${RELEASE_VERSION}" -m "Release version ${RELEASE_VERSION}"
           git push origin "${RELEASE_VERSION}"
