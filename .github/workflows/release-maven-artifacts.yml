@@ -37,7 +37,6 @@ env:
   GPG_PASSPHRASE: "${{ secrets.gpg-passphrase }}"
   GPG_SECRET_KEYS: "${{ secrets.gpg-secret-keys }}"
   GPG_OWNERTRUST: "${{ secrets.gpg-owner-trust }}"
-  M2_DIR: ".m2"
   NEXUS_URL: "https://artifacts.alfresco.com/nexus"
   RELEASE_VERSION: ${{ inputs.release-version }}
   BASE_TAG: ${{ inputs.base-tag }}
@@ -65,18 +64,24 @@ jobs:
           java-version: 11
           cache: 'maven'
 
+      - name: Set up M2_DIR
+        run: echo "M2_DIR=$HOME/.m2" >> $GITHUB_ENV
+
       - name: Download setting.xml
         uses: actions/download-artifact@v3
         with:
           name: maven-settings-xml
           path: ${{ env.M2_DIR }}
 
-      - name: Display M2 dir
-        run: ls -R
+      - name: Display M2 configuration
+        run: |
+          echo ".m2 dir: $(pwd)"
+          cat settings.xml
         working-directory: ${{ env.M2_DIR }}
 
       - name: Configure GPG
         run: |
+          gpg --version
           echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import --no-tty --batch --yes
           echo $GPG_OWNERTRUST | $GPG_EXECUTABLE --import-ownertrust  --no-tty --batch --yes
 
