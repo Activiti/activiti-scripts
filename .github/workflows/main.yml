@@ -128,7 +128,7 @@ jobs:
           ./gh-actions-scripts/dummy-step.sh
 
   create-artifacts-staging-repo:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     needs: prepare-release
     outputs:
       STAGING_REPOSITORY: ${{ steps.staging.outputs.STAGING_REPOSITORY }}
@@ -163,58 +163,68 @@ jobs:
           path: ${{ github.workspace }}/${{ env.MAVEN_CONFIG_DIR }}/settings.xml
           if-no-files-found: error
 
-  # TODO check if it is better to call an external workflow
-  # TODO e.g. Activiti, 7.2.1-alpha.3
   release-activiti:
-    uses: ./.github/workflows/release-maven-artifacts.yml
+    runs-on: ubuntu-latest
     needs: ["prepare-release","create-artifacts-staging-repo"]
-    with:
-      repo: Activiti
-      base-tag: ${{  needs.prepare-release.outputs.activiti }}
-      release-version: ${{ needs.prepare-release.outputs.VERSION }}
-      staging-repository-id: ${{ needs.create-artifacts-staging-repo.outputs.STAGING_REPOSITORY }}
-    secrets:
-      git-username: ${{ secrets.BOT_GITHUB_USERNAME }}
-      github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
-      gpg-passphrase: "${{ secrets.GPG_PASSPHRASE }}"
-      gpg-secret-keys: "${{ secrets.GPG_SECRET_KEYS }}"
-      gpg-owner-trust: "${{ secrets.GPG_OWNERTRUST }}"
-      nexus-username: "${{ secrets.NEXUS_USERNAME }}"
-      nexus-password: "${{ secrets.NEXUS_PASSWORD }}"
+    steps:
+      - name: Checkout activiti-scripts
+        uses: actions/checkout@v3
+
+      - uses: ./.github/actions/release-maven
+        with:
+          repo: Activiti
+          base-tag: ${{  needs.prepare-release.outputs.activiti }}
+          release-version: ${{ needs.prepare-release.outputs.VERSION }}
+          staging-repository-id: ${{ needs.create-artifacts-staging-repo.outputs.STAGING_REPOSITORY }}
+          git-username: ${{ secrets.BOT_GITHUB_USERNAME }}
+          github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          gpg-passphrase: "${{ secrets.GPG_PASSPHRASE }}"
+          gpg-secret-keys: "${{ secrets.GPG_SECRET_KEYS }}"
+          gpg-owner-trust: "${{ secrets.GPG_OWNERTRUST }}"
+          nexus-username: "${{ secrets.NEXUS_USERNAME }}"
+          nexus-password: "${{ secrets.NEXUS_PASSWORD }}"
 
   release-activiti-cloud:
-    uses: ./.github/workflows/release-maven-artifacts.yml
+    runs-on: ubuntu-latest
     needs: ["prepare-release","create-artifacts-staging-repo", "release-activiti"]
-    with:
-      repo: activiti-cloud
-      base-tag: ${{  needs.prepare-release.outputs.activiti-cloud }}
-      release-version: ${{ needs.prepare-release.outputs.VERSION }}
-      staging-repository-id: ${{ needs.create-artifacts-staging-repo.outputs.STAGING_REPOSITORY }}
-    secrets:
-      git-username: ${{ secrets.BOT_GITHUB_USERNAME }}
-      github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
-      gpg-passphrase: "${{ secrets.GPG_PASSPHRASE }}"
-      gpg-secret-keys: "${{ secrets.GPG_SECRET_KEYS }}"
-      gpg-owner-trust: "${{ secrets.GPG_OWNERTRUST }}"
-      nexus-username: "${{ secrets.NEXUS_USERNAME }}"
-      nexus-password: "${{ secrets.NEXUS_PASSWORD }}"
+    steps:
+      - name: Checkout activiti-scripts
+        uses: actions/checkout@v3
+
+      - uses: ./.github/actions/release-maven
+        with:
+          repo: activiti-cloud
+          base-tag: ${{  needs.prepare-release.outputs.activiti-cloud }}
+          release-version: ${{ needs.prepare-release.outputs.VERSION }}
+          staging-repository-id: ${{ needs.create-artifacts-staging-repo.outputs.STAGING_REPOSITORY }}
+          git-username: ${{ secrets.BOT_GITHUB_USERNAME }}
+          github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          gpg-passphrase: "${{ secrets.GPG_PASSPHRASE }}"
+          gpg-secret-keys: "${{ secrets.GPG_SECRET_KEYS }}"
+          gpg-owner-trust: "${{ secrets.GPG_OWNERTRUST }}"
+          nexus-username: "${{ secrets.NEXUS_USERNAME }}"
+          nexus-password: "${{ secrets.NEXUS_PASSWORD }}"
 
   release-activiti-cloud-application:
-    uses: ./.github/workflows/release-maven-artifacts.yml
+    runs-on: ubuntu-latest
     needs: ["prepare-release","create-artifacts-staging-repo", "release-activiti-cloud"]
-    with:
-      repo: activiti-cloud-application
-      base-tag: ${{  needs.prepare-release.outputs.activiti-cloud-application }}
-      release-version: ${{ needs.prepare-release.outputs.VERSION }}
-      staging-repository-id: ${{ needs.create-artifacts-staging-repo.outputs.STAGING_REPOSITORY }}
-    secrets:
-      git-username: ${{ secrets.BOT_GITHUB_USERNAME }}
-      github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
-      gpg-passphrase: "${{ secrets.GPG_PASSPHRASE }}"
-      gpg-secret-keys: "${{ secrets.GPG_SECRET_KEYS }}"
-      gpg-owner-trust: "${{ secrets.GPG_OWNERTRUST }}"
-      nexus-username: "${{ secrets.NEXUS_USERNAME }}"
-      nexus-password: "${{ secrets.NEXUS_PASSWORD }}"
+    steps:
+      - name: Checkout activiti-scripts
+        uses: actions/checkout@v3
+
+      - uses: ./.github/actions/release-maven
+        with:
+          repo: activiti-cloud-application
+          base-tag: ${{  needs.prepare-release.outputs.activiti-cloud-application }}
+          release-version: ${{ needs.prepare-release.outputs.VERSION }}
+          staging-repository-id: ${{ needs.create-artifacts-staging-repo.outputs.STAGING_REPOSITORY }}
+          git-username: ${{ secrets.BOT_GITHUB_USERNAME }}
+          github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          gpg-passphrase: "${{ secrets.GPG_PASSPHRASE }}"
+          gpg-secret-keys: "${{ secrets.GPG_SECRET_KEYS }}"
+          gpg-owner-trust: "${{ secrets.GPG_OWNERTRUST }}"
+          nexus-username: "${{ secrets.NEXUS_USERNAME }}"
+          nexus-password: "${{ secrets.NEXUS_PASSWORD }}"
 
   release-artifacts-staging-env:
     runs-on: ubuntu-20.04
