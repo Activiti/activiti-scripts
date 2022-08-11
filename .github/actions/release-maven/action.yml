@@ -60,6 +60,7 @@ runs:
       id: check-tag
       with:
         tag: ${{ env.RELEASE_VERSION }}
+        repository-directory: ${{ env.REPO_DIR }}
 
     - name: Set up JDK 11
       if: ${{ steps.check-tag.outputs.exits == false }}
