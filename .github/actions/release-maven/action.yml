@@ -58,6 +58,8 @@ runs:
 
     - uses: Alfresco/alfresco-build-tools/.github/actions/git-check-existing-tag@aae-8254-actions-for-activiti-script
       id: check-tag
+      with:
+        tag: ${{ env.RELEASE_VERSION }}
 
     - name: Set up JDK 11
       if: ${{ steps.check-tag.outputs.exits == false }}
