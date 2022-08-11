@@ -38,19 +38,16 @@ inputs:
 
 runs:
   using: composite
-  env:
-    GPG_EXECUTABLE: "gpg"
-    GPG_PASSPHRASE: "${{ inputs.gpg-passphrase }}"
-    GPG_SECRET_KEYS: "${{ inputs.gpg-secret-keys }}"
-    GPG_OWNERTRUST: "${{ inputs.gpg-owner-trust }}"
-    NEXUS_USERNAME: "${{ inputs.nexus-username }}"
-    NEXUS_PASSWORD: "${{ inputs.nexus-password }}"
-    NEXUS_URL: "https://artifacts.alfresco.com/nexus"
-    RELEASE_VERSION: ${{ inputs.release-version }}
-    BASE_TAG: ${{ inputs.base-tag }}
-    STAGING_REPOSITORY_ID: ${{ inputs.staging-repository-id }}
-    REPO_DIR: repos/${{ inputs.repo }}
   steps:
+    - name: set global properties
+      shell: bash
+      env:
+        REPO_DIR: repos/${{ inputs.repo }}
+        RELEASE_VERSION: ${{ inputs.release-version }}
+      run: |
+        echo "REPO_DIR=$REPO_DIR" >> $GITHUB_ENV
+        echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_ENV
+
     - name: Checkout ${{ inputs.repo }}
       uses: actions/checkout@v3
       with:
@@ -93,15 +90,20 @@ runs:
     - name: Configure GPG
       if: ${{ steps.check-tag.outputs.exits == false }}
       shell: bash
+      env:
+        GPG_SECRET_KEYS: "${{ inputs.gpg-secret-keys }}"
+        GPG_OWNERTRUST: "${{ inputs.gpg-owner-trust }}"
       run: |
         gpg --version
-        echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import --no-tty --batch --yes
-        echo $GPG_OWNERTRUST | $GPG_EXECUTABLE --import-ownertrust  --no-tty --batch --yes
+        echo $GPG_SECRET_KEYS | base64 --decode | gpg --import --no-tty --batch --yes
+        echo $GPG_OWNERTRUST | gpg --import-ownertrust  --no-tty --batch --yes
 
     - name: update-pom-to-release-version
       if: ${{ steps.check-tag.outputs.exits == false }}
       working-directory: ${{ env.REPO_DIR }}
       shell: bash
+      env:
+        BASE_TAG: ${{ inputs.base-tag }}
       run: |
         # TODO Check that the update is updating all the needed dependencies
         # TODO e.g.: activiti-cloud 7.3.1 should refer to Activiti 7.3.1
@@ -111,6 +113,14 @@ runs:
       if: ${{ steps.check-tag.outputs.exits == false }}
       working-directory: ${{ env.REPO_DIR }}
       shell: bash
+      env:
+        GPG_PASSPHRASE: "${{ inputs.gpg-passphrase }}"
+        GPG_SECRET_KEYS: "${{ inputs.gpg-secret-keys }}"
+        GPG_OWNERTRUST: "${{ inputs.gpg-owner-trust }}"
+        NEXUS_USERNAME: "${{ inputs.nexus-username }}"
+        NEXUS_PASSWORD: "${{ inputs.nexus-password }}"
+        NEXUS_URL: "https://artifacts.alfresco.com/nexus"
+        STAGING_REPOSITORY_ID: ${{ inputs.staging-repository-id }}
       run: |
         echo "Deploying to repository $STAGING_REPOSITORY_ID"
         mvn clean deploy \
