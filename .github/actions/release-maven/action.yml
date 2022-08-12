@@ -63,7 +63,7 @@ runs:
         repository-directory: ${{ env.REPO_DIR }}
 
     - name: Set up JDK 11
-      if: steps.check-tag.outputs.exists == false
+      if: steps.check-tag.outputs.exists == 'false'
       uses: actions/setup-java@v3
       with:
         distribution: temurin
@@ -71,19 +71,19 @@ runs:
         cache: 'maven'
 
     - name: Set up M2_DIR
-      if: steps.check-tag.outputs.exists == false
+      if: steps.check-tag.outputs.exists == 'false'
       shell: bash
       run: echo "M2_DIR=$HOME/.m2" >> $GITHUB_ENV
 
     - name: Download setting.xml
-      if: steps.check-tag.outputs.exists == false
+      if: steps.check-tag.outputs.exists == 'false'
       uses: actions/download-artifact@v3
       with:
         name: maven-settings-xml
         path: ${{ env.M2_DIR }}
 
     - name: Display M2 configuration
-      if: steps.check-tag.outputs.exists == false
+      if: steps.check-tag.outputs.exists == 'false'
       shell: bash
       run: |
         echo ".m2 dir: $(pwd)"
@@ -91,7 +91,7 @@ runs:
       working-directory: ${{ env.M2_DIR }}
 
     - name: Configure GPG
-      if: steps.check-tag.outputs.exists == false
+      if: steps.check-tag.outputs.exists == 'false'
       shell: bash
       env:
         GPG_SECRET_KEYS: "${{ inputs.gpg-secret-keys }}"
@@ -102,7 +102,7 @@ runs:
         echo $GPG_OWNERTRUST | gpg --import-ownertrust  --no-tty --batch --yes
 
     - name: update-pom-to-release-version
-      if: steps.check-tag.outputs.exists == false
+      if: steps.check-tag.outputs.exists == 'false'
       working-directory: ${{ env.REPO_DIR }}
       shell: bash
       env:
@@ -113,7 +113,7 @@ runs:
         ../../gh-actions-scripts/update-pom-version.sh "$RELEASE_VERSION" "$BASE_TAG"
 
     - name: maven-build-and-upload
-      if: steps.check-tag.outputs.exists == false
+      if: steps.check-tag.outputs.exists == 'false'
       working-directory: ${{ env.REPO_DIR }}
       shell: bash
       env:
@@ -138,7 +138,7 @@ runs:
           -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
 
     - name: Commit changes
-      if: steps.check-tag.outputs.exists == false
+      if: steps.check-tag.outputs.exists == 'false'
       uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v1.9.0
       with:
         username: ${{ inputs.git-username }}
@@ -147,7 +147,7 @@ runs:
         repository-directory: ${{ env.REPO_DIR }}
 
     - name: create tag
-      if: steps.check-tag.outputs.exists == false
+      if: steps.check-tag.outputs.exists == 'false'
       working-directory: ${{ env.REPO_DIR }}
       shell: bash
       run: |
