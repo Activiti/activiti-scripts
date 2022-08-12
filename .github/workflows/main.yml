@@ -144,18 +144,30 @@ jobs:
           cp staging-repository-template.xml staging-repository-template.xml.bak
           sed "s/RELEASE_VERSION/${RELEASE_VERSION}/g" staging-repository-template.xml.bak > staging-repository-template.xml
 
-          NEXUS_STAGING_DATA=$(curl -d @staging-repository-template.xml \
-            -u "${NEXUS_USERNAME}":"${NEXUS_PASSWORD}" \
-            -H "Content-Type:application/xml" \
-            "${NEXUS_URL}"/service/local/staging/profiles/"${NEXUS_PROFILE_ID}"/start | \
-            grep stagedRepositoryId | grep -o "$NEXUS_STAGING_PROFILE_PATTERN")
+          STAGING_REPO_DESCRIPTION=$(yq -p=xml e '.promoteRequest.data.description' staging-repository-template.xml)
+          export STAGING_REPO_DESCRIPTION
+          echo "Checking repository to be used for $STAGING_REPO_DESCRIPTION"
+          NEXUS_STAGING_REPOSITORY=$(curl -u "${NEXUS_USERNAME}":"${NEXUS_PASSWORD}" \
+            -X GET https://artifacts.alfresco.com/nexus/service/local/staging/profile_repositories \
+            | yq -p=xml e '.stagingRepositories.data.stagingProfileRepository[]| select (.description == env(STAGING_REPO_DESCRIPTION)) | .repositoryId')
 
-          echo "Stating repository $NEXUS_STAGING_DATA"
+          if [ -z "$NEXUS_STAGING_REPOSITORY" ];
+          then
+            echo "Creating staging repository on Nexus"
+            NEXUS_STAGING_REPOSITORY=$(curl -d @staging-repository-template.xml \
+              -u "${NEXUS_USERNAME}":"${NEXUS_PASSWORD}" \
+              -H "Content-Type:application/xml" \
+              "${NEXUS_URL}"/service/local/staging/profiles/"${NEXUS_PROFILE_ID}"/start | \
+              grep stagedRepositoryId | grep -o "$NEXUS_STAGING_PROFILE_PATTERN")
+            echo "Stating repository $NEXUS_STAGING_REPOSITORY"
+          else
+            echo "Reusing exising staging repository $NEXUS_STAGING_REPOSITORY"
+          fi
 
           cp settings.xml settings.xml.bak
-          sed "s/STAGING_ID/${NEXUS_STAGING_DATA}/g" "settings.xml.bak" > settings.xml
+          sed "s/STAGING_ID/${NEXUS_STAGING_REPOSITORY}/g" "settings.xml.bak" > settings.xml
 
-          echo "::set-output name=STAGING_REPOSITORY::$NEXUS_STAGING_DATA"
+          echo "::set-output name=STAGING_REPOSITORY::$NEXUS_STAGING_REPOSITORY"
 
       - uses: actions/upload-artifact@v3
         with:
