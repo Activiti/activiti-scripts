@@ -25,14 +25,6 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-env:
-  NEXUS_URL: "https://artifacts.alfresco.com/nexus"
-  NEXUS_PROFILE_ID: "${{ secrets.NEXUS_ACTIVITI7_PROFILE_ID }}"
-  NEXUS_USERNAME: "${{ secrets.NEXUS_USERNAME }}"
-  NEXUS_PASSWORD: "${{ secrets.NEXUS_PASSWORD }}"
-  NEXUS_STAGING_PROFILE_PATTERN: "activiti-7-community-staging-profile-[0-9]*"
-  MAVEN_CONFIG_DIR: "maven-config"
-
 jobs:
 
   prepare-release:
@@ -130,6 +122,8 @@ jobs:
   create-artifacts-staging-repo:
     runs-on: ubuntu-latest
     needs: prepare-release
+    outputs:
+      staging-repository: ${{ steps.staging.outputs.staging-repository }}
     steps:
       - name: create-staging-repository
         id: staging
@@ -143,6 +137,8 @@ jobs:
   release-activiti:
     runs-on: ubuntu-latest
     needs: ["prepare-release","create-artifacts-staging-repo"]
+    env:
+      STAGING_REPOSITORY: ${{ needs.create-artifacts-staging-repo.outputs.staging-repository }}
     steps:
       - name: Checkout activiti-scripts
         uses: actions/checkout@v3
@@ -152,7 +148,7 @@ jobs:
           repo: Activiti
           base-tag: ${{  needs.prepare-release.outputs.activiti }}
           release-version: ${{ needs.prepare-release.outputs.VERSION }}
-          staging-repository-id: ${{ needs.create-artifacts-staging-repo.outputs.staging-repository }}
+          staging-repository-id: ${{ env.STAGING_REPOSITORY}}
           git-username: ${{ secrets.BOT_GITHUB_USERNAME }}
           github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
           gpg-passphrase: "${{ secrets.GPG_PASSPHRASE }}"
@@ -173,7 +169,7 @@ jobs:
           repo: activiti-cloud
           base-tag: ${{  needs.prepare-release.outputs.activiti-cloud }}
           release-version: ${{ needs.prepare-release.outputs.VERSION }}
-          staging-repository-id: ${{ needs.create-artifacts-staging-repo.outputs.staging-repository }}
+          staging-repository-id: ${{ env.STAGING_REPOSITORY}}
           git-username: ${{ secrets.BOT_GITHUB_USERNAME }}
           github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
           gpg-passphrase: "${{ secrets.GPG_PASSPHRASE }}"
@@ -194,7 +190,7 @@ jobs:
           repo: activiti-cloud-application
           base-tag: ${{  needs.prepare-release.outputs.activiti-cloud-application }}
           release-version: ${{ needs.prepare-release.outputs.VERSION }}
-          staging-repository-id: ${{ needs.create-artifacts-staging-repo.outputs.staging-repository }}
+          staging-repository-id: ${{ env.STAGING_REPOSITORY}}
           git-username: ${{ secrets.BOT_GITHUB_USERNAME }}
           github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
           gpg-passphrase: "${{ secrets.GPG_PASSPHRASE }}"
