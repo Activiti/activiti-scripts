@@ -164,9 +164,6 @@ jobs:
             echo "Reusing exising staging repository $NEXUS_STAGING_REPOSITORY"
           fi
 
-          cp settings.xml settings.xml.bak
-          sed "s/STAGING_ID/${NEXUS_STAGING_REPOSITORY}/g" "settings.xml.bak" > settings.xml
-
           echo "::set-output name=STAGING_REPOSITORY::$NEXUS_STAGING_REPOSITORY"
 
       - uses: actions/upload-artifact@v3

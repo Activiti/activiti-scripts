@@ -44,7 +44,7 @@
         </repository>
         <repository>
           <id>activiti-staging</id>
-          <url>${env.NEXUS_URL}/service/local/repositories/STAGING_ID/content</url>
+          <url>${env.NEXUS_URL}/service/local/repositories/$(env.STAGING_REPOSITORY_ID}/content</url>
         </repository>
       </repositories>
     </profile>
