@@ -166,12 +166,6 @@ jobs:
 
           echo "::set-output name=STAGING_REPOSITORY::$NEXUS_STAGING_REPOSITORY"
 
-      - uses: actions/upload-artifact@v3
-        with:
-          name: maven-settings-xml
-          path: ${{ github.workspace }}/${{ env.MAVEN_CONFIG_DIR }}/settings.xml
-          if-no-files-found: error
-
   release-activiti:
     runs-on: ubuntu-latest
     needs: ["prepare-release","create-artifacts-staging-repo"]

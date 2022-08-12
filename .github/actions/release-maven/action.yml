@@ -35,6 +35,10 @@ inputs:
   nexus-password:
     description: "Nexus password"
     required: true
+  maven-settings-path:
+    description: "path to the settings.xml to be used for the release"
+    required: false
+    default: ${{ github.workspace }}/maven-config/settings.xml
 
 runs:
   using: composite
@@ -70,25 +74,15 @@ runs:
         java-version: 11
         cache: 'maven'
 
-    - name: Set up M2_DIR
+    - name: Configure Maven settings
       if: steps.check-tag.outputs.exists == 'false'
       shell: bash
-      run: echo "M2_DIR=$HOME/.m2" >> $GITHUB_ENV
-
-    - name: Download setting.xml
-      if: steps.check-tag.outputs.exists == 'false'
-      uses: actions/download-artifact@v3
-      with:
-        name: maven-settings-xml
-        path: ${{ env.M2_DIR }}
-
-    - name: Display M2 configuration
-      if: steps.check-tag.outputs.exists == 'false'
-      shell: bash
+      env:
+        MAVEN_SETTINGS_PATH: ${{inputs.maven-settings-path}}
       run: |
-        echo ".m2 dir: $(pwd)"
-        cat settings.xml
-      working-directory: ${{ env.M2_DIR }}
+        M2_DIR=$HOME/.m2
+        cp $MAVEN_SETTINGS_PATH $M2_DIR
+        cat $M2_DIR/settings.xml
 
     - name: Configure GPG
       if: steps.check-tag.outputs.exists == 'false'
