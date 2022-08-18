@@ -103,8 +103,8 @@ ACT_CORE_VER=$(print_activiti_core_ver $ACT_CLOUD_VER)
 check_ver_tag_exists_in_repo "Activiti" $ACT_CORE_VER
 
 
-echo "::set-output name=activiti-cloud-application::$ACT_CLOUD_APP_VER"
-echo "::set-output name=activiti-cloud::$ACT_CLOUD_VER"
-echo "::set-output name=activiti::$ACT_CORE_VER"
+echo "::set-output name=activiti-cloud-application-tag::$ACT_CLOUD_APP_VER"
+echo "::set-output name=activiti-cloud-tag::$ACT_CLOUD_VER"
+echo "::set-output name=activiti-tag::$ACT_CORE_VER"
 
 popd > /dev/null
