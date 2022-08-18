@@ -27,17 +27,31 @@ on:
 
 jobs:
 
-  prepare-release:
-    runs-on: ubuntu-20.04
+  load-release-info:
+    runs-on: ubuntu-latest
     outputs:
-      activiti-cloud-application: ${{ steps.tags.outputs.activiti-cloud-application }}
-      activiti-cloud: ${{ steps.tags.outputs.activiti-cloud }}
-      activiti: ${{ steps.tags.outputs.activiti }}
-      BRANCH: ${{ steps.tags.outputs.BRANCH }}
-      VERSION: ${{ steps.tags.outputs.VERSION }}
-      NEXT_VERSION: ${{ steps.tags.outputs.NEXT_VERSION }}
-      MOCK: ${{ steps.tags.outputs.MOCK }}
+      branch: ${{ steps.load-descriptor.outputs.branch }}
+      version: ${{ steps.load-descriptor.outputs.version }}
+      next-version: ${{ steps.load-descriptor.outputs.next-version }}
+      mock: ${{ steps.load-descriptor.outputs.mock }}
+      tag-pattern: ${{ steps.load-descriptor.outputs.tag-pattern }}
+    steps:
+      - name: Installing activiti-scripts
+        uses: actions/checkout@v3
 
+      - uses: Alfresco/alfresco-build-tools/.github/actions/release-descriptor-loader@aae-8254-actions-for-activiti-script
+        id: load-descriptor
+        with:
+          release-descriptor: release.yaml
+          pre-release-suffix: alpha
+
+  prepare-maven-release:
+    runs-on: ubuntu-latest
+    needs: load-release-info
+    outputs:
+      activiti-cloud-application-tag: ${{ steps.tags.outputs.activiti-cloud-application-tag }}
+      activiti-cloud-tag: ${{ steps.tags.outputs.activiti-cloud-tag }}
+      activiti-tag: ${{ steps.tags.outputs.activiti-tag }}
     steps:
       # - uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@@v1.4.0
       - name: Installing activiti-scripts
@@ -51,34 +65,22 @@ jobs:
 
       - name: fetch-tags-to-release
         id: tags
+        env:
+          TAG_PATTERN: ${{ needs.load-release-info.outputs.tag-pattern }}
         run: |
-          VERSION=$(yq e '.release.version' release.yaml)
-          BRANCH=$(yq e '.release.version' release.yaml)
-          NEXT_VERSION=$(yq e '.release.nextVersion' release.yaml)
-          MOCK=$(yq e '.release.mock' release.yaml)
-
-          ./gh-actions-scripts/fetch-activiti-tags-from.sh -t "${VERSION%-mock*}-alpha*" -p repos/activiti-cloud-application
-
-          if [ "$MOCK" == "true" ]; then
-            VERSION=$VERSION-mock
-          fi
-
-          echo "::set-output name=BRANCH::$BRANCH"
-          echo "::set-output name=VERSION::$VERSION"
-          echo "::set-output name=NEXT_VERSION::$NEXT_VERSION"
-          echo "::set-output name=MOCK::$MOCK"
+          ./gh-actions-scripts/fetch-activiti-tags-from.sh -t "$TAG_PATTERN" -p repos/activiti-cloud-application
 
   release-docker-images:
     runs-on: ubuntu-latest
-    needs: prepare-release
+    needs: [load-release-info, prepare-maven-release]
     env:
       DOCKER_IMAGES: "example-runtime-bundle,activiti-cloud-query,example-cloud-connector,activiti-cloud-modeling"
-      BASE_TAG: "${{ needs.prepare-release.outputs.activiti-cloud-application }}"
-      RELEASE_VERSION: "${{ needs.prepare-release.outputs.VERSION }}"
+      BASE_TAG: "${{ needs.prepare-maven-release.outputs.activiti-cloud-application-tag }}"
+      RELEASE_VERSION: "${{ needs.load-release-info.outputs.version }}"
       DOCKERHUB_ORG: activiti
       DOCKERHUB_USERNAME: "${{ secrets.DOCKERHUB_USERNAME }}"
       DOCKERHUB_ACCESS_TOKEN: "${{ secrets.DOCKERHUB_ACCESS_TOKEN }}"
-      MOCK: "${{ needs.prepare-release.outputs.MOCK }}"
+      MOCK: "${{ needs.load-release-info.outputs.mock }}"
     steps:
       - name: Checkout activiti-scripts
         uses: actions/checkout@v3
@@ -101,7 +103,7 @@ jobs:
       - name: update-helm-charts
         env:
           VERSION: $(cat VERSION)
-          RELEASE_VERSION: ${{ needs.prepare-release.outputs.VERSION }}
+          RELEASE_VERSION: ${{ needs.load-release-info.outputs.version }}
           HELM_ACTIVITI_VERSION: $(cat VERSION)
           SSO_PROTOCOL: https
           GATEWAY_PROTOCOL: https
@@ -121,12 +123,12 @@ jobs:
 
   release-modeling-app:
     runs-on: ubuntu-latest
-    needs: prepare-release
+    needs: load-release-info
     env:
       MODELING_APP_DIR: modeling-app
       MODELING_APP_BASE_REF: master
       DOCKERHUB_ORG: activiti
-      RELEASE_VERSION: "${{ needs.prepare-release.outputs.VERSION }}"
+      RELEASE_VERSION: "${{ needs.load-release-info.outputs.VERSION }}"
     steps:
       - name: Checkout modeling-app
         uses: actions/checkout@v3
@@ -185,10 +187,116 @@ jobs:
           git tag -a $RELEASE_VERSION -m "Release version $RELEASE_VERSION"
           git push origin $RELEASE_VERSION
 
+  prepare-helm-release:
+    runs-on: ubuntu-latest
+    needs: load-release-info
+    outputs:
+      common-chart-tag: ${{steps.tags.outputs.common-chart-tag}}
+      full-chart-tag: ${{steps.tags.outputs.full-chart-tag}}
+    env:
+      RELEASE_VERSION: "${{ needs.load-release-info.outputs.version }}"
+      FULL_CHART_DIR: full-chart
+    steps:
+      - name: Checkout full chart
+        uses: actions/checkout@v3
+        with:
+          path: ${{ env.FULL_CHART_DIR }}
+          repository: Activiti/activiti-cloud-full-chart
+      - uses: Alfresco/alfresco-build-tools/.github/actions/git-latest-tag@aae-8254-actions-for-activiti-script
+        with:
+          tag-pattern: ${{ needs.load-release-info.outputs.tag-pattern }}
+          repository-directory: ${{ env.FULL_CHART_DIR }}
+        id: get-last-tag
+      - name: Get tags
+        id: tags
+        working-directory: ${{ env.FULL_CHART_DIR }}
+        env:
+          FULL_CHART_TAG: ${{steps.get-latest-tag.outputs.latest-tag}}
+        run: |
+          git checkout $FULL_CHART_TAG
+          COMMON_CHART_TAG=$(yq e '.dependencies[] | select (.alias == "activiti-cloud-modeling") | .version' charts/activiti-cloud-full-example/requirements.yaml)
+          echo "::set-output name=common-chart-tag::$COMMON_CHART_TAG"
+          echo "::set-output name=full-chart-tag::$FULL_CHART_TAG"
+
+  release-common-chart:
+    runs-on: ubuntu-latest
+    needs: [load-release-info, prepare-helm-release]
+    env:
+      COMMON_CHART_DIR: common-chart
+    steps:
+      - name: Checkout common chart
+        uses: actions/checkout@v3
+        env:
+          BASE_TAG: ${{needs.prepare-helm-release.outputs.common-chart-tag}}
+        with:
+          path: ${{ env.COMMON_CHART_DIR }}
+          repository: Activiti/activiti-cloud-common-chart
+          ref: ${{ env.BASE_TAG }}
+          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+
+      - name: Release common chart
+        uses: Alfresco/alfresco-build-tools/.github/actions/helm-release-and-publish@aae-8254-actions-for-activiti-script
+        with:
+          version: ${{ needs.load-release-info.outputs.version }}
+          chart-dir: charts/common
+          chart-repository-dir: ${{ env.COMMON_CHART_DIR }}
+          helm-repository: Activiti/activiti-cloud-helm-charts
+          helm-repository-branch: gh-pages
+          helm-repository-token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          git-username:  ${{ secrets.BOT_GITHUB_USERNAME }}
+
+  release-full-chart:
+    runs-on: ubuntu-latest
+    needs: [load-release-info, prepare-helm-release, release-common-chart]
+    env:
+      FULL_CHART_DIR: full-chart
+      CHART_FILES_DIR: charts/activiti-cloud-full-example
+      VERSION: ${{needs.load-release-info.outputs.version}}
+    steps:
+      - name: Checkout full chart
+        uses: actions/checkout@v3
+        env:
+          BASE_TAG: ${{ needs.prepare-helm-release.outputs.full-chart-tag }}
+        with:
+          path: ${{ env.FULL_CHART_DIR }}
+          repository: Activiti/activiti-cloud-full-chart
+          ref: ${{ env.BASE_TAG }}
+          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+
+      - name: Update dependencies
+        working-directory: ${{ env.FULL_CHART_DIR }}/${{env.CHART_FILES_DIR}}
+        run: |
+          yq e '(.dependencies.[] | select(.name == "common").version) = env(VERSION)' -i requirements.yaml
+          yq -i e '.runtime-bundle.image.tag = env(VERSION)' values.yaml
+          yq -i e '.activiti-cloud-query.image.tag = env(VERSION)' values.yaml
+          yq -i e '.activiti-cloud-connector.image.tag = env(VERSION)' values.yaml
+          yq -i e '.activiti-cloud-modeling.image.tag = env(VERSION)' values.yaml
+          yq -i e '.activiti-cloud-identity-adapter.image.tag = env(VERSION)' values.yaml
+          yq -i e '.activiti-modeling-app.image.tag = env(VERSION)' values.yaml
+
+      - name: Wait for common chart to be published
+        uses: ./.github/actions/wait-for-chart
+        with:
+          chart-name: common
+          version: ${{ needs.load-release-info.outputs.version }}
+          helm-repo-name: activiti-cloud-helm-charts
+          helm-repo-url: https://activiti.github.io/activiti-cloud-helm-charts
+
+      - name: Release full chart
+        uses: Alfresco/alfresco-build-tools/.github/actions/helm-release-and-publish@aae-8254-actions-for-activiti-script
+        with:
+          version: ${{ needs.load-release-info.outputs.version }}
+          chart-dir: ${{env.CHART_FILES_DIR}}
+          chart-repository-dir: ${{ env.FULL_CHART_DIR }}
+          helm-repository: Activiti/activiti-cloud-helm-charts
+          helm-repository-branch: gh-pages
+          helm-repository-token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          git-username:  ${{ secrets.BOT_GITHUB_USERNAME }}
+
 
   create-artifacts-staging-repo:
     runs-on: ubuntu-latest
-    needs: prepare-release
+    needs: load-release-info
     outputs:
       staging-repository: ${{ steps.staging.outputs.staging-repository }}
     steps:
@@ -196,14 +304,14 @@ jobs:
         id: staging
         uses: Alfresco/alfresco-build-tools/.github/actions/nexus-create-staging@aae-8254-actions-for-activiti-script
         with:
-          staging-description: Activiti staging ${{ needs.prepare-release.outputs.VERSION }}
+          staging-description: Activiti staging ${{ needs.load-release-info.outputs.version }}
           nexus-profile-id: "${{ secrets.NEXUS_ACTIVITI7_PROFILE_ID }}"
           nexus-username: "${{ secrets.NEXUS_USERNAME }}"
           nexus-password: "${{ secrets.NEXUS_PASSWORD }}"
 
   release-activiti:
     runs-on: ubuntu-latest
-    needs: ["prepare-release","create-artifacts-staging-repo"]
+    needs: [load-release-info, prepare-maven-release, create-artifacts-staging-repo]
     steps:
       - name: Checkout activiti-scripts
         uses: actions/checkout@v3
@@ -211,9 +319,9 @@ jobs:
       - uses: ./.github/actions/release-maven
         with:
           repo: Activiti
-          base-tag: ${{  needs.prepare-release.outputs.activiti }}
-          release-version: ${{ needs.prepare-release.outputs.VERSION }}
-          staging-repository-id: ${{ env.STAGING_REPOSITORY}}
+          base-tag: ${{  needs.prepare-maven-release.outputs.activiti-tag }}
+          release-version: ${{ needs.load-release-info.outputs.version }}
+          staging-repository-id: ${{ needs.create-artifacts-staging-repo.outputs.staging-repository }}
           git-username: ${{ secrets.BOT_GITHUB_USERNAME }}
           github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
           gpg-passphrase: "${{ secrets.GPG_PASSPHRASE }}"
@@ -224,7 +332,7 @@ jobs:
 
   release-activiti-cloud:
     runs-on: ubuntu-latest
-    needs: ["prepare-release","create-artifacts-staging-repo", "release-activiti"]
+    needs: [load-release-info, prepare-maven-release, create-artifacts-staging-repo, release-activiti]
     steps:
       - name: Checkout activiti-scripts
         uses: actions/checkout@v3
@@ -232,8 +340,8 @@ jobs:
       - uses: ./.github/actions/release-maven
         with:
           repo: activiti-cloud
-          base-tag: ${{  needs.prepare-release.outputs.activiti-cloud }}
-          release-version: ${{ needs.prepare-release.outputs.VERSION }}
+          base-tag: ${{  needs.prepare-maven-release.outputs.activiti-cloud-tag }}
+          release-version: ${{ needs.load-release-info.outputs.version }}
           staging-repository-id: ${{ needs.create-artifacts-staging-repo.outputs.staging-repository }}
           git-username: ${{ secrets.BOT_GITHUB_USERNAME }}
           github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
@@ -245,7 +353,7 @@ jobs:
 
   release-activiti-cloud-application:
     runs-on: ubuntu-latest
-    needs: ["prepare-release","create-artifacts-staging-repo", "release-activiti-cloud"]
+    needs: [load-release-info, prepare-maven-release, create-artifacts-staging-repo, release-activiti-cloud]
     steps:
       - name: Checkout activiti-scripts
         uses: actions/checkout@v3
@@ -253,8 +361,8 @@ jobs:
       - uses: ./.github/actions/release-maven
         with:
           repo: activiti-cloud-application
-          base-tag: ${{  needs.prepare-release.outputs.activiti-cloud-application }}
-          release-version: ${{ needs.prepare-release.outputs.VERSION }}
+          base-tag: ${{  needs.prepare-maven-release.outputs.activiti-cloud-application-tag }}
+          release-version: ${{ needs.load-release-info.outputs.version }}
           staging-repository-id: ${{ needs.create-artifacts-staging-repo.outputs.staging-repository }}
           git-username: ${{ secrets.BOT_GITHUB_USERNAME }}
           github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
@@ -277,7 +385,7 @@ jobs:
   # TODO should this step be skipped for the mock release?
   finalize-branch:
     runs-on: ubuntu-20.04
-    needs: ["prepare-release","release-activiti-cloud-application"]
+    needs: [load-release-info, release-activiti-cloud-application]
     strategy:
       fail-fast: true
       max-parallel: 1
@@ -285,14 +393,14 @@ jobs:
         # TODO Should we add also activiti-cloud-modeling?
         repo: ['Activiti','activiti-cloud','activiti-cloud-application']
     env:
-      NEXT_VERSION: "${{ needs.prepare-release.outputs.NEXT_VERSION }}"
+      NEXT_VERSION: "${{ needs.load-release-info.outputs.next-version }}"
     steps:
       - name: Checkout ${{ matrix.repo }}
         uses: actions/checkout@v3
         with:
           repository: 'Activiti/${{ matrix.repo }}'
           path: 'repos/${{ matrix.repo }}'
-          ref: '${{ needs.prepare-release.outputs.BRANCH }}'
+          ref: '${{ needs.load-release-info.outputs.branch }}'
 
       - name: update-to-next-version
         working-directory: repos/${{ matrix.repo }}
