@@ -377,12 +377,7 @@ jobs:
 
   run-sanity-checks:
     runs-on: ubuntu-latest
-    needs:
-      - load-release-info
-      - release-docker-images
-      - release-modeling-app
-      - release-full-chart
-      - release-activiti-cloud-application
+    needs: [load-release-info, release-docker-images, release-modeling-app, release-full-chart]
     env:
       CHART_NAME: activiti-cloud-full-example
       CHART_REPO_NAME: activiti-cloud-helm-charts
@@ -451,6 +446,7 @@ jobs:
 
 
       - name: Install application
+        id: install-application
         working-directory: ${{env.FULL_CHART_DIR}}/charts/activiti-cloud-full-example
         env:
           MESSAGING_BROKER: rabbitmq
@@ -522,6 +518,10 @@ jobs:
           make test/modeling-acceptance-tests
           make test/runtime-acceptance-tests
           make test/identity-adapter-acceptance-tests
+
+      - name: Delete application
+        if: steps.install-application.outcome == 'success'
+        run: kubectl delete ns $PREVIEW_NAME
 
   release-artifacts-staging-env:
     runs-on: ubuntu-latest
