@@ -255,7 +255,7 @@ jobs:
     steps:
       - name: Checkout activiti-scripts
         uses: actions/checkout@v3
-        
+
       - name: Checkout full chart
         uses: actions/checkout@v3
         env:
@@ -375,8 +375,156 @@ jobs:
           nexus-username: "${{ secrets.NEXUS_USERNAME }}"
           nexus-password: "${{ secrets.NEXUS_PASSWORD }}"
 
+  run-sanity-checks:
+    runs-on: ubuntu-latest
+    needs:
+      - load-release-info
+      - release-docker-images
+      - release-modeling-app
+      - release-full-chart
+      - release-activiti-cloud-application
+    env:
+      CHART_NAME: activiti-cloud-full-example
+      CHART_REPO_NAME: activiti-cloud-helm-charts
+      SSO_PROTOCOL: https
+      GATEWAY_PROTOCOL: https
+      CLUSTER_NAME: activiti-test
+      CLUSTER_DOMAIN: envalfresco.com
+      VERSION: ${{ needs.load-release-info.outputs.version }}
+      ACT_CLOUD_APPLICATION_DIR: activiti-cloud-application
+      FULL_CHART_DIR: full-chart
+    steps:
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v1
+        with:
+          version: v1.19.6
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v1
+        with:
+          version: v3.5.2
+
+      - name: Set up rancher
+        uses: Alfresco/alfresco-build-tools/.github/actions/setup-rancher-cli@v1.10.0
+        with:
+          url: ${{ secrets.RANCHER2_URL }}
+          access-key: ${{ secrets.RANCHER2_ACCESS_KEY }}
+          secret-key: ${{ secrets.RANCHER2_SECRET_KEY }}
+          context: ${{ env.CLUSTER_NAME }}
+
+      - name: Checkout activiti-scripts
+        uses: actions/checkout@v3
+
+      - name: Checkout activiti-cloud-application
+        uses: actions/checkout@v3
+        with:
+          repository: Activiti/activiti-cloud-application
+          path: ${{ env.ACT_CLOUD_APPLICATION_DIR}}
+          ref: ${{ env.VERSION }}
+
+      - name: Checkout full chart
+        uses: actions/checkout@v3
+        with:
+          path: ${{ env.FULL_CHART_DIR }}
+          repository: Activiti/activiti-cloud-full-chart
+          ref: ${{ env.VERSION }}
+
+      - name: Wait for full chart to be published
+        uses: ./.github/actions/wait-for-chart
+        with:
+          chart-name: ${{ env.CHART_NAME }}
+          version: ${{ env.VERSION }}
+          helm-repo-name: ${{ env.CHART_REPO_NAME }}
+          helm-repo-url: https://activiti.github.io/activiti-cloud-helm-charts
+
+      - name: Set up env variables
+        run: |
+          PREVIEW_NAME="release-${VERSION//./-}"
+          GLOBAL_GATEWAY_DOMAIN=$CLUSTER_NAME.$CLUSTER_DOMAIN
+          GATEWAY_HOST=gateway-$PREVIEW_NAME.$GLOBAL_GATEWAY_DOMAIN
+          SSO_HOST=identity-$PREVIEW_NAME.$GLOBAL_GATEWAY_DOMAIN
+
+          echo "PREVIEW_NAME=$PREVIEW_NAME" >> $GITHUB_ENV
+          echo "GLOBAL_GATEWAY_DOMAIN=$GLOBAL_GATEWAY_DOMAIN" >> $GITHUB_ENV
+          echo "GATEWAY_HOST=$GATEWAY_HOST" >> $GITHUB_ENV
+          echo "SSO_HOST=$SSO_HOST" >> $GITHUB_ENV
+
+
+      - name: Install application
+        working-directory: ${{env.FULL_CHART_DIR}}/charts/activiti-cloud-full-example
+        env:
+          MESSAGING_BROKER: rabbitmq
+          MESSAGING_PARTITIONED: non-partitioned
+          MESSAGING_DESTINATIONS: default-destinations
+          CHART: activiti-cloud-helm-charts/activiti-cloud-full-example
+        run: |
+          helm upgrade $PREVIEW_NAME $CHART_REPO_NAME/$CHART_NAME --version $VERSION \
+            --install \
+            --set global.application.name=default-app \
+            --set global.keycloak.clientSecret=$(uuidgen) \
+            --set global.gateway.http=false \
+            --set global.gateway.domain=${GLOBAL_GATEWAY_DOMAIN} \
+            --values ${MESSAGING_BROKER}-values.yaml \
+            --values ${MESSAGING_PARTITIONED}-values.yaml \
+            --values ${MESSAGING_DESTINATIONS}-values.yaml \
+            --namespace $PREVIEW_NAME \
+            --create-namespace \
+            --atomic \
+            --timeout 8m
+
+      - name: Run Acceptance Tests for ${{ matrix.messaging-broker }}
+        working-directory: ${{ env.ACT_CLOUD_APPLICATION_DIR }}
+        run: |
+          ### Functions ####
+
+          # It evaluates the function passed as a parameter
+          # if the result is different than 0 it waits
+          # for 5 seconds and re-evaluates it again.
+          #
+          wait_until_true () {
+            local attempt_counter=0
+            local max_attempts=50
+
+            until "$@"
+            do
+              if [ ${attempt_counter} -eq ${max_attempts} ]
+              then
+                echo "Max attempts reached"
+                break
+              fi
+
+              printf '.'
+              attempt_counter=$((attempt_counter+1))
+              sleep 5
+            done
+          }
+
+          # It makes an HTTP request to the health check of the
+          # modeling, query and runtime-bundles API returning 0
+          # in case their pods are ready and a value different
+          # than 0 otherwise.
+          #
+          check_services_up () {
+            curl --silent --head --fail $GATEWAY_PROTOCOL://$GATEWAY_HOST/modeling-service/actuator/health > /dev/null 2>&1 && \
+            curl --silent --head --fail $GATEWAY_PROTOCOL://$GATEWAY_HOST/rb/actuator/health > /dev/null 2>&1 && \
+            curl --silent --head --fail $GATEWAY_PROTOCOL://$GATEWAY_HOST/query/actuator/health > /dev/null 2>&1
+          }
+
+          ### Main ###
+
+          echo "Waiting for services to be up..."
+          wait_until_true check_services_up
+
+          # Showing the deployment result
+          kubectl get all -n $PREVIEW_NAME
+
+          # Launching the tests
+          make test/modeling-acceptance-tests
+          make test/runtime-acceptance-tests
+          make test/identity-adapter-acceptance-tests
+
   release-artifacts-staging-env:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     needs: release-activiti-cloud-application
     steps:
       - uses: actions/checkout@v3
