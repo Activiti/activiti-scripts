@@ -32,7 +32,7 @@ runs:
         attempt_counter=0
         max_attempts=20
 
-        echo "Waiting for common chart version $VERSION to be available..."
+        echo "Waiting for chart "$CHART_NAME", version $VERSION to be available..."
 
         until helm fetch $HELM_REPO_NAME/$CHART_NAME --version $VERSION> /dev/null 2>&1; do
           if [ ${attempt_counter} -eq ${max_attempts} ];then
