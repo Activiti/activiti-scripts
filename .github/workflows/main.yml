@@ -253,6 +253,9 @@ jobs:
       CHART_FILES_DIR: charts/activiti-cloud-full-example
       VERSION: ${{needs.load-release-info.outputs.version}}
     steps:
+      - name: Checkout activiti-scripts
+        uses: actions/checkout@v3
+        
       - name: Checkout full chart
         uses: actions/checkout@v3
         env:
