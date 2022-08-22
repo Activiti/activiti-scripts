@@ -478,12 +478,6 @@ jobs:
       - name: Run Acceptance Tests for ${{ matrix.messaging-broker }}
         working-directory: ${{ env.ACT_CLOUD_APPLICATION_DIR }}
         run: |
-          ### Functions ####
-
-          # It evaluates the function passed as a parameter
-          # if the result is different than 0 it waits
-          # for 5 seconds and re-evaluates it again.
-          #
           wait_until_true () {
             local attempt_counter=0
             local max_attempts=50
@@ -502,11 +496,6 @@ jobs:
             done
           }
 
-          # It makes an HTTP request to the health check of the
-          # modeling, query and runtime-bundles API returning 0
-          # in case their pods are ready and a value different
-          # than 0 otherwise.
-          #
           check_services_up () {
             curl --silent --head --fail $GATEWAY_PROTOCOL://$GATEWAY_HOST/modeling-service/actuator/health > /dev/null 2>&1 && \
             curl --silent --head --fail $GATEWAY_PROTOCOL://$GATEWAY_HOST/rb/actuator/health > /dev/null 2>&1 && \
@@ -514,7 +503,6 @@ jobs:
           }
 
           ### Main ###
-
           echo "Waiting for services to be up..."
           wait_until_true check_services_up
 
