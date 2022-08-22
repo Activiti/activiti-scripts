@@ -117,7 +117,8 @@ jobs:
             -DaltReleaseDeploymentRepository=nexus-releases-staging-fixed::default::"${NEXUS_URL}"/service/local/staging/deployByRepositoryId/"$STAGING_REPOSITORY_ID " \
             -Dhttp.keepAlive=false \
             -Dmaven.wagon.http.pool=false \
-            -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
+            -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 \
+            -T 2C
 
       - name: Commit changes
         uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v1.9.0
