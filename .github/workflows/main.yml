@@ -377,7 +377,12 @@ jobs:
 
   run-sanity-checks:
     runs-on: ubuntu-latest
-    needs: [load-release-info, release-docker-images, release-modeling-app, release-full-chart]
+    needs:
+      - load-release-info
+      - prepare-maven-release
+      - release-docker-images
+      - release-modeling-app
+      - release-full-chart
     env:
       CHART_NAME: activiti-cloud-full-example
       CHART_REPO_NAME: activiti-cloud-helm-charts
@@ -415,7 +420,9 @@ jobs:
         with:
           repository: Activiti/activiti-cloud-application
           path: ${{ env.ACT_CLOUD_APPLICATION_DIR}}
-          ref: ${{ env.VERSION }}
+          # Use base tag instead of final one while checking out acceptance tests, in this way it's
+          # posisble to start running them earlier, once docker images and helm charts are released.
+          ref: ${{ needs.prepare-maven-release.outputs.activiti-cloud-application-tag }}
 
       - name: Checkout full chart
         uses: actions/checkout@v3
