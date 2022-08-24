@@ -2,16 +2,19 @@
 
 RELEASE_VERSION=${1:-$RELEASE_VERSION}
 TAG_VERSION=${2:-$TAG_VERSION}
-POM_VERSION=$(mvn help:evaluate -B -Dexpression=project.version | grep -e '^[^\[]' 2>/dev/null) || true
-POM_VERSION=${POM_VERSION#"null object or invalid expression"}
-POM_VERSION=${3:-$POM_VERSION}
+EXTRA_REPLACEMENTS=${3:-EXTRA_REPLACEMENTS}
 
 echo "Updating versions in pom.xml files to ${RELEASE_VERSION}"
 echo " - TAG_VERSION: $TAG_VERSION"
-echo " - POM_VERSION: $POM_VERSION"
 
-SED_REPLACEMENTS="${SED_REPLACEMENTS} -e 's|${POM_VERSION}|${RELEASE_VERSION}|g'"
-SED_REPLACEMENTS="${SED_REPLACEMENTS} -e 's|${TAG_VERSION}|${RELEASE_VERSION}|g'"
+SED_REPLACEMENTS="${SED_REPLACEMENTS} -e 's|<version>${TAG_VERSION}</version>|<version>${RELEASE_VERSION}</version>|g'"
+for PROPERTY in ${EXTRA_REPLACEMENTS//,/ }
+do
+  PROPERTY_NAME=${PROPERTY%=*}
+  PROPERTY_VALUE=${PROPERTY#*=}
+  echo "Property to be updated $PROPERTY_NAME: $PROPERTY_VALUE --> $RELEASE_VERSION"
+  SED_REPLACEMENTS="${SED_REPLACEMENTS} -e 's|<$PROPERTY_NAME>${PROPERTY_VALUE}</$PROPERTY_NAME>|<$PROPERTY_NAME>${RELEASE_VERSION}</$PROPERTY_NAME>|g'"
+done
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
   eval "find . -name pom.xml -exec sed -i.bak ${SED_REPLACEMENTS} {} \;"
