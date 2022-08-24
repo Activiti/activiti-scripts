@@ -19,3 +19,8 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 else
   eval "find . -name pom.xml -exec sed -i ${SED_REPLACEMENTS} {} \;"
 fi
+
+echo "Checking for occurrences of non final versions..."
+grep -r '[0-9]*\.[0-9]*\.[0-9]*\-SNAPSHOT\|[0-9]*\.[0-9]*\.[0-9]*\-alpha\.[0-9]*' --include=pom.xml . \
+  && echo "At least one occurrence of a non final version was found. Stopping the release..." && exit 1 \
+  || echo "No occurrences of non final versions was found. Proceeding with the release..."
