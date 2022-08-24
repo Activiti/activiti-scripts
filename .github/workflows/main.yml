@@ -344,6 +344,7 @@ jobs:
         with:
           repo: activiti-cloud
           base-tag: ${{  needs.prepare-maven-release.outputs.activiti-cloud-tag }}
+          extra-replacements: activiti.version=${{  needs.prepare-maven-release.outputs.activiti-tag }}
           release-version: ${{ needs.load-release-info.outputs.version }}
           staging-repository-id: ${{ needs.create-artifacts-staging-repo.outputs.staging-repository }}
           git-username: ${{ secrets.BOT_GITHUB_USERNAME }}
@@ -362,9 +363,12 @@ jobs:
         uses: actions/checkout@v3
 
       - uses: ./.github/actions/release-maven
+        env:
+          ACT_CLOUD_VERSION: ${{  needs.prepare-maven-release.outputs.activiti-cloud-tag }}
         with:
           repo: activiti-cloud-application
           base-tag: ${{  needs.prepare-maven-release.outputs.activiti-cloud-application-tag }}
+          extra-replacements: activiti-cloud.version=${{  env.ACT_CLOUD_VERSION }},version=${{  env.ACT_CLOUD_VERSION }}
           release-version: ${{ needs.load-release-info.outputs.version }}
           staging-repository-id: ${{ needs.create-artifacts-staging-repo.outputs.staging-repository }}
           git-username: ${{ secrets.BOT_GITHUB_USERNAME }}
@@ -534,9 +538,7 @@ jobs:
     needs: [load-release-info, release-activiti-cloud-application]
     strategy:
       fail-fast: true
-      max-parallel: 1
       matrix:
-        # TODO Should we add also activiti-cloud-modeling?
         repo: ['Activiti','activiti-cloud','activiti-cloud-application']
     env:
       NEXT_VERSION: "${{ needs.load-release-info.outputs.next-version }}"

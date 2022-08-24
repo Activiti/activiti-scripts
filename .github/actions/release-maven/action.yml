@@ -8,6 +8,9 @@ inputs:
   base-tag:
     description: "The name of the tag from where the release will be created"
     required: true
+  extra-replacements:
+    description: Extra properties to replace
+    required: false
   release-version:
     description: "The name of the version to be released"
     required: true
@@ -105,10 +108,11 @@ runs:
       shell: bash
       env:
         BASE_TAG: ${{ inputs.base-tag }}
+        EXTRA_REPLACEMENTS: ${{ inputs.extra-replacements }}
       run: |
         # TODO Check that the update is updating all the needed dependencies
         # TODO e.g.: activiti-cloud 7.3.1 should refer to Activiti 7.3.1
-        ../../gh-actions-scripts/update-pom-version.sh "$RELEASE_VERSION" "$BASE_TAG"
+        ../../gh-actions-scripts/update-pom-version.sh "$RELEASE_VERSION" "$BASE_TAG" "$EXTRA_REPLACEMENTS"
 
     - name: maven-build-and-upload
       if: steps.check-tag.outputs.exists == 'false'
