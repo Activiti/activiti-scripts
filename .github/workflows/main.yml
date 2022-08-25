@@ -132,7 +132,7 @@ jobs:
       MODELING_APP_DIR: modeling-app
       MODELING_APP_BASE_REF: master
       DOCKERHUB_ORG: activiti
-      RELEASE_VERSION: "${{ needs.load-release-info.outputs.VERSION }}"
+      RELEASE_VERSION: "${{ needs.load-release-info.outputs.version }}"
     steps:
       - name: Checkout modeling-app
         uses: actions/checkout@v3
