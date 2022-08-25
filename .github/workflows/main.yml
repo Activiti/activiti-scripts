@@ -614,3 +614,120 @@ jobs:
       - name: Push changes to branch ${{ env.BRANCH }}
         if: needs.load-release-info.outputs.mock == 'false'
         run: git push origin "$BRANCH"
+
+  create-maintenance-branch:
+    if: endsWith(needs.load-release-info.outputs.version, '.0') || contains(needs.load-release-info.outputs.version, '.0-mock')
+    runs-on: ubuntu-latest
+    needs: [ load-release-info, create-artifacts-staging-repo, release-activiti-cloud-application ]
+    strategy:
+      fail-fast: true
+      matrix:
+        repo: [ 'Activiti','activiti-cloud','activiti-cloud-application' ]
+    env:
+      NEXT_VERSION: ${{ needs.load-release-info.outputs.next-version }}
+      REPO_DIR: repos/${{ matrix.repo }}
+      TAG: ${{ needs.load-release-info.outputs.version }}
+
+    steps:
+      - name: Checkout activiti-scripts
+        uses: actions/checkout@v3
+
+      - name: Checkout ${{ matrix.repo }}
+        uses: actions/checkout@v3
+        with:
+          repository: Activiti/${{ matrix.repo }}
+          path: ${{ env.REPO_DIR }}
+          ref: ${{ env.TAG }}
+
+      - name: Calculate maintenance branch
+        id: calculate-maintenance-branch-name
+        working-directory: ${{ env.REPO_DIR }}
+        run: |
+          BRANCH_NAME=${TAG%\.0}.x
+          echo "Maintenance branch name: $BRANCH_NAME"
+          echo "::set-output name=branch::$BRANCH_NAME"
+
+      - name: check if maintenance branch exists
+        id: check-branch-exists
+        env:
+          BRANCH: ${{steps.calculate-maintenance-branch-name.outputs.branch}}
+        working-directory: ${{ env.REPO_DIR }}
+        run: |
+          if git ls-remote --exit-code --heads origin "$BRANCH"
+          then
+            echo "Branch $BRANCH exists already"
+            echo "::set-output name=result::true"
+          else
+            echo "Branch $BRANCH does not exist"
+            echo "::set-output name=result::false"
+          fi
+
+      - name: create maintenance branch
+        if: steps.check-branch-exists.outputs.result == 'false'
+        env:
+          BRANCH: ${{steps.calculate-maintenance-branch-name.outputs.branch}}
+        working-directory: ${{ env.REPO_DIR }}
+        run: |
+          git checkout -b "$BRANCH"
+
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-pysemver@v1.10.0
+      - name: Resolve maintenance version
+        id: resolve-maintenance-version
+        if: steps.check-branch-exists.outputs.result == 'false'
+        run: |
+          MAINTENANCE_VERSION=$(pysemver bump patch $TAG)-SNAPSHOT
+          echo "Maintenance version: $MAINTENANCE_VERSION"
+          echo "::set-output name=version::$MAINTENANCE_VERSION"
+
+      - name: Set up JDK 11
+        if: steps.check-branch-exists.outputs.result == 'false'
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 11
+          cache: 'maven'
+
+      - name: Configure Maven settings
+        if: steps.check-branch-exists.outputs.result == 'false'
+        shell: bash
+        env:
+          MAVEN_SETTINGS_PATH: ${{ github.workspace }}/maven-config/settings.xml
+          NEXUS_URL: "https://artifacts.alfresco.com/nexus"
+          STAGING_REPOSITORY_ID: ${{ needs.create-artifacts-staging-repo.outputs.staging-repository }}
+        run: |
+          M2_DIR=$HOME/.m2
+          cp $MAVEN_SETTINGS_PATH $M2_DIR
+          ls $M2_DIR
+          cat $M2_DIR/settings.xml
+
+      - name: update-to-next-version
+        if: steps.check-branch-exists.outputs.result == 'false'
+        uses: Alfresco/alfresco-build-tools/.github/actions/update-pom-version@aae-8254-actions-for-activiti-script
+        with:
+          version: ${{ steps.resolve-maintenance-version.outputs.version }}
+          repository-directory: ${{ env.REPO_DIR }}
+
+      - name: Update configuration files
+        if: steps.check-branch-exists.outputs.result == 'false'
+        working-directory: ${{ env.REPO_DIR }}
+        env:
+          BRANCH: ${{ steps.calculate-maintenance-branch-name.outputs.branch }}
+        run: |
+          yq e -i '.github.organisations[].repositories[].branch = env(BRANCH)' .updatebot.yml
+          yq e -i '.on.push.branches = [ env(BRANCH) ]' .github/workflows/main.yml
+          yq e -i '.on.pull_request.branches = [ env(BRANCH) ]' .github/workflows/main.yml
+
+      - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v1.10.0
+        if: steps.check-branch-exists.outputs.result == 'false'
+        with:
+          username: ${{ secrets.BOT_GITHUB_USERNAME }}
+          add-options: -u
+          commit-message: Update to version ${{ steps.resolve-maintenance-version.outputs.version }}
+          repository-directory: ${{ env.REPO_DIR }}
+
+      - name: Push changes to branch ${{ steps.calculate-maintenance-branch-name.outputs.branch }}
+        if: ${{ steps.check-branch-exists.outputs.result == 'false' && needs.load-release-info.outputs.mock == 'false' }}
+        working-directory: ${{ env.REPO_DIR }}
+        env:
+          BRANCH: ${{ steps.calculate-maintenance-branch-name.outputs.branch }}
+        run: git push origin "$BRANCH"
