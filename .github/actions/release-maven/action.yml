@@ -110,8 +110,6 @@ runs:
         BASE_TAG: ${{ inputs.base-tag }}
         EXTRA_REPLACEMENTS: ${{ inputs.extra-replacements }}
       run: |
-        # TODO Check that the update is updating all the needed dependencies
-        # TODO e.g.: activiti-cloud 7.3.1 should refer to Activiti 7.3.1
         ../../gh-actions-scripts/update-pom-version.sh "$RELEASE_VERSION" "$BASE_TAG" "$EXTRA_REPLACEMENTS"
 
     - name: maven-build-and-upload

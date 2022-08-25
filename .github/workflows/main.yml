@@ -532,8 +532,7 @@ jobs:
           # TODO Should we close and release the nexus artifact staging env?
           ./gh-actions-scripts/dummy-step.sh
 
-  # TODO should this step be skipped for the mock release?
-  finalize-branch:
+  maven-update-main-branch-to-next-version:
     runs-on: ubuntu-20.04
     needs: [load-release-info, release-activiti-cloud-application]
     strategy:
@@ -541,25 +540,31 @@ jobs:
       matrix:
         repo: ['Activiti','activiti-cloud','activiti-cloud-application']
     env:
-      NEXT_VERSION: "${{ needs.load-release-info.outputs.next-version }}"
+      NEXT_VERSION: ${{ needs.load-release-info.outputs.next-version }}
+      REPO_DIR: repos/${{ matrix.repo }}
+      BRANCH: ${{ needs.load-release-info.outputs.branch }}
+
     steps:
       - name: Checkout ${{ matrix.repo }}
         uses: actions/checkout@v3
         with:
-          repository: 'Activiti/${{ matrix.repo }}'
-          path: 'repos/${{ matrix.repo }}'
-          ref: '${{ needs.load-release-info.outputs.branch }}'
+          repository: Activiti/${{ matrix.repo }}
+          path: ${{ env.REPO_DIR }}
+          ref: ${{ env.BRANCH }}
 
       - name: update-to-next-version
-        working-directory: repos/${{ matrix.repo }}
-        run: |
-          # TODO Check that the update is updating all the needed dependencies
-          # TODO e.g.: activiti-cloud 7.3.1-SNAPSHOT should refer to Activiti 7.3.1-SNAPSHOT
-          mvn versions:set -DnewVersion=$NEXT_VERSION -DgenerateBackupPoms=false
+        uses: Alfresco/alfresco-build-tools/.github/actions/update-pom-version@aae-8254-actions-for-activiti-script
+        with:
+          version: ${{ env.NEXT_VERSION }}
+          repository-directory: repos/${{ matrix.repo }}
 
-      - name: commit-and-push
-        working-directory: repos/${{ matrix.repo }}
-        run: |
-          # TODO which user should commit and push?
-          echo "commit and push repository"
-          cat pom.xml
+      - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v1.10.0
+        with:
+          username: ${{ secrets.BOT_GITHUB_USERNAME }}
+          add-options: -u
+          commit-message: Update to version ${{ env.NEXT_VERSION}}
+          repository-directory: ${{ env.REPO_DIR }}
+
+      - name: Push changes to branch ${{ env.BRANCH }}
+        if: needs.load-release-info.outputs.mock == 'false'
+        run: git push origin "$BRANCH"
