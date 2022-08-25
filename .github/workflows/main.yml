@@ -533,7 +533,7 @@ jobs:
           ./gh-actions-scripts/dummy-step.sh
 
   maven-update-main-branch-to-next-version:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     needs: [load-release-info, release-activiti-cloud-application]
     strategy:
       fail-fast: true
@@ -557,6 +557,48 @@ jobs:
         with:
           version: ${{ env.NEXT_VERSION }}
           repository-directory: repos/${{ matrix.repo }}
+
+      - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v1.10.0
+        with:
+          username: ${{ secrets.BOT_GITHUB_USERNAME }}
+          add-options: -u
+          commit-message: Update to version ${{ env.NEXT_VERSION}}
+          repository-directory: ${{ env.REPO_DIR }}
+
+      - name: Push changes to branch ${{ env.BRANCH }}
+        if: needs.load-release-info.outputs.mock == 'false'
+        run: git push origin "$BRANCH"
+
+  helm-update-main-branch-to-next-version:
+    runs-on: ubuntu-latest
+    needs: [load-release-info, release-full-chart]
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - repo: activiti-cloud-common-chart
+            chart-dir: charts/common
+          - repo: activiti-cloud-full-chart
+            chart-dir: charts/activiti-cloud-full-example
+    env:
+      NEXT_VERSION: ${{ needs.load-release-info.outputs.next-version }}
+      REPO_DIR: repos/${{ matrix.repo }}
+      BRANCH: master
+
+    steps:
+      - name: Checkout ${{ matrix.repo }}
+        uses: actions/checkout@v3
+        with:
+          repository: Activiti/${{ matrix.repo }}
+          path: ${{ env.REPO_DIR }}
+          ref: ${{ env.BRANCH }}
+
+      - name: Update branch '${{env.BRANCH}}' to the next version
+        uses: Alfresco/alfresco-build-tools/.github/actions/update-chart-version@aae-8254-actions-for-activiti-script
+        with:
+          new-version: ${{ env.NEXT_VERSION }}
+          chart-repository-dir: ${{ env.REPO_DIR }}
+          chart-dir: ${{ matrix.chart-dir }}
 
       - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v1.10.0
         with:
