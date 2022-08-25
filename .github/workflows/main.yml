@@ -204,7 +204,7 @@ jobs:
           repository: Activiti/activiti-cloud-full-chart
       - uses: Alfresco/alfresco-build-tools/.github/actions/git-latest-tag@aae-8254-actions-for-activiti-script
         with:
-          tag-pattern: ${{ needs.load-release-info.outputs.tag-pattern }}
+          pattern: ${{ needs.load-release-info.outputs.tag-pattern }}
           repository-directory: ${{ env.FULL_CHART_DIR }}
         id: get-last-tag
       - name: Get tags
