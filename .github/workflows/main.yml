@@ -523,7 +523,7 @@ jobs:
           make test/identity-adapter-acceptance-tests
 
       - name: Delete application
-        if: steps.install-application.outcome == 'success'
+        if: always() && steps.install-application.outcome == 'success'
         run: kubectl delete ns $PREVIEW_NAME
 
   release-artifacts-staging-env:
