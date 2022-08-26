@@ -92,6 +92,7 @@ jobs:
       - name: tag-docker-images
         working-directory: ./gh-actions-scripts
         run: |
+          echo ref name: ${{github.ref_name}}
           for DOCKER_IMAGE in ${DOCKER_IMAGES//,/ }
           do
             echo "releasing $DOCKER_IMAGE from base tag $BASE_TAG with tag $RELEASE_VERSION"
