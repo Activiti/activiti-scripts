@@ -105,26 +105,6 @@ jobs:
               $DOCKERHUB_ACCESS_TOKEN
             echo "$DOCKER_IMAGE released."
           done
-      - name: update-helm-charts
-        env:
-          VERSION: $(cat VERSION)
-          RELEASE_VERSION: ${{ needs.load-release-info.outputs.version }}
-          HELM_ACTIVITI_VERSION: $(cat VERSION)
-          SSO_PROTOCOL: https
-          GATEWAY_PROTOCOL: https
-
-        run: |
-          # TODO the release-helm scripts deploys an activiti cloud application
-          # TODO launches acceptance tests. Is this necessary?
-          set -e
-          #./release-helm.sh
-          #
-          # helm delete --no-hooks ${PREVIEW_NAME} --namespace ${PREVIEW_NAME} || echo "Trying to delete chart"
-          # kubectl delete ns ${PREVIEW_NAME} || echo "Trying to delete namespace"
-          #
-      - name: push-helm-charts
-        run: |
-          ./gh-actions-scripts/dummy-step.sh
 
   release-modeling-app:
     runs-on: ubuntu-latest
