@@ -321,12 +321,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: [load-release-info, prepare-maven-release, create-artifacts-staging-repo]
     steps:
-      - name: Checkout activiti-scripts
-        uses: actions/checkout@v3
-
-      - uses: ./.github/actions/release-maven
+      - uses: Alfresco/alfresco-build-tools/.github/actions/release-maven@aae-8254-actions-for-activiti-script
         with:
-          repo: Activiti
+          repo: Activiti/Activiti
           base-tag: ${{  needs.prepare-maven-release.outputs.activiti-tag }}
           release-version: ${{ needs.load-release-info.outputs.version }}
           staging-repository-id: ${{ needs.create-artifacts-staging-repo.outputs.staging-repository }}
@@ -342,12 +339,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: [load-release-info, prepare-maven-release, create-artifacts-staging-repo, release-activiti]
     steps:
-      - name: Checkout activiti-scripts
-        uses: actions/checkout@v3
-
-      - uses: ./.github/actions/release-maven
+      - uses: Alfresco/alfresco-build-tools/.github/actions/release-maven@aae-8254-actions-for-activiti-script
         with:
-          repo: activiti-cloud
+          repo: Activiti/activiti-cloud
           base-tag: ${{  needs.prepare-maven-release.outputs.activiti-cloud-tag }}
           extra-replacements: activiti.version=${{  needs.prepare-maven-release.outputs.activiti-tag }}
           release-version: ${{ needs.load-release-info.outputs.version }}
@@ -364,14 +358,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: [load-release-info, prepare-maven-release, create-artifacts-staging-repo, release-activiti-cloud]
     steps:
-      - name: Checkout activiti-scripts
-        uses: actions/checkout@v3
-
-      - uses: ./.github/actions/release-maven
+      - uses: Alfresco/alfresco-build-tools/.github/actions/release-maven@aae-8254-actions-for-activiti-script
         env:
           ACT_CLOUD_VERSION: ${{  needs.prepare-maven-release.outputs.activiti-cloud-tag }}
         with:
-          repo: activiti-cloud-application
+          repo: Activiti/activiti-cloud-application
           base-tag: ${{  needs.prepare-maven-release.outputs.activiti-cloud-application-tag }}
           extra-replacements: activiti-cloud.version=${{  env.ACT_CLOUD_VERSION }},version=${{  env.ACT_CLOUD_VERSION }}
           release-version: ${{ needs.load-release-info.outputs.version }}
