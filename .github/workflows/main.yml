@@ -619,7 +619,7 @@ jobs:
   create-maintenance-branch:
     if: endsWith(needs.load-release-info.outputs.version, '.0') || contains(needs.load-release-info.outputs.version, '.0-mock')
     runs-on: ubuntu-latest
-    needs: [ load-release-info, create-artifacts-staging-repo, release-activiti-cloud-application ]
+    needs: [ load-release-info, create-artifacts-staging-repo, release-activiti-cloud-application, run-sanity-checks ]
     strategy:
       fail-fast: true
       matrix:
