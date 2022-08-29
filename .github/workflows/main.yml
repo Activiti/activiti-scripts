@@ -57,7 +57,6 @@ jobs:
       activiti-cloud-tag: ${{ steps.tags.outputs.activiti-cloud-tag }}
       activiti-tag: ${{ steps.tags.outputs.activiti-tag }}
     steps:
-      # - uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@@v1.4.0
       - name: Installing activiti-scripts
         uses: actions/checkout@v3
 
