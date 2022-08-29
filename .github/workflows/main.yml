@@ -732,3 +732,39 @@ jobs:
         env:
           BRANCH: ${{ steps.calculate-maintenance-branch-name.outputs.branch }}
         run: git push origin "$BRANCH"
+
+  create-scripts-tag:
+    runs-on: ubuntu-latest
+    needs: [ load-release-info, create-artifacts-staging-repo, run-sanity-checks ]
+    env:
+      RELEASE_VERSION: ${{ needs.load-release-info.outputs.version }}
+      STAGING_REPOSITORY_FILE: maven-config/staging-repository.txt
+
+    steps:
+      - name: Checkout activiti-scripts
+        uses: actions/checkout@v3
+
+      - uses: Alfresco/alfresco-build-tools/.github/actions/git-check-existing-tag@aae-8254-actions-for-activiti-script
+        id: check-tag
+        with:
+          tag: ${{ env.RELEASE_VERSION }}
+
+      - name: Set staging repository
+        if: steps.check-tag.outputs.exists == 'false'
+        env:
+          STAGING_REPOSITORY_ID: ${{ needs.create-artifacts-staging-repo.outputs.staging-repository }}
+        run: |
+          echo "$STAGING_REPOSITORY_ID" > "$STAGING_REPOSITORY_FILE"
+
+      - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v1.10.0
+        if: steps.check-tag.outputs.exists == 'false'
+        with:
+          username: ${{ secrets.BOT_GITHUB_USERNAME }}
+          add-options: ${{ env.STAGING_REPOSITORY_FILE }}
+          commit-message: Release version ${{env.RELEASE_VERSION}}
+
+      - name: Create tag
+        if: steps.check-tag.outputs.exists == 'false'
+        run: |
+          git tag "$RELEASE_VERSION" -m "Release version $RELEASE_VERSION"
+          git push origin "$RELEASE_VERSION"
