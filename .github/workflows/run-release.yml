@@ -421,10 +421,11 @@ jobs:
 
   create-scripts-tag:
     runs-on: ubuntu-latest
-    needs: [ load-release-info, run-sanity-checks ]
+    needs: [ load-release-info, release-activiti-cloud-application, run-sanity-checks ]
     env:
       RELEASE_VERSION: ${{ needs.load-release-info.outputs.version }}
       STAGING_REPOSITORY_FILE: maven-config/staging-repository.txt
+      GIT_USERNAME: ${{ secrets.BOT_GITHUB_USERNAME }}
 
     steps:
       - name: Checkout activiti-scripts
@@ -440,5 +441,7 @@ jobs:
       - name: Create tag
         if: steps.check-tag.outputs.exists == 'false'
         run: |
+          git config --global user.name $GIT_USERNAME
+          git config --global user.email ${GIT_USERNAME}@users.noreply.github.com
           git tag "$RELEASE_VERSION" -m "Release version $RELEASE_VERSION"
           git push origin "$RELEASE_VERSION"
