@@ -9,6 +9,7 @@ jobs:
       version: ${{ steps.load-descriptor.outputs.version }}
       next-version: ${{ steps.load-descriptor.outputs.next-version }}
       mock: ${{ steps.load-descriptor.outputs.mock }}
+      staging-repository: ${{ steps.load-descriptor.outputs.staging-repository }}
 
     steps:
       - name: Installing activiti-scripts
@@ -174,8 +175,6 @@ jobs:
         shell: bash
         env:
           MAVEN_SETTINGS_PATH: ${{ github.workspace }}/maven-config/settings.xml
-          NEXUS_URL: "https://artifacts.alfresco.com/nexus"
-          STAGING_REPOSITORY_ID: ${{ needs.create-artifacts-staging-repo.outputs.staging-repository }}
         run: |
           M2_DIR=$HOME/.m2
           cp $MAVEN_SETTINGS_PATH $M2_DIR
@@ -184,6 +183,11 @@ jobs:
 
       - name: update-to-next-version
         if: steps.check-branch-exists.outputs.result == 'false'
+        env:
+          NEXUS_URL: "https://artifacts.alfresco.com/nexus"
+          STAGING_REPOSITORY_ID: ${{ needs.load-release-info.outputs.staging-repository }}
+          NEXUS_USERNAME: "${{ secrets.NEXUS_USERNAME }}"
+          NEXUS_PASSWORD: "${{ secrets.NEXUS_PASSWORD }}"
         uses: Alfresco/alfresco-build-tools/.github/actions/update-pom-version@aae-8254-actions-for-activiti-script
         with:
           version: ${{ steps.resolve-maintenance-version.outputs.version }}
