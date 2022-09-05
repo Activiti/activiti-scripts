@@ -40,7 +40,6 @@ print_activiti_core_ver() {
 }
 
 usage() {
-  # echo "Usage: $0 [-p <pattern>] [-t <tag>] <path to repo>" 1>&2;
   APP_NAME=$(basename $0)
 cat<<EOF
 Usage: $APP_NAME -t <tag-pattern> -p <path-to-repo>
