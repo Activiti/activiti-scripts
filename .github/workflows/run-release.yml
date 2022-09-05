@@ -23,6 +23,7 @@ jobs:
       activiti-cloud-application-tag: ${{ steps.load-descriptor.outputs.activiti-cloud-application-tag }}
       common-chart-tag: ${{ steps.load-descriptor.outputs.common-chart-tag }}
       full-chart-tag: ${{ steps.load-descriptor.outputs.full-chart-tag }}
+      staging-repository: ${{ steps.load-descriptor.outputs.staging-repository }}
 
     steps:
       - name: Installing activiti-scripts
