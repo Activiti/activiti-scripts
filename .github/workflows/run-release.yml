@@ -220,9 +220,9 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/maven-release@aae-8254-actions-for-activiti-script
         with:
           repo: Activiti/Activiti
-          base-tag: ${{  needs.load-release-info.outputs.activiti-tag }}
+          base-ref: ${{  needs.load-release-info.outputs.activiti-tag }}
           release-version: ${{ needs.load-release-info.outputs.version }}
-          staging-repository-id: ${{ needs.load-release-info.outputs.staging-repository }}
+          staging-repository: ${{ needs.load-release-info.outputs.staging-repository }}
           git-username: ${{ secrets.BOT_GITHUB_USERNAME }}
           github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
           gpg-passphrase: "${{ secrets.GPG_PASSPHRASE }}"
@@ -241,10 +241,10 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/maven-release@aae-8254-actions-for-activiti-script
         with:
           repo: Activiti/activiti-cloud
-          base-tag: ${{  needs.load-release-info.outputs.activiti-cloud-tag }}
+          base-ref: ${{  needs.load-release-info.outputs.activiti-cloud-tag }}
           extra-replacements: activiti.version=${{  needs.load-release-info.outputs.activiti-tag }}
           release-version: ${{ needs.load-release-info.outputs.version }}
-          staging-repository-id: ${{ needs.load-release-info.outputs.staging-repository }}
+          staging-repository: ${{ needs.load-release-info.outputs.staging-repository }}
           git-username: ${{ secrets.BOT_GITHUB_USERNAME }}
           github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
           gpg-passphrase: "${{ secrets.GPG_PASSPHRASE }}"
@@ -265,10 +265,10 @@ jobs:
           ACT_CLOUD_VERSION: ${{  needs.load-release-info.outputs.activiti-cloud-tag }}
         with:
           repo: Activiti/activiti-cloud-application
-          base-tag: ${{  needs.load-release-info.outputs.activiti-cloud-application-tag }}
+          base-ref: ${{  needs.load-release-info.outputs.activiti-cloud-application-tag }}
           extra-replacements: activiti-cloud.version=${{  env.ACT_CLOUD_VERSION }},version=${{  env.ACT_CLOUD_VERSION }}
           release-version: ${{ needs.load-release-info.outputs.version }}
-          staging-repository-id: ${{ needs.load-release-info.outputs.staging-repository }}
+          staging-repository: ${{ needs.load-release-info.outputs.staging-repository }}
           git-username: ${{ secrets.BOT_GITHUB_USERNAME }}
           github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
           gpg-passphrase: "${{ secrets.GPG_PASSPHRASE }}"
