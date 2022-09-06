@@ -14,7 +14,7 @@ jobs:
         with:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/release-descriptor-loader@aae-8254-actions-for-activiti-script
+      - uses: Alfresco/alfresco-build-tools/.github/actions/load-release-descriptor@aae-8254-actions-for-activiti-script
         id: load-descriptor
         with:
           release-descriptor: release.yaml
