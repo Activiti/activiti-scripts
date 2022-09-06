@@ -217,7 +217,7 @@ jobs:
       - name: Checkout activiti-scripts
         uses: actions/checkout@v3
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/release-maven@aae-8254-actions-for-activiti-script
+      - uses: Alfresco/alfresco-build-tools/.github/actions/maven-release@aae-8254-actions-for-activiti-script
         with:
           repo: Activiti/Activiti
           base-tag: ${{  needs.load-release-info.outputs.activiti-tag }}
@@ -238,7 +238,7 @@ jobs:
       - name: Checkout activiti-scripts
         uses: actions/checkout@v3
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/release-maven@aae-8254-actions-for-activiti-script
+      - uses: Alfresco/alfresco-build-tools/.github/actions/maven-release@aae-8254-actions-for-activiti-script
         with:
           repo: Activiti/activiti-cloud
           base-tag: ${{  needs.load-release-info.outputs.activiti-cloud-tag }}
@@ -260,7 +260,7 @@ jobs:
       - name: Checkout activiti-scripts
         uses: actions/checkout@v3
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/release-maven@aae-8254-actions-for-activiti-script
+      - uses: Alfresco/alfresco-build-tools/.github/actions/maven-release@aae-8254-actions-for-activiti-script
         env:
           ACT_CLOUD_VERSION: ${{  needs.load-release-info.outputs.activiti-cloud-tag }}
         with:

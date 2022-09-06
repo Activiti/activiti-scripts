@@ -82,7 +82,7 @@ jobs:
           ref: ${{ env.BRANCH }}
 
       - name: Update branch '${{env.BRANCH}}' to the next version
-        uses: Alfresco/alfresco-build-tools/.github/actions/update-chart-version@aae-8254-actions-for-activiti-script
+        uses: Alfresco/alfresco-build-tools/.github/actions/helm-update-chart-version@aae-8254-actions-for-activiti-script
         with:
           new-version: ${{ env.NEXT_VERSION }}
           chart-repository-dir: ${{ env.REPO_DIR }}
