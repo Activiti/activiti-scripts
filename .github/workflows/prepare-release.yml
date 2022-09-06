@@ -5,6 +5,7 @@ on:
 jobs:
   prepare-release:
     runs-on: ubuntu-latest
+    if: startsWith(github.event.head_commit.message, '[Release]')
     env:
       FULL_CHART_DIR: full-chart
     steps:
