@@ -41,7 +41,7 @@ jobs:
           ref: ${{ env.BRANCH }}
 
       - name: update-to-next-version
-        uses: Alfresco/alfresco-build-tools/.github/actions/update-pom-version@aae-8254-actions-for-activiti-script
+        uses: Alfresco/alfresco-build-tools/.github/actions/maven-update-pom-version@aae-8254-actions-for-activiti-script
         with:
           version: ${{ env.NEXT_VERSION }}
           repository-directory: repos/${{ matrix.repo }}
@@ -188,7 +188,7 @@ jobs:
           STAGING_REPOSITORY_ID: ${{ needs.load-release-info.outputs.staging-repository }}
           NEXUS_USERNAME: "${{ secrets.NEXUS_USERNAME }}"
           NEXUS_PASSWORD: "${{ secrets.NEXUS_PASSWORD }}"
-        uses: Alfresco/alfresco-build-tools/.github/actions/update-pom-version@aae-8254-actions-for-activiti-script
+        uses: Alfresco/alfresco-build-tools/.github/actions/maven-update-pom-version@aae-8254-actions-for-activiti-script
         with:
           version: ${{ steps.resolve-maintenance-version.outputs.version }}
           repository-directory: ${{ env.REPO_DIR }}
