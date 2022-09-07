@@ -386,7 +386,7 @@ jobs:
             --atomic \
             --timeout 8m
 
-      - name: Run Acceptance Tests for ${{ matrix.messaging-broker }}
+      - name: Run Acceptance Tests
         working-directory: ${{ env.ACT_CLOUD_APPLICATION_DIR }}
         run: |
           wait_until_true () {
