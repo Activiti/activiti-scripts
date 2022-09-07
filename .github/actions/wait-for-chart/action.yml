@@ -1,0 +1,46 @@
+name: Wait for chart
+description:  Wait for helm chart to be available
+inputs:
+  chart-name:
+    description: The name of the chart to be used in the look up
+    required: true
+  version:
+    description: The version of the chart to be looked up
+    required: true
+  helm-repo-name:
+    description: The name of the helm repository where the artifact is stored
+    required: true
+  helm-repo-url:
+    description: the URL to the helm repository. If provided the command `helm repo add` will be used to register the repository.
+    required: false
+runs:
+  using: composite
+  steps:
+    - name: Wait for chart
+      shell: bash
+      env:
+        CHART_NAME: ${{ inputs.chart-name }}
+        VERSION: ${{ inputs.version }}
+        HELM_REPO_NAME: ${{ inputs.helm-repo-name }}
+        HELM_REPO_URL: ${{ inputs.helm-repo-url }}
+
+      run: |
+        if [ -n "$HELM_REPO_URL" ]
+        then
+          helm repo add $HELM_REPO_NAME "$HELM_REPO_URL"
+        fi
+        attempt_counter=0
+        max_attempts=20
+
+        echo "Waiting for chart "$CHART_NAME", version $VERSION to be available..."
+
+        until helm fetch $HELM_REPO_NAME/$CHART_NAME --version $VERSION> /dev/null 2>&1; do
+          if [ ${attempt_counter} -eq ${max_attempts} ];then
+            printf "\nMax attempts reached\n"
+            break
+          fi
+
+          printf '.'
+          attempt_counter=$((attempt_counter+1))
+          sleep 5
+        done

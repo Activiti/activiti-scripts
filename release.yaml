@@ -1,4 +1,6 @@
 release:
-  branch:
-  baseTag:
-  nextVersion:
+  branch: develop
+  version: 7.4.0
+  nextVersion: 7.5.0-SNAPSHOT
+  mock: false
+

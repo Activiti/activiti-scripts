@@ -1,9 +1,10 @@
 target
 /local
 
-# Netbeans and IntelliJ files
+# Netbeans, VScode and IntelliJ files
 !.gitignore
 /nbproject
+.history
 /*.ipr
 /*.iws
 *.iml
@@ -26,3 +27,7 @@ target
 linux-amd64
 updatebot
 updatebot.jar
+
+# repos
+repos-activiti*
+repos/
