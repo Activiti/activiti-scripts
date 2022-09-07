@@ -1,9 +1,10 @@
 target
 /local
 
-# Netbeans and IntelliJ files
+# Netbeans, VScode and IntelliJ files
 !.gitignore
 /nbproject
+.history
 /*.ipr
 /*.iws
 *.iml
