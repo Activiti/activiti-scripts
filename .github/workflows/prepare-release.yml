@@ -1,6 +1,6 @@
 on:
   push:
-    branches: [ gh-3903-gh-action-workflow ]
+    branches: [ master ]
 
 jobs:
   prepare-release:
