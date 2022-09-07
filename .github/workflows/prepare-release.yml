@@ -92,7 +92,13 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v1.12.0
         with:
           username: ${{ secrets.BOT_GITHUB_USERNAME }}
-          add-options: -A
+          add-options: maven-config/staging-repository.txt
+          commit-message: Add staging repository for ${{env.RELEASE_VERSION}}
+
+      - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v1.12.0
+        with:
+          username: ${{ secrets.BOT_GITHUB_USERNAME }}
+          add-options: release.yaml
           commit-message: Update release information for ${{env.RELEASE_VERSION}}
 
       - name: Create release branch
