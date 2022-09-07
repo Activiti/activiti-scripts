@@ -97,6 +97,7 @@ jobs:
           sed -i -e "s/\"version\": \".*\"/\"version\": \"$RELEASE_VERSION\"/g" package.json
 
       - name: node
+        if: steps.check-tag.outputs.exists == 'false'
         uses: actions/setup-node@v3
         with:
           node-version: '14'
@@ -104,13 +105,13 @@ jobs:
           cache-dependency-path: ${{ env.MODELING_APP_DIR }}/package-lock.json
 
       - run: npm ci
+        if: steps.check-tag.outputs.exists == 'false'
         working-directory: ${{ env.MODELING_APP_DIR }}
 
       - name: build
         if: steps.check-tag.outputs.exists == 'false'
         working-directory: ${{ env.MODELING_APP_DIR }}
-        run: |
-          npm run build -- --prod
+        run: npx nx build modeling-ce --prod
 
       - name: Login to DockerHub
         if: steps.check-tag.outputs.exists == 'false'
