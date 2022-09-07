@@ -14,7 +14,7 @@ jobs:
         with:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/load-release-descriptor@aae-8254-actions-for-activiti-script
+      - uses: Alfresco/alfresco-build-tools/.github/actions/load-release-descriptor@v1.13.0
         id: load-descriptor
         with:
           release-descriptor: release.yaml
@@ -40,7 +40,7 @@ jobs:
 
       - name: create-staging-repository
         id: staging
-        uses: Alfresco/alfresco-build-tools/.github/actions/nexus-create-staging@aae-8254-actions-for-activiti-script
+        uses: Alfresco/alfresco-build-tools/.github/actions/nexus-create-staging@v1.13.0
         with:
           staging-description: Activiti staging ${{ steps.load-descriptor.outputs.version }}
           nexus-profile-id: "${{ secrets.NEXUS_ACTIVITI7_PROFILE_ID }}"
@@ -53,7 +53,7 @@ jobs:
           path: ${{ env.FULL_CHART_DIR }}
           repository: Activiti/activiti-cloud-full-chart
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/git-latest-tag@aae-8254-actions-for-activiti-script
+      - uses: Alfresco/alfresco-build-tools/.github/actions/git-latest-tag@v1.13.0
         id: latest-full-chart-tag
         with:
           pattern: ${{ env.TAG_PATTERN }}
