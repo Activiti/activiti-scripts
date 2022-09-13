@@ -30,7 +30,7 @@ runs:
           helm repo add $HELM_REPO_NAME "$HELM_REPO_URL"
         fi
         attempt_counter=0
-        max_attempts=20
+        max_attempts=50
 
         echo "Waiting for chart "$CHART_NAME", version $VERSION to be available..."
 
