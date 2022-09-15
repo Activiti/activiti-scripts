@@ -34,34 +34,17 @@ jobs:
   release-docker-images:
     runs-on: ubuntu-latest
     needs: [load-release-info]
-    env:
-      DOCKER_IMAGES: "example-runtime-bundle,activiti-cloud-query,example-cloud-connector,activiti-cloud-modeling,activiti-cloud-identity-adapter"
-      BASE_TAG: "${{ needs.load-release-info.outputs.activiti-cloud-application-tag }}"
-      RELEASE_VERSION: "${{ needs.load-release-info.outputs.version }}"
-      DOCKERHUB_ORG: activiti
-      DOCKERHUB_USERNAME: "${{ secrets.DOCKERHUB_USERNAME }}"
-      DOCKERHUB_ACCESS_TOKEN: "${{ secrets.DOCKERHUB_ACCESS_TOKEN }}"
-      MOCK: "${{ needs.load-release-info.outputs.mock }}"
     steps:
       - name: Checkout activiti-scripts
         uses: actions/checkout@v3
 
       - name: tag-docker-images
-        working-directory: ./gh-actions-scripts
-        run: |
-          echo ref name: ${{github.ref_name}}
-          for DOCKER_IMAGE in ${DOCKER_IMAGES//,/ }
-          do
-            echo "releasing $DOCKER_IMAGE from base tag $BASE_TAG with tag $RELEASE_VERSION"
-            ./tag-docker-image.sh \
-              $BASE_TAG \
-              $RELEASE_VERSION \
-              $DOCKERHUB_ORG \
-              $DOCKER_IMAGE \
-              $DOCKERHUB_USERNAME \
-              $DOCKERHUB_ACCESS_TOKEN
-            echo "$DOCKER_IMAGE released."
-          done
+        uses: ./.github/actions/docker-update-manifest
+        with:
+          base-tag: ${{ needs.load-release-info.outputs.activiti-cloud-application-tag }}
+          extra-tag: ${{ needs.load-release-info.outputs.version }}
+          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub-access-token: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
   release-modeling-app:
     runs-on: ubuntu-latest
