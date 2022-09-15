@@ -1,0 +1,64 @@
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  prepare-release:
+    runs-on: ubuntu-latest
+    if: startsWith(github.event.head_commit.message, '[Release:beta]')
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+
+      - uses: Alfresco/alfresco-build-tools/.github/actions/load-release-descriptor@v1.14.0
+        id: load-descriptor
+        with:
+          release-descriptor: release.yaml
+
+      - name: Checkout activiti-cloud-application
+        uses: actions/checkout@v3
+        with:
+          repository: 'Activiti/activiti-cloud-application'
+          path: 'repos/activiti-cloud-application'
+
+      - name: Update Java projects base tags
+        id: update-base-tags
+        uses: ./.github/actions/update-base-tag-for-java-projects
+        with:
+          tag-pattern: ${{ steps.load-descriptor.outputs.activiti-cloud-application-tag }}
+
+      - name: Parse next version from POM
+        id: parse-next-final-version
+        shell: bash
+        run: |
+          NEXT_VERSION=$(yq -p=xml e '.project.version' repos/activiti-cloud-application/pom.xml | grep -o "[0-9]*\.[0-9]*.[0-9]*")
+          echo "Next final version: $NEXT_VERSION"
+          echo "::set-output name=result::$NEXT_VERSION"
+
+      - id: resolve-next-beta
+        name: Calculate next internal release
+        uses: Alfresco/alfresco-build-tools/.github/actions/calculate-next-internal-version@aae-8916-beta-tags
+        with:
+          next-version: ${{ steps.parse-next-final-version.outputs.result }}
+          prerelease-type: beta
+          repository-directory: repos/activiti-cloud-application
+
+      - name: Update release
+        env:
+          BETA_VERSION: ${{ steps.resolve-next-beta.outputs.next-prerelease }}
+        run: yq -i e '.release.version = env(BETA_VERSION)' release.yaml
+
+
+      - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v1.14.0
+        with:
+          username: ${{ secrets.BOT_GITHUB_USERNAME }}
+          add-options: release.yaml
+          commit-message: Update release information
+
+      - name: Create release branch
+        env:
+          RELEASE_BRANCH: releases/beta/${{ steps.resolve-next-beta.outputs.next-prerelease }}
+        run: |
+          git checkout -b "$RELEASE_BRANCH"
+          git push origin "$RELEASE_BRANCH"

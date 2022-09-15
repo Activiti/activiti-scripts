@@ -1,0 +1,15 @@
+name: Update Activiti Cloud base tag
+description: Update Activiti Cloud base tag in the release descriptor file
+inputs:
+  tag:
+    description: the value to be used as base tag for Activiti Cloud
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Update base tag
+      shell: bash
+      env:
+        ACTIVITI_CLOUD_BASE_TAG: ${{ inputs.tag }}
+      run:
+        yq -i e '.release.baseTag.activitiCloud = env(ACTIVITI_CLOUD_BASE_TAG)' release.yaml

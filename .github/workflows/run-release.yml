@@ -2,7 +2,7 @@ name: Release Activiti Cloud
 
 on:
   push:
-    branches: ['releases/**']
+    branches: ['releases/main/**']
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref_name || github.run_id }}

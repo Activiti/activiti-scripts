@@ -33,10 +33,10 @@ jobs:
           repository: 'Activiti/activiti-cloud-application'
           path: 'repos/activiti-cloud-application'
 
-      - name: Fetch Java Project Tags to release
-        id: java-tags
-        run: |
-          ./gh-actions-scripts/fetch-activiti-tags-from.sh -t "$TAG_PATTERN" -p repos/activiti-cloud-application
+      - name: Update Java projects base tags
+        uses: ./.github/actions/update-base-tag-for-java-projects
+        with:
+          tag-pattern: ${{ env.TAG_PATTERN }}
 
       - name: create-staging-repository
         id: staging
@@ -73,18 +73,12 @@ jobs:
       - name: Add release info
         env:
           STAGING_REPOSITORY_ID: ${{ steps.staging.outputs.staging-repository }}
-          ACTIVITI_BASE_TAG: ${{ steps.java-tags.outputs.activiti-tag }}
-          ACTIVITI_CLOUD_BASE_TAG: ${{ steps.java-tags.outputs.activiti-cloud-tag }}
-          ACTIVITI_CLOUD_APPLICATION_BASE_TAG: ${{ steps.java-tags.outputs.activiti-cloud-application-tag }}
           COMMON_CHART_TAG: ${{ steps.chart-tags.outputs.common-chart-tag }}
           FULL_CHART_TAG: ${{ steps.chart-tags.outputs.full-chart-tag }}
           STAGING_REPOSITORY_FILE: maven-config/staging-repository.txt
         run: |
           echo "$STAGING_REPOSITORY_ID" > "$STAGING_REPOSITORY_FILE"
 
-          yq -i e '.release.baseTag.activiti = env(ACTIVITI_BASE_TAG)' release.yaml
-          yq -i e '.release.baseTag.activitiCloud = env(ACTIVITI_CLOUD_BASE_TAG)' release.yaml
-          yq -i e '.release.baseTag.activitiCloudApplication = env(ACTIVITI_CLOUD_APPLICATION_BASE_TAG)' release.yaml
           yq -i e '.release.baseTag.commonChart = env(COMMON_CHART_TAG)' release.yaml
           yq -i e '.release.baseTag.fullChart = env(FULL_CHART_TAG)' release.yaml
           yq -i e '.release.stagingRepository = env(STAGING_REPOSITORY_ID)' release.yaml
@@ -103,7 +97,7 @@ jobs:
 
       - name: Create release branch
         env:
-          RELEASE_BRANCH: releases/${{env.RELEASE_VERSION}}
+          RELEASE_BRANCH: releases/main/${{env.RELEASE_VERSION}}
         run: |
           git checkout -b "$RELEASE_BRANCH"
           git push origin "$RELEASE_BRANCH"
