@@ -11,7 +11,7 @@ jobs:
         with:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/load-release-descriptor@v1.14.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/load-release-descriptor@v1.15.0
         id: load-descriptor
         with:
           release-descriptor: release.yaml
@@ -38,7 +38,7 @@ jobs:
 
       - id: resolve-next-beta
         name: Calculate next internal release
-        uses: Alfresco/alfresco-build-tools/.github/actions/calculate-next-internal-version@aae-8916-beta-tags
+        uses: Alfresco/alfresco-build-tools/.github/actions/calculate-next-internal-version@v1.15.0
         with:
           next-version: ${{ steps.parse-next-final-version.outputs.result }}
           prerelease-type: beta
@@ -50,7 +50,7 @@ jobs:
         run: yq -i e '.release.version = env(BETA_VERSION)' release.yaml
 
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v1.14.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v1.15.0
         with:
           username: ${{ secrets.BOT_GITHUB_USERNAME }}
           add-options: release.yaml
