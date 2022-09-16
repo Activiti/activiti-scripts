@@ -49,7 +49,6 @@ jobs:
           BETA_VERSION: ${{ steps.resolve-next-beta.outputs.next-prerelease }}
         run: yq -i e '.release.version = env(BETA_VERSION)' release.yaml
 
-
       - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v1.15.0
         with:
           username: ${{ secrets.BOT_GITHUB_USERNAME }}
