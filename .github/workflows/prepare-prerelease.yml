@@ -19,8 +19,8 @@ jobs:
       - name: Checkout activiti-cloud-application
         uses: actions/checkout@v3
         with:
-          repository: 'Activiti/activiti-cloud-application'
-          path: 'repos/activiti-cloud-application'
+          repository: Activiti/activiti-cloud-application
+          path: repos/activiti-cloud-application
 
       - name: Update Java projects base tags
         id: update-base-tags

@@ -30,8 +30,8 @@ jobs:
       - name: Checkout activiti-cloud-application
         uses: actions/checkout@v3
         with:
-          repository: 'Activiti/activiti-cloud-application'
-          path: 'repos/activiti-cloud-application'
+          repository: Activiti/activiti-cloud-application
+          path: repos/activiti-cloud-application
 
       - name: Update Java projects base tags
         uses: ./.github/actions/update-base-tag-for-java-projects
@@ -43,9 +43,9 @@ jobs:
         uses: Alfresco/alfresco-build-tools/.github/actions/nexus-create-staging@v1.13.0
         with:
           staging-description: Activiti staging ${{ steps.load-descriptor.outputs.version }}
-          nexus-profile-id: "${{ secrets.NEXUS_ACTIVITI7_PROFILE_ID }}"
-          nexus-username: "${{ secrets.NEXUS_USERNAME }}"
-          nexus-password: "${{ secrets.NEXUS_PASSWORD }}"
+          nexus-profile-id: ${{ secrets.NEXUS_ACTIVITI7_PROFILE_ID }}
+          nexus-username: ${{ secrets.NEXUS_USERNAME }}
+          nexus-password: ${{ secrets.NEXUS_PASSWORD }}
 
       - name: Checkout full chart
         uses: actions/checkout@v3
