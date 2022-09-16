@@ -1,7 +1,9 @@
 release:
   branch: develop
-  version: 7.5.0
+  version: 7.6.0-beta.3
   nextVersion: 7.6.0-SNAPSHOT
   mock: false
   baseTag:
     activitiCloudApplication: 7.6.0-alpha.2
+    activiti: 7.6.0-alpha.1
+    activitiCloud: 7.6.0-alpha.2
