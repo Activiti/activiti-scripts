@@ -53,7 +53,7 @@ jobs:
         with:
           username: ${{ secrets.BOT_GITHUB_USERNAME }}
           add-options: release.yaml
-          commit-message: Update release information
+          commit-message: Update release information for ${{ steps.resolve-next-beta.outputs.next-prerelease }}
 
       - name: Create release branch
         env:
