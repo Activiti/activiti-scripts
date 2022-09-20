@@ -35,6 +35,7 @@ runs:
         echo "Waiting for chart "$CHART_NAME", version $VERSION to be available..."
 
         until helm fetch $HELM_REPO_NAME/$CHART_NAME --version $VERSION> /dev/null 2>&1; do
+          helm repo update
           if [ ${attempt_counter} -eq ${max_attempts} ];then
             printf "\nMax attempts reached\n"
             break
