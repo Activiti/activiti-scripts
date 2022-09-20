@@ -1,6 +1,6 @@
 release:
-  branch: develop
-  version: 7.5.0
-  nextVersion: 7.6.0-SNAPSHOT
+  branch: 7.5.x
+  version: 7.5.1
+  nextVersion: 7.5.1-SNAPSHOT
   mock: false
 
