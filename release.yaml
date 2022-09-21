@@ -1,7 +1,7 @@
 release:
   branch: 7.5.x
   version: 7.5.1
-  nextVersion: 7.5.1-SNAPSHOT
+  nextVersion: 7.5.2-SNAPSHOT
   mock: false
   baseTag:
     activiti: 7.5.1-alpha.1
