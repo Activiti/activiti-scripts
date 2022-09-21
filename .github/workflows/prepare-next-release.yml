@@ -39,6 +39,7 @@ jobs:
           repository: Activiti/${{ matrix.repo }}
           path: ${{ env.REPO_DIR }}
           ref: ${{ env.BRANCH }}
+          token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
       - name: update-to-next-version
         uses: Alfresco/alfresco-build-tools/.github/actions/maven-update-pom-version@v1.13.0
@@ -55,6 +56,7 @@ jobs:
 
       - name: Push changes to branch ${{ env.BRANCH }}
         if: needs.load-release-info.outputs.mock == 'false'
+        working-directory: ${{ env.REPO_DIR }}
         run: git push origin "$BRANCH"
 
   helm-update-main-branch-to-next-version:
@@ -80,6 +82,7 @@ jobs:
           repository: Activiti/${{ matrix.repo }}
           path: ${{ env.REPO_DIR }}
           ref: ${{ env.BRANCH }}
+          token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
       - name: Update branch '${{env.BRANCH}}' to the next version
         uses: Alfresco/alfresco-build-tools/.github/actions/helm-update-chart-version@v1.13.0
@@ -97,6 +100,7 @@ jobs:
 
       - name: Push changes to branch ${{ env.BRANCH }}
         if: needs.load-release-info.outputs.mock == 'false'
+        working-directory: ${{ env.REPO_DIR }}
         run: git push origin "$BRANCH"
 
   create-maintenance-branch:
@@ -121,6 +125,7 @@ jobs:
           repository: Activiti/${{ matrix.repo }}
           path: ${{ env.REPO_DIR }}
           ref: ${{ env.TAG }}
+          token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
       - name: Calculate maintenance branch
         id: calculate-maintenance-branch-name
