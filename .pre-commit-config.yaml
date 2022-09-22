@@ -1,14 +1,21 @@
 repos:
-  - repo: https://github.com/Alfresco/alfresco-build-tools
-    rev: v1.13.0
-    hooks:
-      - id: travis-yml-lint
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.2.0
+    rev: v4.1.0
     hooks:
+      - id: check-yaml
+      - id: check-json
+      - id: check-merge-conflict
+      - id: fix-byte-order-marker
+      - id: mixed-line-ending
+        args: ['--fix=lf']
       - id: end-of-file-fixer
       - id: trailing-whitespace
   - repo: https://github.com/sirosen/check-jsonschema
-    rev: 0.14.2
+    rev: 0.17.0
     hooks:
-      - id: check-travis
+      - id: check-github-workflows
+      - id: check-jsonschema
+        alias: check-dependabot
+        name: "Validate Dependabot Config"
+        files: '.github/dependabot\.yml$'
+        args: ["--schemafile", "https://json.schemastore.org/dependabot-2.0.json"]
