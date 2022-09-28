@@ -1,4 +1,4 @@
-name: Release Activiti Cloud
+name: Create pre release for Activiti Cloud projects
 
 on:
   push:
