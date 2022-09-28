@@ -25,14 +25,21 @@ runs:
       run: |
         ./gh-actions-scripts/fetch-activiti-tags-from.sh -t "$TAG_PATTERN" -p repos/activiti-cloud-application
 
-    - uses: ./.github/actions/update-activiti-base-tag
+    - uses: Alfresco/alfresco-build-tools/.github/actions/update-project-base-tag@aae-8916-beta-tags-update-base-tag
       with:
+        release-descriptor: release.yaml
+        project: activiti
         tag: ${{ steps.java-tags.outputs.activiti-tag }}
 
-    - uses: ./.github/actions/update-activiti-cloud-base-tag
+    - uses: Alfresco/alfresco-build-tools/.github/actions/update-project-base-tag@aae-8916-beta-tags-update-base-tag
       with:
+        release-descriptor: release.yaml
+        project: activitiCloud
         tag: ${{ steps.java-tags.outputs.activiti-cloud-tag }}
 
-    - uses: ./.github/actions/update-activiti-cloud-application-base-tag
+    - uses: Alfresco/alfresco-build-tools/.github/actions/update-project-base-tag@aae-8916-beta-tags-update-base-tag
       with:
+        release-descriptor: release.yaml
+        project: activitiCloudApplication
         tag: ${{ steps.java-tags.outputs.activiti-cloud-application-tag }}
+
