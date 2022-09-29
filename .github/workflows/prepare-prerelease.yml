@@ -11,8 +11,6 @@ jobs:
     if: startsWith(github.event.head_commit.message, '[Release:beta]')
     steps:
       - uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
       - uses: Alfresco/alfresco-build-tools/.github/actions/load-release-descriptor@v1.15.0
         id: load-descriptor
