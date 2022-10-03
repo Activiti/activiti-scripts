@@ -1,0 +1,72 @@
+name: Create pre release for Activiti Cloud projects
+
+on:
+  push:
+    branches: ['releases/beta/**']
+
+jobs:
+  load-release-info:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.load-descriptor.outputs.version }}
+      activiti-tag: ${{ steps.load-descriptor.outputs.activiti-tag }}
+      activiti-cloud-tag: ${{ steps.load-descriptor.outputs.activiti-cloud-tag }}
+      activiti-cloud-application-tag: ${{ steps.load-descriptor.outputs.activiti-cloud-application-tag }}
+
+    steps:
+      - name: Installing activiti-scripts
+        uses: actions/checkout@v3
+
+      - uses: Alfresco/alfresco-build-tools/.github/actions/load-release-descriptor@v1.16.0
+        id: load-descriptor
+        with:
+          release-descriptor: release.yaml
+
+  create-git-tags:
+    runs-on: ubuntu-latest
+    needs: load-release-info
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - repo: Activiti
+            base-tag: ${{ needs.load-release-info.outputs.activiti-tag }}
+          - repo: activiti-cloud
+            base-tag: ${{ needs.load-release-info.outputs.activiti-cloud-tag }}
+          - repo: activiti-cloud-application
+            base-tag: ${{ needs.load-release-info.outputs.activiti-cloud-application-tag }}
+    env:
+      REPO_DIR: repos/${{ matrix.repo }}
+    steps:
+      - name: Checkout ${{ matrix.repo }}
+        uses: actions/checkout@v3
+        with:
+          repository: Activiti/${{ matrix.repo }}
+          path: ${{ env.REPO_DIR }}
+          ref: ${{ matrix.base-tag }}
+          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+      - name: Create pre-release tag
+        working-directory: ${{ env.REPO_DIR }}
+        env:
+          PRERELEASE_TAG: ${{ needs.load-release-info.outputs.version }}
+          GIT_USERNAME: ${{ secrets.BOT_GITHUB_USERNAME }}
+        run: |
+          git config --global user.name $GIT_USERNAME
+          git config --global user.email ${GIT_USERNAME}@users.noreply.github.com
+          git tag "$PRERELEASE_TAG" -m "Release version $PRERELEASE_TAG"
+          git push origin "$PRERELEASE_TAG"
+
+  release-docker-images:
+    runs-on: ubuntu-latest
+    needs: [load-release-info]
+    steps:
+      - name: Checkout activiti-scripts
+        uses: actions/checkout@v3
+
+      - name: tag-docker-images
+        uses: ./.github/actions/docker-update-manifest
+        with:
+          base-tag: ${{ needs.load-release-info.outputs.activiti-cloud-application-tag }}
+          extra-tag: ${{ needs.load-release-info.outputs.version }}
+          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub-access-token: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}

@@ -1,0 +1,40 @@
+name: Update docker image manifests
+description: Update the docker images manifests by adding a new tag to it
+inputs:
+  base-tag:
+    description: The base docker image tag to be used to retrieve the manifest to which the new tag will be added
+    required: true
+  extra-tag:
+    description: The extra tag to be added to the manifest related to the base-tag
+    required: true
+  dockerhub-username:
+    description: The user name to be used to login to DockerHub
+    required: true
+  dockerhub-access-token:
+    description: The access token to be used to login to Dockerhub
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: tag-docker-images
+      shell: bash
+      env:
+        DOCKER_IMAGES: "example-runtime-bundle,activiti-cloud-query,example-cloud-connector,activiti-cloud-modeling,activiti-cloud-identity-adapter"
+        BASE_TAG: "${{ inputs.base-tag }}"
+        RELEASE_VERSION: "${{ inputs.extra-tag}}"
+        DOCKERHUB_ORG: activiti
+        DOCKERHUB_USERNAME: "${{ inputs.dockerhub-username }}"
+        DOCKERHUB_ACCESS_TOKEN: "${{ inputs.dockerhub-access-token }}"
+      run: |
+        for DOCKER_IMAGE in ${DOCKER_IMAGES//,/ }
+        do
+          echo "releasing $DOCKER_IMAGE from base tag $BASE_TAG with tag $RELEASE_VERSION"
+          ${{ github.action_path }}/tag-docker-image.sh \
+            $BASE_TAG \
+            $RELEASE_VERSION \
+            $DOCKERHUB_ORG \
+            $DOCKER_IMAGE \
+            $DOCKERHUB_USERNAME \
+            $DOCKERHUB_ACCESS_TOKEN
+          echo "$DOCKER_IMAGE released."
+        done
