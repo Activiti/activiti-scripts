@@ -17,7 +17,7 @@ jobs:
       - name: Installing activiti-scripts
         uses: actions/checkout@v3
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/load-release-descriptor@v1.15.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/load-release-descriptor@v1.16.0
         id: load-descriptor
         with:
           release-descriptor: release.yaml
