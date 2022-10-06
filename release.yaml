@@ -4,4 +4,4 @@ release:
   nextVersion: 7.6.0-SNAPSHOT
   mock: false
   baseTag:
-    activitiCloudApplication: 7.6.0-alpha.12
+    activitiCloudApplication: 7.6.0-alpha.13
