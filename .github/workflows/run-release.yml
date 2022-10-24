@@ -26,7 +26,7 @@ jobs:
       - name: Installing activiti-scripts
         uses: actions/checkout@v3
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/load-release-descriptor@v1.17.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/load-release-descriptor@v1.19.1
         id: load-descriptor
         with:
           release-descriptor: release.yaml
@@ -63,7 +63,7 @@ jobs:
           ref: ${{ env.MODELING_APP_BASE_REF }}
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/git-check-existing-tag@v1.17.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/git-check-existing-tag@v1.19.1
         id: check-tag
         with:
           tag: ${{ env.RELEASE_VERSION }}
@@ -107,7 +107,7 @@ jobs:
           docker build --build-arg PROJECT_NAME=modeling-ce -t ${DOCKERHUB_ORG}/activiti-modeling-app:${RELEASE_VERSION} .
           docker push docker.io/${DOCKERHUB_ORG}/activiti-modeling-app:${RELEASE_VERSION}
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v1.17.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v1.19.1
         if: steps.check-tag.outputs.exists == 'false'
         with:
           repository-directory: ${{ env.MODELING_APP_DIR }}
@@ -139,7 +139,7 @@ jobs:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
       - name: Release common chart
-        uses: Alfresco/alfresco-build-tools/.github/actions/helm-release-and-publish@v1.17.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/helm-release-and-publish@v1.19.1
         with:
           version: ${{ needs.load-release-info.outputs.version }}
           chart-dir: charts/common
@@ -190,7 +190,7 @@ jobs:
           helm-repo-url: https://activiti.github.io/activiti-cloud-helm-charts
 
       - name: Release full chart
-        uses: Alfresco/alfresco-build-tools/.github/actions/helm-release-and-publish@v1.17.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/helm-release-and-publish@v1.19.1
         with:
           version: ${{ needs.load-release-info.outputs.version }}
           chart-dir: ${{env.CHART_FILES_DIR}}
@@ -207,7 +207,7 @@ jobs:
       - name: Checkout activiti-scripts
         uses: actions/checkout@v3
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/maven-release@v1.17.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/maven-release@v1.19.1
         with:
           repo: Activiti/Activiti
           base-ref: ${{  needs.load-release-info.outputs.activiti-tag }}
@@ -228,7 +228,7 @@ jobs:
       - name: Checkout activiti-scripts
         uses: actions/checkout@v3
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/maven-release@v1.17.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/maven-release@v1.19.1
         with:
           repo: Activiti/activiti-cloud
           base-ref: ${{  needs.load-release-info.outputs.activiti-cloud-tag }}
@@ -250,7 +250,7 @@ jobs:
       - name: Checkout activiti-scripts
         uses: actions/checkout@v3
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/maven-release@v1.17.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/maven-release@v1.19.1
         env:
           ACT_CLOUD_VERSION: ${{  needs.load-release-info.outputs.activiti-cloud-tag }}
         with:
@@ -296,7 +296,7 @@ jobs:
           version: v3.5.2
 
       - name: Set up rancher
-        uses: Alfresco/alfresco-build-tools/.github/actions/setup-rancher-cli@v1.17.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/setup-rancher-cli@v1.19.1
         with:
           url: ${{ secrets.RANCHER2_URL }}
           access-key: ${{ secrets.RANCHER2_ACCESS_KEY }}
@@ -423,7 +423,7 @@ jobs:
         with:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/git-check-existing-tag@v1.17.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/git-check-existing-tag@v1.19.1
         id: check-tag
         with:
           tag: ${{ env.RELEASE_VERSION }}
