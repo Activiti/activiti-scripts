@@ -14,7 +14,7 @@ jobs:
         with:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/load-release-descriptor@v1.17.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/load-release-descriptor@v1.19.2
         id: load-descriptor
         with:
           release-descriptor: release.yaml
@@ -40,7 +40,7 @@ jobs:
 
       - name: create-staging-repository
         id: staging
-        uses: Alfresco/alfresco-build-tools/.github/actions/nexus-create-staging@v1.17.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/nexus-create-staging@v1.19.2
         with:
           staging-description: Activiti staging ${{ steps.load-descriptor.outputs.version }}
           nexus-profile-id: ${{ secrets.NEXUS_ACTIVITI7_PROFILE_ID }}
@@ -53,7 +53,7 @@ jobs:
           path: ${{ env.FULL_CHART_DIR }}
           repository: Activiti/activiti-cloud-full-chart
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/git-latest-tag@v1.17.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/git-latest-tag@v1.19.2
         id: latest-full-chart-tag
         with:
           pattern: ${{ env.TAG_PATTERN }}
@@ -83,13 +83,13 @@ jobs:
           yq -i e '.release.baseTag.fullChart = env(FULL_CHART_TAG)' release.yaml
           yq -i e '.release.stagingRepository = env(STAGING_REPOSITORY_ID)' release.yaml
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v1.17.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v1.19.2
         with:
           username: ${{ secrets.BOT_GITHUB_USERNAME }}
           add-options: maven-config/staging-repository.txt
           commit-message: Add staging repository for ${{env.RELEASE_VERSION}}
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v1.17.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v1.19.2
         with:
           username: ${{ secrets.BOT_GITHUB_USERNAME }}
           add-options: release.yaml
