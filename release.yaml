@@ -3,3 +3,10 @@ release:
   version: 7.6.0
   nextVersion: 7.7.0-SNAPSHOT
   mock: false
+  baseTag:
+    activiti: 7.6.0-alpha.15
+    activitiCloud: 7.6.0-alpha.29
+    activitiCloudApplication: 7.6.0-alpha.27
+    commonChart: 7.6.0-alpha.8
+    fullChart: 7.6.0-alpha.32
+  stagingRepository: activiti-7-community-staging-profile-1168
