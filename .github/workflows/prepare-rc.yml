@@ -1,0 +1,18 @@
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  prepare-release:
+    runs-on: ubuntu-latest
+    if: startsWith(github.event.head_commit.message, '[Release:rc]')
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+
+      - uses: ./.github/actions/prepare-prerelease
+        with:
+          release-descriptor: release.yaml
+          prerelease-type: rc
+          username: ${{ secrets.BOT_GITHUB_USERNAME }}

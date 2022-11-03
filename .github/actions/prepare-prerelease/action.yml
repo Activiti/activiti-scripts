@@ -1,0 +1,78 @@
+name: Prepare pre-release
+description: Update release descriptor and create branch to trigger the prerelease
+inputs:
+  release-descriptor:
+    description: Path to the release descriptor
+    required: true
+  prerelease-type:
+    description: The type of the prerelease. i.e. `beta` or `rc`
+    required: true
+  username:
+    description: "The username to be used in commits"
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Set global env
+      shell: bash
+      run: |
+        ACTIVITI_CLOUD_APPLICATION_DIR=repos/act-cloud-application
+        echo "ACTIVITI_CLOUD_APPLICATION_DIR=$ACTIVITI_CLOUD_APPLICATION_DIR" >> $GITHUB_ENV
+
+    - uses: Alfresco/alfresco-build-tools/.github/actions/load-release-descriptor@v1.16.0
+      id: load-descriptor
+      with:
+        release-descriptor: ${{ inputs.release-descriptor }}
+
+    - name: Update release descriptor
+      env:
+        ACTIVITI_CLOUD_APPLICATION_TAG: ${{ steps.load-descriptor.outputs.activiti-cloud-application-tag }}
+        RELEASE_DOWNLOAD_DIR: downloads
+      shell: bash
+      run: |
+        gh release download $ACTIVITI_CLOUD_APPLICATION_TAG --repo Activiti/activiti-cloud-application --pattern ${{ inputs.release-descriptor}} --dir $RELEASE_DOWNLOAD_DIR
+        yq m -x ${{ inputs.release-descriptor}} $RELEASE_DOWNLOAD_DIR/${{ inputs.release-descriptor}}
+
+    - name: Checkout activiti-cloud-application
+      uses: actions/checkout@v3
+      with:
+        repository: Activiti/activiti-cloud-application
+        path: ${{ env.ACTIVITI_CLOUD_APPLICATION_DIR }}
+
+    - name: Parse next version
+      id: parse-next-final-version
+      shell: bash
+      env:
+        ACTIVITI_CLOUD_APPLICATION_TAG: ${{ steps.load-descriptor.outputs.activiti-cloud-application-tag }}
+      run: |
+        NEXT_VERSION=${ACTIVITI_CLOUD_APPLICATION_TAG%-*)
+        echo "Next final version: $NEXT_VERSION"
+        echo "::set-output name=result::$NEXT_VERSION"
+
+    - id: resolve-next-prerelease
+      name: Calculate next internal release
+      uses: Alfresco/alfresco-build-tools/.github/actions/calculate-next-internal-version@v1.16.0
+      with:
+        next-version: ${{ steps.parse-next-final-version.outputs.result }}
+        prerelease-type: ${{ inputs.prerelease-type }}
+        repository-directory: ${{ env.ACTIVITI_CLOUD_APPLICATION_DIR }}
+
+    - name: Update release
+      env:
+        PRERELEASE_VERSION: ${{ steps.resolve-next-prerelease.outputs.next-prerelease }}
+      shell: bash
+      run: yq -i e '.release.version = env(PRERELEASE_VERSION)' ${{ inputs.release-descriptor}}
+
+    - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v1.16.0
+      with:
+        username: ${{ inputs.username }}
+        add-options: ${{ inputs.release-descriptor}}
+        commit-message: Update release descriptor for ${{ steps.resolve-next-prerelease.outputs.next-prerelease }}
+
+    - name: Create release branch
+      env:
+        RELEASE_BRANCH: releases/${{ inputs.prerelease-type }}/${{ steps.resolve-next-prerelease.outputs.next-prerelease }}
+      shell: bash
+      run: |
+        git checkout -b "$RELEASE_BRANCH"
+        git push origin "$RELEASE_BRANCH"
