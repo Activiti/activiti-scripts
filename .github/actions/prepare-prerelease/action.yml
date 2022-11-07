@@ -51,7 +51,7 @@ runs:
       run: |
         NEXT_VERSION=${ACTIVITI_CLOUD_APPLICATION_TAG%-*)
         echo "Next final version: $NEXT_VERSION"
-        echo "::set-output name=result::$NEXT_VERSION"
+        echo "result=$NEXT_VERSION" >> $GITHUB_OUTPUT
 
     - id: resolve-next-prerelease
       name: Calculate next internal release
