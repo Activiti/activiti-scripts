@@ -16,3 +16,4 @@ jobs:
           release-descriptor: release.yaml
           prerelease-type: rc
           username: ${{ secrets.BOT_GITHUB_USERNAME }}
+          gh-cli-token: ${{ secrets.BOT_GITHUB_TOKEN }}

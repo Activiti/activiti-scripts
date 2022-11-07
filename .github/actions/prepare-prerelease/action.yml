@@ -8,7 +8,10 @@ inputs:
     description: The type of the prerelease. i.e. `beta` or `rc`
     required: true
   username:
-    description: "The username to be used in commits"
+    description: The username to be used in commits
+    required: true
+  gh-cli-token:
+    description: Token used by Github (gh) cli
     required: true
 runs:
   using: composite
@@ -28,6 +31,7 @@ runs:
       env:
         ACTIVITI_CLOUD_APPLICATION_TAG: ${{ steps.load-descriptor.outputs.activiti-cloud-application-tag }}
         RELEASE_DOWNLOAD_DIR: downloads
+        GH_TOKEN: ${{ inputs.gh-cli-token }}
       shell: bash
       run: |
         gh release download $ACTIVITI_CLOUD_APPLICATION_TAG --repo Activiti/activiti-cloud-application --pattern ${{ inputs.release-descriptor}} --dir $RELEASE_DOWNLOAD_DIR
