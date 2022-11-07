@@ -3,3 +3,5 @@ release:
   version: 7.6.0
   nextVersion: 7.7.0-SNAPSHOT
   mock: false
+  baseTag:
+    activitiCloudApplication: 7.7.0-alpha.2
