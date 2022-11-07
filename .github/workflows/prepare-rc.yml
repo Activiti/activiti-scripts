@@ -1,6 +1,6 @@
 on:
   push:
-    branches: [ master ]
+    branches: [ gh-4098-create-rc-tags-test ]
 
 jobs:
   prepare-release:
