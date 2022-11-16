@@ -67,8 +67,8 @@ jobs:
         run: |
           git checkout $FULL_CHART_TAG
           COMMON_CHART_TAG=$(yq e '.dependencies[] | select (.alias == "activiti-cloud-modeling") | .version' charts/activiti-cloud-full-example/requirements.yaml)
-          echo "::set-output name=common-chart-tag::$COMMON_CHART_TAG"
-          echo "::set-output name=full-chart-tag::$FULL_CHART_TAG"
+          echo "common-chart-tag=$COMMON_CHART_TAG" >> $GITHUB_OUTPUT
+          echo "full-chart-tag=$FULL_CHART_TAG" >> $GITHUB_OUTPUT
 
       - name: Add release info
         env:
