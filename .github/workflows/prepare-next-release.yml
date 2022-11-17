@@ -133,7 +133,7 @@ jobs:
         run: |
           BRANCH_NAME=${TAG%\.0}.x
           echo "Maintenance branch name: $BRANCH_NAME"
-          echo "::set-output name=branch::$BRANCH_NAME"
+          echo "branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
 
       - name: check if maintenance branch exists
         id: check-branch-exists
@@ -144,10 +144,10 @@ jobs:
           if git ls-remote --exit-code --heads origin "$BRANCH"
           then
             echo "Branch $BRANCH exists already"
-            echo "::set-output name=result::true"
+            echo "result=true" >> $GITHUB_OUTPUT
           else
             echo "Branch $BRANCH does not exist"
-            echo "::set-output name=result::false"
+            echo "result=false" >> $GITHUB_OUTPUT
           fi
 
       - name: create maintenance branch
@@ -165,7 +165,7 @@ jobs:
         run: |
           MAINTENANCE_VERSION=$(pysemver bump patch $TAG)-SNAPSHOT
           echo "Maintenance version: $MAINTENANCE_VERSION"
-          echo "::set-output name=version::$MAINTENANCE_VERSION"
+          echo "version=$MAINTENANCE_VERSION" >> $GITHUB_OUTPUT
 
       - name: Set up JDK 11
         if: steps.check-branch-exists.outputs.result == 'false'
