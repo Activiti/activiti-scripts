@@ -73,7 +73,7 @@ jobs:
     env:
       NEXT_VERSION: ${{ needs.load-release-info.outputs.next-version }}
       REPO_DIR: repos/${{ matrix.repo }}
-      BRANCH: master
+      BRANCH: 7.6.x
 
     steps:
       - name: Checkout ${{ matrix.repo }}

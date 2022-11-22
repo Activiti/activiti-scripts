@@ -1,6 +1,6 @@
 on:
   push:
-    branches: [ master ]
+    branches: [ 7.6.x ]
 
 jobs:
   prepare-release:

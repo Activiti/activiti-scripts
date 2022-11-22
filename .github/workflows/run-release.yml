@@ -51,7 +51,7 @@ jobs:
     needs: load-release-info
     env:
       MODELING_APP_DIR: modeling-app
-      MODELING_APP_BASE_REF: master
+      MODELING_APP_BASE_REF: 7.6.x
       DOCKERHUB_ORG: activiti
       RELEASE_VERSION: "${{ needs.load-release-info.outputs.version }}"
     steps:
