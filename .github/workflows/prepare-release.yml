@@ -39,15 +39,6 @@ jobs:
         with:
           tag-pattern: ${{ env.TAG_PATTERN }}
 
-      - name: create-staging-repository
-        id: staging
-        uses: Alfresco/alfresco-build-tools/.github/actions/nexus-create-staging@v1.23.0
-        with:
-          staging-description: Activiti staging ${{ steps.load-descriptor.outputs.version }}
-          nexus-profile-id: ${{ secrets.NEXUS_ACTIVITI7_PROFILE_ID }}
-          nexus-username: ${{ secrets.NEXUS_USERNAME }}
-          nexus-password: ${{ secrets.NEXUS_PASSWORD }}
-
       - name: Checkout full chart
         uses: actions/checkout@v3
         with:
@@ -73,16 +64,11 @@ jobs:
 
       - name: Add release info
         env:
-          STAGING_REPOSITORY_ID: ${{ steps.staging.outputs.staging-repository }}
           COMMON_CHART_TAG: ${{ steps.chart-tags.outputs.common-chart-tag }}
           FULL_CHART_TAG: ${{ steps.chart-tags.outputs.full-chart-tag }}
-          STAGING_REPOSITORY_FILE: maven-config/staging-repository.txt
         run: |
-          echo "$STAGING_REPOSITORY_ID" > "$STAGING_REPOSITORY_FILE"
-
           yq -i e '.release.baseTag.commonChart = env(COMMON_CHART_TAG)' release.yaml
           yq -i e '.release.baseTag.fullChart = env(FULL_CHART_TAG)' release.yaml
-          yq -i e '.release.stagingRepository = env(STAGING_REPOSITORY_ID)' release.yaml
 
       - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v1.23.0
         with:
