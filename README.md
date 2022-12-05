@@ -1,6 +1,6 @@
 # activiti-scripts
-
-[![Build Status](https://travis-ci.com/Activiti/activiti-scripts.svg?branch=master)](https://travis-ci.com/Activiti/activiti-scripts)
+- [![status](https://github.com/Activiti/activiti-scripts/actions/workflows/pre-commit.yml/badge.svg)](https://github.com/Activiti/activiti-scripts/actions/workflows/pre-commit.yml)
+- [![status](https://github.com/Activiti/activiti-scripts/actions/workflows/run-release.yml/badge.svg)](https://github.com/Activiti/activiti-scripts/actions/workflows/run-release.yml)
 
 Activiti Scripts for Building Projects
 
