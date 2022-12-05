@@ -1,7 +1,5 @@
 # activiti-scripts
 
-[![Build Status](https://travis-ci.com/Activiti/activiti-scripts.svg?branch=master)](https://travis-ci.com/Activiti/activiti-scripts)
-
 Activiti Scripts for Building Projects
 
 Includes a script to checkout and build all the Activiti repositories.
