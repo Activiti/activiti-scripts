@@ -223,7 +223,7 @@ jobs:
           repo: Activiti/Activiti
           base-ref: ${{  needs.load-release-info.outputs.activiti-tag }}
           release-version: ${{ needs.load-release-info.outputs.version }}
-          staging-repository:  ${{ steps.staging.outputs.staging-repository }}
+          staging-repository: ${{ steps.staging.outputs.staging-repository }}
           git-username: ${{ secrets.BOT_GITHUB_USERNAME }}
           github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
           gpg-passphrase: "${{ secrets.GPG_PASSPHRASE }}"
