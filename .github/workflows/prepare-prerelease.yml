@@ -1,6 +1,7 @@
 on:
   push:
-    branches: [ develop ]
+    branches:
+      - develop
 
 jobs:
   prepare-release:
