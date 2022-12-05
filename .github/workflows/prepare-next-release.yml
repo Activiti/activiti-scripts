@@ -53,7 +53,7 @@ jobs:
         with:
           username: ${{ secrets.BOT_GITHUB_USERNAME }}
           add-options: -u
-          commit-message: Update to version ${{ env.NEXT_VERSION}}
+          commit-message: Update to version ${{ env.NEXT_VERSION}} [skip ci]
           repository-directory: ${{ env.REPO_DIR }}
 
       - name: Push changes to branch ${{ env.BRANCH }}
@@ -97,7 +97,7 @@ jobs:
         with:
           username: ${{ secrets.BOT_GITHUB_USERNAME }}
           add-options: -u
-          commit-message: Update to version ${{ env.NEXT_VERSION}}
+          commit-message: Update to version ${{ env.NEXT_VERSION}} [skip ci]
           repository-directory: ${{ env.REPO_DIR }}
 
       - name: Push changes to branch ${{ env.BRANCH }}
@@ -105,7 +105,7 @@ jobs:
         working-directory: ${{ env.REPO_DIR }}
         run: git push origin "$BRANCH"
 
-  create-maintenance-branch:
+  maven-create-maintenance-branch:
     if: endsWith(needs.load-release-info.outputs.version, '.0') || contains(needs.load-release-info.outputs.version, '.0-mock')
     runs-on: ubuntu-latest
     needs: [ load-release-info ]
@@ -215,7 +215,7 @@ jobs:
         with:
           username: ${{ secrets.BOT_GITHUB_USERNAME }}
           add-options: -u
-          commit-message: Update to version ${{ steps.resolve-maintenance-version.outputs.version }}
+          commit-message: Update to version ${{ steps.resolve-maintenance-version.outputs.version }} [skip ci]
           repository-directory: ${{ env.REPO_DIR }}
 
       - name: Push changes to branch ${{ steps.calculate-maintenance-branch-name.outputs.branch }}
