@@ -286,7 +286,7 @@ jobs:
       FULL_CHART_DIR: full-chart
     steps:
       - name: Set up kubectl
-        uses: azure/setup-kubectl@v1
+        uses: azure/setup-kubectl@v3
         with:
           version: v1.19.6
 
