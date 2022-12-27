@@ -14,6 +14,7 @@ jobs:
     outputs:
       version: ${{ steps.load-descriptor.outputs.version }}
       next-version: ${{ steps.load-descriptor.outputs.next-version }}
+      notes-start-tag: ${{ steps.load-descriptor.outputs.notes-start-tag }}
       mock: ${{ steps.load-descriptor.outputs.mock }}
       activiti-tag: ${{ steps.load-descriptor.outputs.activiti-tag }}
       activiti-cloud-tag: ${{ steps.load-descriptor.outputs.activiti-cloud-tag }}
@@ -464,3 +465,36 @@ jobs:
         run: |
           git tag "$RELEASE_VERSION" -m "Release version $RELEASE_VERSION"
           git push origin "$RELEASE_VERSION"
+
+  create-gh-releases:
+    runs-on: ubuntu-latest
+    needs:
+      - load-release-info
+      - create-scripts-tag
+    strategy:
+      fail-fast: true
+      matrix:
+        repo:
+          - Activiti
+          - activiti-cloud
+          - activiti-cloud-application
+          - activiti-cloud-common-chart
+          - activiti-cloud-full-chart
+    env:
+      VERSION: ${{ needs.load-release-info.outputs.version }}
+      NOTES_START_TAG: ${{ needs.load-release-info.outputs.notes-start-tag }}
+      REPO_DIR: repos/${{ matrix.repo }}
+      IS_MOCK: ${{ needs.load-release-info.outputs.mock }}
+
+    steps:
+      - name: Enable Draft
+        if: ${{ env.IS_MOCK == 'true' }}
+        run: |
+          echo GH_RN_DRAFT="--draft" >> $GITHUB_ENV
+
+      - name: Create Github release for ${{ matrix.repo }}
+        env:
+          GITHUB_REPO: Activiti/${{ matrix.repo }}
+          GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
+        run: |
+          gh release create $VERSION --generate-notes --repo $GITHUB_REPO --notes-start-tag $NOTES_START_TAG $GH_RN_DRAFT
