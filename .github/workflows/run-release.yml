@@ -14,6 +14,7 @@ jobs:
     outputs:
       version: ${{ steps.load-descriptor.outputs.version }}
       next-version: ${{ steps.load-descriptor.outputs.next-version }}
+      notes-start-tag: ${{ steps.load-descriptor.outputs.notes-start-tag }}
       mock: ${{ steps.load-descriptor.outputs.mock }}
       activiti-tag: ${{ steps.load-descriptor.outputs.activiti-tag }}
       activiti-cloud-tag: ${{ steps.load-descriptor.outputs.activiti-cloud-tag }}
@@ -26,7 +27,7 @@ jobs:
       - name: Installing activiti-scripts
         uses: actions/checkout@v3
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/load-release-descriptor@v1.23.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/load-release-descriptor@v1.27.0
         id: load-descriptor
         with:
           release-descriptor: release.yaml
@@ -63,7 +64,7 @@ jobs:
           ref: ${{ env.MODELING_APP_BASE_REF }}
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/git-check-existing-tag@v1.23.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/git-check-existing-tag@v1.27.0
         id: check-tag
         with:
           tag: ${{ env.RELEASE_VERSION }}
@@ -107,7 +108,7 @@ jobs:
           docker build --build-arg PROJECT_NAME=modeling-ce -t ${DOCKERHUB_ORG}/activiti-modeling-app:${RELEASE_VERSION} .
           docker push docker.io/${DOCKERHUB_ORG}/activiti-modeling-app:${RELEASE_VERSION}
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v1.23.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v1.27.0
         if: steps.check-tag.outputs.exists == 'false'
         with:
           repository-directory: ${{ env.MODELING_APP_DIR }}
@@ -139,7 +140,7 @@ jobs:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
       - name: Release common chart
-        uses: Alfresco/alfresco-build-tools/.github/actions/helm-release-and-publish@v1.23.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/helm-release-and-publish@v1.27.0
         with:
           version: ${{ needs.load-release-info.outputs.version }}
           chart-dir: charts/common
@@ -190,7 +191,7 @@ jobs:
           helm-repo-url: https://activiti.github.io/activiti-cloud-helm-charts
 
       - name: Release full chart
-        uses: Alfresco/alfresco-build-tools/.github/actions/helm-release-and-publish@v1.23.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/helm-release-and-publish@v1.27.0
         with:
           version: ${{ needs.load-release-info.outputs.version }}
           chart-dir: ${{env.CHART_FILES_DIR}}
@@ -208,7 +209,7 @@ jobs:
     steps:
       - name: create-staging-repository
         id: staging
-        uses: Alfresco/alfresco-build-tools/.github/actions/nexus-create-staging@v1.23.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/nexus-create-staging@v1.27.0
         with:
           staging-description: Activiti staging ${{ needs.load-release-info.outputs.version }}
           nexus-profile-id: ${{ secrets.NEXUS_ACTIVITI7_PROFILE_ID }}
@@ -218,7 +219,7 @@ jobs:
       - name: Checkout activiti-scripts
         uses: actions/checkout@v3
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/maven-release@v1.23.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/maven-release@v1.27.0
         with:
           repo: Activiti/Activiti
           base-ref: ${{  needs.load-release-info.outputs.activiti-tag }}
@@ -241,7 +242,7 @@ jobs:
       - name: Checkout activiti-scripts
         uses: actions/checkout@v3
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/maven-release@v1.23.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/maven-release@v1.27.0
         with:
           repo: Activiti/activiti-cloud
           base-ref: ${{  needs.load-release-info.outputs.activiti-cloud-tag }}
@@ -266,7 +267,7 @@ jobs:
       - name: Checkout activiti-scripts
         uses: actions/checkout@v3
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/maven-release@v1.23.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/maven-release@v1.27.0
         env:
           ACT_CLOUD_VERSION: ${{  needs.load-release-info.outputs.activiti-cloud-tag }}
         with:
@@ -312,7 +313,7 @@ jobs:
           version: v3.5.2
 
       - name: Set up rancher
-        uses: Alfresco/alfresco-build-tools/.github/actions/setup-rancher-cli@v1.23.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/setup-rancher-cli@v1.27.0
         with:
           url: ${{ secrets.RANCHER2_URL }}
           access-key: ${{ secrets.RANCHER2_ACCESS_KEY }}
@@ -440,7 +441,7 @@ jobs:
         with:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/git-check-existing-tag@v1.23.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/git-check-existing-tag@v1.27.0
         id: check-tag
         with:
           tag: ${{ env.RELEASE_VERSION }}
@@ -453,7 +454,7 @@ jobs:
           echo "$STAGING_REPOSITORY_ID" > "$STAGING_REPOSITORY_FILE"
           yq -i e '.release.stagingRepository = env(STAGING_REPOSITORY_ID)' release.yaml
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v1.23.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v1.27.0
         with:
           username: ${{ secrets.BOT_GITHUB_USERNAME }}
           add-options: maven-config/staging-repository.txt release.yaml
@@ -464,3 +465,36 @@ jobs:
         run: |
           git tag "$RELEASE_VERSION" -m "Release version $RELEASE_VERSION"
           git push origin "$RELEASE_VERSION"
+
+  create-gh-releases:
+    runs-on: ubuntu-latest
+    needs:
+      - load-release-info
+      - create-scripts-tag
+    strategy:
+      fail-fast: true
+      matrix:
+        repo:
+          - Activiti
+          - activiti-cloud
+          - activiti-cloud-application
+          - activiti-cloud-common-chart
+          - activiti-cloud-full-chart
+    env:
+      VERSION: ${{ needs.load-release-info.outputs.version }}
+      NOTES_START_TAG: ${{ needs.load-release-info.outputs.notes-start-tag }}
+      REPO_DIR: repos/${{ matrix.repo }}
+      IS_MOCK: ${{ needs.load-release-info.outputs.mock }}
+
+    steps:
+      - name: Enable Draft
+        if: ${{ env.IS_MOCK == 'true' }}
+        run: |
+          echo GH_RN_DRAFT="--draft" >> $GITHUB_ENV
+
+      - name: Create Github release for ${{ matrix.repo }}
+        env:
+          GITHUB_REPO: Activiti/${{ matrix.repo }}
+          GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
+        run: |
+          gh release create $VERSION --generate-notes --repo $GITHUB_REPO --notes-start-tag $NOTES_START_TAG $GH_RN_DRAFT
