@@ -475,7 +475,15 @@ jobs:
       - create-scripts-tag
 
     steps:
-      - uses: Alfresco/alfresco-build-tools/.github/actions/nexus-promote-staging@gh-4164-auto-promote-nexus-staging
+      - uses: Alfresco/alfresco-build-tools/.github/actions/nexus-close-staging@gh-4164-auto-promote-nexus-staging
+        if: needs.load-release-info.outputs.mock != 'true'
+        with:
+          version: ${{ needs.load-release-info.outputs.version }}
+          staging-repository: ${{ needs.release-activiti.outputs.staging-repository}}
+          nexus-username: ${{ secrets.NEXUS_USERNAME }}
+          nexus-password: ${{ secrets.NEXUS_PASSWORD }}
+
+      - uses: Alfresco/alfresco-build-tools/.github/actions/nexus-release-staging@gh-4164-auto-promote-nexus-staging
         if: needs.load-release-info.outputs.mock != 'true'
         with:
           version: ${{ needs.load-release-info.outputs.version }}
