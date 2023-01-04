@@ -15,7 +15,7 @@ jobs:
         with:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/load-release-descriptor@v1.27.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/load-release-descriptor@v1.28.0
         id: load-descriptor
         with:
           release-descriptor: release.yaml
@@ -45,7 +45,7 @@ jobs:
           path: ${{ env.FULL_CHART_DIR }}
           repository: Activiti/activiti-cloud-full-chart
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/git-latest-tag@v1.27.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/git-latest-tag@v1.28.0
         id: latest-full-chart-tag
         with:
           pattern: ${{ env.TAG_PATTERN }}
@@ -70,13 +70,13 @@ jobs:
           yq -i e '.release.baseTag.commonChart = env(COMMON_CHART_TAG)' release.yaml
           yq -i e '.release.baseTag.fullChart = env(FULL_CHART_TAG)' release.yaml
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v1.27.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v1.28.0
         with:
           username: ${{ secrets.BOT_GITHUB_USERNAME }}
           add-options: maven-config/staging-repository.txt
           commit-message: Add staging repository for ${{env.RELEASE_VERSION}}
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v1.27.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v1.28.0
         with:
           username: ${{ secrets.BOT_GITHUB_USERNAME }}
           add-options: release.yaml
