@@ -1,7 +1,6 @@
 on:
   push:
     tags:
-     - '[0-9]+.[0-9]+.[0-9]+'
      - '[0-9]+.[0-9]+.[0-9]+-mock'
 jobs:
   load-release-info:
