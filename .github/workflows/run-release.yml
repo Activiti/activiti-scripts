@@ -34,16 +34,27 @@ jobs:
   release-activiti:
     runs-on: ubuntu-latest
     needs: [load-release-info]
+    outputs:
+      staging-repository: ${{ steps.staging.outputs.staging-repository }}
     steps:
+      - name: create-staging-repository
+        id: staging
+        uses: Alfresco/alfresco-build-tools/.github/actions/nexus-create-staging@v1.27.0
+        with:
+          staging-description: Activiti staging ${{ needs.load-release-info.outputs.version }}
+          nexus-profile-id: ${{ secrets.NEXUS_ACTIVITI7_PROFILE_ID }}
+          nexus-username: ${{ secrets.NEXUS_USERNAME }}
+          nexus-password: ${{ secrets.NEXUS_PASSWORD }}
+
       - name: Checkout activiti-scripts
         uses: actions/checkout@v3
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/maven-release@v1.23.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/maven-release@v1.27.0
         with:
           repo: Activiti/Activiti
           base-ref: ${{  needs.load-release-info.outputs.activiti-tag }}
           release-version: ${{ needs.load-release-info.outputs.version }}
-          staging-repository: ${{ needs.load-release-info.outputs.staging-repository }}
+          staging-repository: ${{ steps.staging.outputs.staging-repository }}
           git-username: ${{ secrets.BOT_GITHUB_USERNAME }}
           github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
           gpg-passphrase: "${{ secrets.GPG_PASSPHRASE }}"
