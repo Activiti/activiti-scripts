@@ -1,5 +1,11 @@
 release:
   branch: develop
-  version: 7.6.0
+  version: 7.9.0-rc.19
   nextVersion: 7.7.0-SNAPSHOT
   mock: false
+  baseTag:
+    activiti: 7.9.0-alpha.1
+    activitiCloud: 7.9.0-alpha.15
+    activitiCloudApplication: 7.9.0-alpha.14
+    commonChart: 7.8.0
+    fullChart: 7.9.0-alpha.14
