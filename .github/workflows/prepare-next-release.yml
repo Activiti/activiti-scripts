@@ -224,3 +224,106 @@ jobs:
         env:
           BRANCH: ${{ steps.calculate-maintenance-branch-name.outputs.branch }}
         run: git push origin "$BRANCH"
+
+  helm-create-maintenance-branch:
+    if: endsWith(needs.load-release-info.outputs.version, '.0') || contains(needs.load-release-info.outputs.version, '.0-mock')
+    runs-on: ubuntu-latest
+    needs: [ load-release-info ]
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - repo: activiti-cloud-common-chart
+            chart-dir: charts/common
+          - repo: activiti-cloud-full-chart
+            chart-dir: charts/activiti-cloud-full-example
+    env:
+      REPO_DIR: repos/${{ matrix.repo }}
+      TAG: ${{ needs.load-release-info.outputs.version }}
+
+    steps:
+      - name: Checkout activiti-scripts
+        uses: actions/checkout@v3
+
+      - name: Checkout ${{ matrix.repo }}
+        uses: actions/checkout@v3
+        with:
+          repository: Activiti/${{ matrix.repo }}
+          path: ${{ env.REPO_DIR }}
+          ref: ${{ env.TAG }}
+          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+
+      - name: Calculate maintenance branch
+        id: calculate-maintenance-branch-name
+        working-directory: ${{ env.REPO_DIR }}
+        run: |
+          BRANCH_NAME=${TAG%\.0}.x
+          echo "Maintenance branch name: $BRANCH_NAME"
+          echo "branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
+
+      - name: check if maintenance branch exists
+        id: check-branch-exists
+        env:
+          BRANCH: ${{steps.calculate-maintenance-branch-name.outputs.branch}}
+        working-directory: ${{ env.REPO_DIR }}
+        run: |
+          if git ls-remote --exit-code --heads origin "$BRANCH"
+          then
+            echo "Branch $BRANCH exists already"
+            echo "result=true" >> $GITHUB_OUTPUT
+          else
+            echo "Branch $BRANCH does not exist"
+            echo "result=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: create maintenance branch
+        if: steps.check-branch-exists.outputs.result == 'false'
+        env:
+          BRANCH: ${{steps.calculate-maintenance-branch-name.outputs.branch}}
+        working-directory: ${{ env.REPO_DIR }}
+        run: |
+          git checkout -b "$BRANCH"
+
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-pysemver@v1.27.0
+      - name: Resolve maintenance version
+        id: resolve-maintenance-version
+        if: steps.check-branch-exists.outputs.result == 'false'
+        run: |
+          MAINTENANCE_VERSION=$(pysemver bump patch $TAG)-SNAPSHOT
+          echo "Maintenance version: $MAINTENANCE_VERSION"
+          echo "version=$MAINTENANCE_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Update maintenance branch '${{env.BRANCH}}' to ${{ env.VERSION }} version
+        if: steps.check-branch-exists.outputs.result == 'false'
+        uses: Alfresco/alfresco-build-tools/.github/actions/helm-update-chart-version@v1.27.0
+        env:
+          BRANCH: ${{steps.calculate-maintenance-branch-name.outputs.branch}}
+          VERSION: ${{ steps.resolve-maintenance-version.outputs.version }}
+        with:
+          new-version: ${{ env.VERSION }}
+          chart-repository-dir: ${{ env.REPO_DIR }}
+          chart-dir: ${{ matrix.chart-dir }}
+
+      - name: Update configuration files
+        if: steps.check-branch-exists.outputs.result == 'false'
+        working-directory: ${{ env.REPO_DIR }}/${{ matrix.chart-dir }}
+        env:
+          BRANCH: ${{ steps.calculate-maintenance-branch-name.outputs.branch }}
+        run: |
+          yq e -i '.on.push.branches = [ env(BRANCH) ]' .github/workflows/main.yml
+          yq e -i '.on.pull_request.branches = [ env(BRANCH) ]' .github/workflows/main.yml
+
+      - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v1.27.0
+        if: steps.check-branch-exists.outputs.result == 'false'
+        with:
+          username: ${{ secrets.BOT_GITHUB_USERNAME }}
+          add-options: -u
+          commit-message: Update to version ${{ steps.resolve-maintenance-version.outputs.version }} [skip ci]
+          repository-directory: ${{ env.REPO_DIR }}
+
+      - name: Push changes to branch ${{ steps.calculate-maintenance-branch-name.outputs.branch }}
+        if: ${{ steps.check-branch-exists.outputs.result == 'false' && needs.load-release-info.outputs.mock == 'false' }}
+        working-directory: ${{ env.REPO_DIR }}
+        env:
+          BRANCH: ${{ steps.calculate-maintenance-branch-name.outputs.branch }}
+        run: git push origin "$BRANCH"
