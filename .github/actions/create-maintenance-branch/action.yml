@@ -1,0 +1,66 @@
+name: Create Maintenance Branch if Needed
+description: Calculates maintenance branch name from tag version and creates local branch if not already exists
+inputs:
+  tag:
+    description: The tag to use for maintenance branch version
+    required: true
+  working-directory:
+    description: The repository working directory
+    required: true
+outputs:
+  exists:
+    description: The result of the check to detect existing branch
+    value: ${{ steps.check-branch-exists.outputs.result }}
+  branch:
+    description: The result maintenance branch name
+    value: ${{ steps.calculate-maintenance-branch-name.outputs.result }}
+  version:
+    description: The result maintenance branch version for the new branch
+    value: ${{ steps.resolve-maintenance-version.outputs.result }}
+runs:
+  using: composite
+  steps:
+    - name: Calculate maintenance branch
+      id: calculate-maintenance-branch-name
+      working-directory: ${{ inputs.working-directory }}
+      shell: bash
+      env:
+        TAG: ${{ inputs.tag }}
+      run: |
+        BRANCH_NAME=${TAG%\.0}.x
+        echo "Maintenance branch name: $BRANCH_NAME"
+        echo "result=$BRANCH_NAME" >> $GITHUB_OUTPUT
+
+    - name: check if maintenance branch exists
+      id: check-branch-exists
+      env:
+        BRANCH: ${{steps.calculate-maintenance-branch-name.outputs.result}}
+      working-directory: ${{ inputs.working-directory }}
+      shell: bash
+      run: |
+        if git ls-remote --exit-code --heads origin "$BRANCH"
+        then
+          echo "Branch $BRANCH exists already"
+          echo "result=true" >> $GITHUB_OUTPUT
+        else
+          echo "Branch $BRANCH does not exist"
+          echo "result=false" >> $GITHUB_OUTPUT
+        fi
+
+    - name: create maintenance branch
+      if: steps.check-branch-exists.outputs.result == 'false'
+      env:
+        BRANCH: ${{ steps.calculate-maintenance-branch-name.outputs.result }}
+      working-directory: ${{ inputs.working-directory }}
+      shell: bash
+      run: |
+        git checkout -b "$BRANCH"
+
+    - uses: Alfresco/alfresco-build-tools/.github/actions/setup-pysemver@v1.27.0
+    - name: Resolve maintenance version
+      id: resolve-maintenance-version
+      if: steps.check-branch-exists.outputs.result == 'false'
+      run: |
+        MAINTENANCE_VERSION=$(pysemver bump patch $TAG)-SNAPSHOT
+        echo "Maintenance version: $MAINTENANCE_VERSION"
+        echo "result=$MAINTENANCE_VERSION" >> $GITHUB_OUTPUT
