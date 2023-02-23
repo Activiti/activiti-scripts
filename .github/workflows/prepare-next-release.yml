@@ -241,7 +241,7 @@ jobs:
 
       - name: Update configuration files
         if: steps.create-maintenance-branch.outputs.exists == 'false'
-        working-directory: ${{ env.REPO_DIR }}/${{ matrix.chart-dir }}
+        working-directory: ${{ env.REPO_DIR }}
         env:
           BRANCH: ${{ steps.create-maintenance-branch.outputs.branch }}
         run: |
