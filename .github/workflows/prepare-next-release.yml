@@ -249,7 +249,7 @@ jobs:
           yq e -i '.on.pull_request.branches = [ env(BRANCH) ]' .github/workflows/main.yml
 
       - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v1.27.0
-        if: steps.create-maintenance-branch.outputs.branch-exists == 'false'
+        if: steps.create-maintenance-branch.outputs.exists == 'false'
         with:
           username: ${{ secrets.BOT_GITHUB_USERNAME }}
           add-options: -u
