@@ -131,7 +131,7 @@ jobs:
 
       - name: Create maintenance branch if needed
         id: create-maintenance-branch
-        uses: .github/actions/create-maintenance-branch
+        uses: ./.github/actions/create-maintenance-branch
         with:
           working-directory: ${{ env.REPO_DIR }}
           tag: ${{ env.TAG }}
@@ -223,7 +223,7 @@ jobs:
 
       - name: Create maintenance branch if needed
         id: create-maintenance-branch
-        uses: .github/actions/create-maintenance-branch
+        uses: ./.github/actions/create-maintenance-branch
         with:
           working-directory: ${{ env.REPO_DIR }}
           tag: ${{ env.TAG }}
