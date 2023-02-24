@@ -60,6 +60,7 @@ runs:
     - name: Resolve maintenance version
       id: resolve-maintenance-version
       if: steps.check-branch-exists.outputs.result == 'false'
+      shell: bash
       run: |
         MAINTENANCE_VERSION=$(pysemver bump patch $TAG)-SNAPSHOT
         echo "Maintenance version: $MAINTENANCE_VERSION"
