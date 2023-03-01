@@ -55,6 +55,7 @@ jobs:
       MODELING_APP_BASE_REF: master
       DOCKERHUB_ORG: activiti
       RELEASE_VERSION: "${{ needs.load-release-info.outputs.version }}"
+      GH_PACKAGES_READ_ONLY_TOKEN: ""
     steps:
       - name: Checkout modeling-app
         uses: actions/checkout@v3
