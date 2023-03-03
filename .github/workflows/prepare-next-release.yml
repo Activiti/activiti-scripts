@@ -260,5 +260,5 @@ jobs:
         if: ${{ steps.create-maintenance-branch.outputs.exists == 'false' && needs.load-release-info.outputs.mock == 'false' }}
         working-directory: ${{ env.REPO_DIR }}
         env:
-          BRANCH: ${{ steps.calculate-maintenance-branch-name.outputs.branch }}
+          BRANCH: ${{ steps.create-maintenance-branch.outputs.branch }}
         run: git push origin "$BRANCH"
