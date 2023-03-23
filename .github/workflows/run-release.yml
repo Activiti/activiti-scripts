@@ -104,7 +104,7 @@ jobs:
           yq -i e '.activiti-cloud-connector.image.tag = env(VERSION)' values.yaml
           yq -i e '.activiti-cloud-modeling.image.tag = env(VERSION)' values.yaml
           yq -i e '.activiti-cloud-identity-adapter.image.tag = env(VERSION)' values.yaml
-          yq -i e '.activiti-modeling-app.image.tag = 7.9.0' values.yaml
+          yq -i e '.activiti-modeling-app.image.tag = "7.9.0"' values.yaml
 
       - name: Wait for common chart to be published
         uses: ./.github/actions/wait-for-chart
