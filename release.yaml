@@ -1,8 +1,8 @@
 release:
-  branch: develop
-  version: 7.9.1-rc.3
-  nextVersion: 7.10.0-SNAPSHOT
-  notesStartTag: 7.8.0
+  branch: 7.9.x
+  version: 7.9.1
+  nextVersion: 7.9.2-SNAPSHOT
+  notesStartTag: 7.9.0
   mock: false
   baseTag:
     activiti: 7.9.1-alpha.1
