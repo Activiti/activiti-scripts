@@ -28,7 +28,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        repo: [ 'Activiti','activiti-cloud','activiti-cloud-application' ]
+        repo: [ 'Activiti','activiti-cloud' ]
     env:
       NEXT_VERSION: ${{ needs.load-release-info.outputs.next-version }}
       REPO_DIR: repos/${{ matrix.repo }}
@@ -112,7 +112,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        repo: [ 'Activiti','activiti-cloud','activiti-cloud-application' ]
+        repo: [ 'Activiti','activiti-cloud' ]
     env:
       REPO_DIR: repos/${{ matrix.repo }}
       TAG: ${{ needs.load-release-info.outputs.version }}
