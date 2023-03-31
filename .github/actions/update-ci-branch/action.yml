@@ -1,0 +1,32 @@
+name: Update CI Branch
+description: Update CI configuration to run on a specific branch
+inputs:
+  repo-path:
+    description: Path to git repository
+    required: true
+  branch:
+    description: Name of the branch to be used to configure the CI
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Update CI configuration
+      working-directory: ${{ inputs.repo-path }}
+      env:
+        BRANCH: ${{ inputs.branch }}
+      shell: bash
+      run: |
+        yq e -i '.on.push.branches = [ env(BRANCH) ]' .github/workflows/main.yml
+        yq e -i '.on.pull_request.branches = [ env(BRANCH) ]' .github/workflows/main.yml
+        yq e -i '.on.pull_request.branches = [ env(BRANCH) ]' .github/workflows/dependabot-auto-merge.yml
+
+        PROPAGATION_WORKFLOW=.github/workflows/versions-propagation-auto-merge.yml
+        if test -f "$PROPAGATION_WORKFLOW"; then
+          yq e -i '.on.pull_request.branches = [ env(BRANCH) ]' "$PROPAGATION_WORKFLOW"
+        fi
+
+        UPDATE_BOT_CONFIG=.updatebot.yml
+        if test -f "$UPDATE_BOT_CONFIG"; then
+          yq e -i '.github.organisations[].repositories[].branch = env(BRANCH)' "$UPDATE_BOT_CONFIG"
+        fi
