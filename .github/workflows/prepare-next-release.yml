@@ -170,13 +170,10 @@ jobs:
 
       - name: Update configuration files
         if: steps.create-maintenance-branch.outputs.exists == 'false'
-        working-directory: ${{ env.REPO_DIR }}
-        env:
-          BRANCH: ${{ steps.create-maintenance-branch.outputs.branch }}
-        run: |
-          yq e -i '.github.organisations[].repositories[].branch = env(BRANCH)' .updatebot.yml
-          yq e -i '.on.push.branches = [ env(BRANCH) ]' .github/workflows/main.yml
-          yq e -i '.on.pull_request.branches = [ env(BRANCH) ]' .github/workflows/main.yml
+        uses: ./.github/actions/update-ci-branch
+        with:
+          repo-path: ${{ env.REPO_DIR }}
+          branch: ${{ steps.create-maintenance-branch.outputs.branch }}
 
       - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v1.36.0
         if: steps.create-maintenance-branch.outputs.exists == 'false'
@@ -241,12 +238,10 @@ jobs:
 
       - name: Update configuration files
         if: steps.create-maintenance-branch.outputs.exists == 'false'
-        working-directory: ${{ env.REPO_DIR }}
-        env:
-          BRANCH: ${{ steps.create-maintenance-branch.outputs.branch }}
-        run: |
-          yq e -i '.on.push.branches = [ env(BRANCH) ]' .github/workflows/main.yml
-          yq e -i '.on.pull_request.branches = [ env(BRANCH) ]' .github/workflows/main.yml
+        uses: ./.github/actions/update-ci-branch
+        with:
+          repo-path: ${{ env.REPO_DIR }}
+          branch: ${{ steps.create-maintenance-branch.outputs.branch }}
 
       - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v1.36.0
         if: steps.create-maintenance-branch.outputs.exists == 'false'
