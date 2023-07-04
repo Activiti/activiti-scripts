@@ -1,12 +1,12 @@
 release:
   branch: develop
-  version: 7.11.0
+  version: 7.11.1-rc.1
   nextVersion: 7.12.0-SNAPSHOT
   mock: false
   notesStartTag: 7.10.0
   baseTag:
-    activiti: 7.11.0-alpha.2
-    activitiCloud: 7.11.0-alpha.9
-    commonChart: 7.11.0-alpha.1
-    fullChart: 7.11.0-alpha.12
+    activiti: 7.11.0
+    activitiCloud: 7.11.0
+    commonChart: 7.11.0
+    fullChart: 7.11.0
   stagingRepository: activiti-7-community-staging-profile-1196
