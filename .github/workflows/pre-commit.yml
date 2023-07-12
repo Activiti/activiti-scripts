@@ -16,4 +16,4 @@ jobs:
   pre-commit:
     runs-on: ubuntu-latest
     steps:
-      - uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@v1.38.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@v2.6.0
