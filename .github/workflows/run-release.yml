@@ -24,7 +24,7 @@ jobs:
 
     steps:
       - name: Installing activiti-scripts
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - uses: Alfresco/alfresco-build-tools/.github/actions/load-release-descriptor@v2.6.0
         id: load-descriptor
@@ -36,7 +36,7 @@ jobs:
     needs: [load-release-info]
     steps:
       - name: Checkout activiti-scripts
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: tag-docker-images
         uses: ./.github/actions/docker-update-manifest
@@ -53,7 +53,7 @@ jobs:
       COMMON_CHART_DIR: common-chart
     steps:
       - name: Checkout common chart
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         env:
           BASE_TAG: ${{needs.load-release-info.outputs.common-chart-tag}}
         with:
@@ -82,10 +82,10 @@ jobs:
       VERSION: ${{needs.load-release-info.outputs.version}}
     steps:
       - name: Checkout activiti-scripts
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Checkout full chart
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         env:
           BASE_TAG: ${{ needs.load-release-info.outputs.full-chart-tag }}
         with:
@@ -139,7 +139,7 @@ jobs:
           nexus-password: ${{ secrets.NEXUS_PASSWORD }}
 
       - name: Checkout activiti-scripts
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - uses: Alfresco/alfresco-build-tools/.github/actions/maven-release@v3.3.3
         with:
@@ -164,7 +164,7 @@ jobs:
       - release-activiti
     steps:
       - name: Checkout activiti-scripts
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - uses: Alfresco/alfresco-build-tools/.github/actions/maven-release@v3.3.3
         with:
@@ -219,10 +219,10 @@ jobs:
           context: ${{ env.CLUSTER_NAME }}
 
       - name: Checkout activiti-scripts
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Checkout activiti-cloud
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: Activiti/activiti-cloud
           path: ${{ env.ACT_CLOUD_DIR}}
@@ -231,7 +231,7 @@ jobs:
           ref: ${{ needs.load-release-info.outputs.activiti-cloud-tag }}
 
       - name: Checkout full chart
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: ${{ env.FULL_CHART_DIR }}
           repository: Activiti/activiti-cloud-full-chart
@@ -342,7 +342,7 @@ jobs:
       RELEASE_VERSION: ${{ needs.load-release-info.outputs.version }}
     steps:
       - name: Checkout activiti-scripts
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
