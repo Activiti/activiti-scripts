@@ -17,7 +17,7 @@ jobs:
       - name: Installing activiti-scripts
         uses: actions/checkout@v3
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/load-release-descriptor@v2.6.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/load-release-descriptor@v3.3.3
         id: load-descriptor
         with:
           release-descriptor: release.yaml
@@ -44,12 +44,12 @@ jobs:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
       - name: update-to-next-version
-        uses: Alfresco/alfresco-build-tools/.github/actions/maven-update-pom-version@v2.6.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/maven-update-pom-version@v3.3.3
         with:
           version: ${{ env.NEXT_VERSION }}
           repository-directory: repos/${{ matrix.repo }}
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v2.6.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v3.3.3
         with:
           username: ${{ secrets.BOT_GITHUB_USERNAME }}
           add-options: -u
@@ -87,13 +87,13 @@ jobs:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
       - name: Update branch '${{env.BRANCH}}' to the next version
-        uses: Alfresco/alfresco-build-tools/.github/actions/helm-update-chart-version@v2.6.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/helm-update-chart-version@v3.3.3
         with:
           new-version: ${{ env.NEXT_VERSION }}
           chart-repository-dir: ${{ env.REPO_DIR }}
           chart-dir: ${{ matrix.chart-dir }}
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v2.6.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v3.3.3
         with:
           username: ${{ secrets.BOT_GITHUB_USERNAME }}
           add-options: -u
@@ -163,7 +163,7 @@ jobs:
           NEXUS_USERNAME: "${{ secrets.NEXUS_USERNAME }}"
           NEXUS_PASSWORD: "${{ secrets.NEXUS_PASSWORD }}"
           VERSION: ${{ steps.create-maintenance-branch.outputs.version }}
-        uses: Alfresco/alfresco-build-tools/.github/actions/maven-update-pom-version@v2.6.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/maven-update-pom-version@v3.3.3
         with:
           version: ${{ env.VERSION }}
           repository-directory: ${{ env.REPO_DIR }}
@@ -175,7 +175,7 @@ jobs:
           repo-path: ${{ env.REPO_DIR }}
           branch: ${{ steps.create-maintenance-branch.outputs.branch }}
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v2.6.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v3.3.3
         if: steps.create-maintenance-branch.outputs.exists == 'false'
         with:
           username: ${{ secrets.BOT_GITHUB_USERNAME }}
@@ -227,7 +227,7 @@ jobs:
 
       - name: Update maintenance branch '${{env.BRANCH}}' to ${{ env.VERSION }} version
         if: steps.create-maintenance-branch.outputs.exists == 'false'
-        uses: Alfresco/alfresco-build-tools/.github/actions/helm-update-chart-version@v2.6.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/helm-update-chart-version@v3.3.3
         env:
           BRANCH: ${{steps.create-maintenance-branch.outputs.branch}}
           VERSION: ${{ steps.create-maintenance-branch.outputs.version }}
@@ -243,7 +243,7 @@ jobs:
           repo-path: ${{ env.REPO_DIR }}
           branch: ${{ steps.create-maintenance-branch.outputs.branch }}
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v2.6.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v3.3.3
         if: steps.create-maintenance-branch.outputs.exists == 'false'
         with:
           username: ${{ secrets.BOT_GITHUB_USERNAME }}

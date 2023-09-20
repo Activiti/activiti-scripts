@@ -26,7 +26,7 @@ jobs:
       - name: Installing activiti-scripts
         uses: actions/checkout@v3
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/load-release-descriptor@v2.6.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/load-release-descriptor@v3.3.3
         id: load-descriptor
         with:
           release-descriptor: release.yaml
@@ -63,7 +63,7 @@ jobs:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
       - name: Release common chart
-        uses: Alfresco/alfresco-build-tools/.github/actions/helm-release-and-publish@v2.6.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/helm-release-and-publish@v3.3.3
         with:
           version: ${{ needs.load-release-info.outputs.version }}
           chart-dir: charts/common
@@ -113,7 +113,7 @@ jobs:
           helm-repo-url: https://activiti.github.io/activiti-cloud-helm-charts
 
       - name: Release full chart
-        uses: Alfresco/alfresco-build-tools/.github/actions/helm-release-and-publish@v2.6.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/helm-release-and-publish@v3.3.3
         with:
           version: ${{ needs.load-release-info.outputs.version }}
           chart-dir: ${{env.CHART_FILES_DIR}}
@@ -131,7 +131,7 @@ jobs:
     steps:
       - name: create-staging-repository
         id: staging
-        uses: Alfresco/alfresco-build-tools/.github/actions/nexus-create-staging@v2.6.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/nexus-create-staging@v3.3.3
         with:
           staging-description: Activiti staging ${{ needs.load-release-info.outputs.version }}
           nexus-profile-id: ${{ secrets.NEXUS_ACTIVITI7_PROFILE_ID }}
@@ -211,7 +211,7 @@ jobs:
           version: v3.5.2
 
       - name: Set up rancher
-        uses: Alfresco/alfresco-build-tools/.github/actions/setup-rancher-cli@v2.6.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/setup-rancher-cli@v3.3.3
         with:
           url: ${{ secrets.RANCHER2_URL }}
           access-key: ${{ secrets.RANCHER2_ACCESS_KEY }}
@@ -346,7 +346,7 @@ jobs:
         with:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/git-check-existing-tag@v2.6.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/git-check-existing-tag@v3.3.3
         id: check-tag
         with:
           tag: ${{ env.RELEASE_VERSION }}
@@ -359,7 +359,7 @@ jobs:
           echo "$STAGING_REPOSITORY_ID" > "$STAGING_REPOSITORY_FILE"
           yq -i e '.release.stagingRepository = env(STAGING_REPOSITORY_ID)' release.yaml
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v2.6.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v3.3.3
         with:
           username: ${{ secrets.BOT_GITHUB_USERNAME }}
           add-options: maven-config/staging-repository.txt release.yaml
@@ -380,7 +380,7 @@ jobs:
       - create-scripts-tag
 
     steps:
-      - uses: Alfresco/alfresco-build-tools/.github/actions/nexus-close-staging@v2.6.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/nexus-close-staging@v3.3.3
         if: needs.load-release-info.outputs.mock != 'true'
         with:
           version: ${{ needs.load-release-info.outputs.version }}
@@ -388,7 +388,7 @@ jobs:
           nexus-username: ${{ secrets.NEXUS_USERNAME }}
           nexus-password: ${{ secrets.NEXUS_PASSWORD }}
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/nexus-release-staging@v2.6.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/nexus-release-staging@v3.3.3
         if: needs.load-release-info.outputs.mock != 'true'
         with:
           version: ${{ needs.load-release-info.outputs.version }}
