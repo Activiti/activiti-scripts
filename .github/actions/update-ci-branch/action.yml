@@ -19,7 +19,6 @@ runs:
       run: |
         yq e -i '.on.push.branches = [ env(BRANCH) ]' .github/workflows/main.yml
         yq e -i '.on.pull_request.branches = [ env(BRANCH) ]' .github/workflows/main.yml
-        yq e -i '.on.pull_request.branches = [ env(BRANCH) ]' .github/workflows/dependabot-auto-merge.yml
 
         PROPAGATION_WORKFLOW=.github/workflows/versions-propagation-auto-merge.yml
         if test -f "$PROPAGATION_WORKFLOW"; then
