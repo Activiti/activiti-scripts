@@ -141,7 +141,7 @@ jobs:
       - name: Checkout activiti-scripts
         uses: actions/checkout@v3
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/maven-release@v3.3.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/maven-release@v3.3.3
         with:
           repo: Activiti/Activiti
           base-ref: ${{  needs.load-release-info.outputs.activiti-tag }}
@@ -166,7 +166,7 @@ jobs:
       - name: Checkout activiti-scripts
         uses: actions/checkout@v3
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/maven-release@v3.3.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/maven-release@v3.3.3
         with:
           repo: Activiti/activiti-cloud
           base-ref: ${{  needs.load-release-info.outputs.activiti-cloud-tag }}
