@@ -1,8 +1,9 @@
 release:
   branch: develop
-  version: 7.12.0-rc.122
-  nextVersion: 7.7.0-SNAPSHOT
+  version: 8.0.0
+  nextVersion: 8.1.0-SNAPSHOT
   mock: false
+  notesStartTag: 7.11.0
   baseTag:
     activiti: 8.0.0-alpha.16
     activitiCloud: 8.0.0-alpha.45
