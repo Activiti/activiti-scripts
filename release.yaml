@@ -1,6 +1,6 @@
 release:
   branch: develop
-  version: 8.1.0-mock
+  version: 8.1.0
   nextVersion: 8.2.0-SNAPSHOT
   notesStartTag: 8.0.0
   mock: true
