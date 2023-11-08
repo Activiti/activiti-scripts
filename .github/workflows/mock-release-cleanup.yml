@@ -23,31 +23,31 @@ jobs:
             echo "Removing release from: Activiti/activiti-cloud-full-chart"
             gh release delete -R Activiti/activiti-cloud-full-chart -y ${VERSION} || true
             echo "Removing tag from: Activiti/activiti-cloud-full-chart"
-            gh repo clone Activiti/activiti-cloud-full-chart
+            gh repo clone Activiti/activiti-cloud-full-chart && cd "$(basename "$_" .git)"
             git push origin --delete ${VERSION} || true
 
             echo "Removing release from: Activiti/activiti-scripts"
             gh release delete -R Activiti/activiti-scripts -y ${VERSION} || true
             echo "Removing tag from: Activiti/activiti-scripts"
-            gh repo clone Activiti/activiti-scripts
+            gh repo clone Activiti/activiti-scripts && cd "$(basename "$_" .git)"
             git push origin --delete ${VERSION} || true
 
             echo "Removing release from: Activiti/activiti-cloud"
             gh release delete -R Activiti/activiti-cloud -y ${VERSION} || true
             echo "Removing tag from: Activiti/activiti-cloud"
-            gh repo clone Activiti/activiti-cloud
+            gh repo clone Activiti/activiti-cloud && cd "$(basename "$_" .git)"
             git push origin --delete ${VERSION} || true
 
             echo "Removing release from: Activiti/activiti-cloud-common-chart"
             gh release delete -R Activiti/activiti-cloud-common-chart -y ${VERSION} || true
             echo "Removing tag from: Activiti/activiti-cloud-common-chart"
-            gh repo clone Activiti/activiti-cloud-common-chart
+            gh repo clone Activiti/activiti-cloud-common-chart && cd "$(basename "$_" .git)"
             git push origin --delete ${VERSION} || true
 
             echo "Removing release from: Activiti/activiti"
             gh release delete -R Activiti/Activiti -y ${VERSION} || true
             echo "Removing tag from: Activiti/activiti"
-            gh repo clone Activiti/activiti
+            gh repo clone Activiti/activiti && cd "$(basename "$_" .git)"
             git push origin --delete ${VERSION} || true
 
           else
