@@ -23,7 +23,6 @@ runs:
       with:
         tag: ${{ inputs.version }}
 
-
     - name: Delete release if the provided version ends with "-mock"
       id: delete_version
       shell: bash

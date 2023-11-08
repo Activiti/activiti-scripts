@@ -17,3 +17,4 @@ jobs:
           version: ${{ inputs.version }}
           repo: Activiti/activiti-cloud-full-chart
           gh-token: ${{ secrets.BOT_GITHUB_TOKEN }}
+      - uses: actions/checkout@v3
