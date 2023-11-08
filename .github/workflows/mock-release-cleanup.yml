@@ -11,31 +11,8 @@ jobs:
   delete_version:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: ./.github/actions/remove-mock-release-and-tag
         with:
-          repository: Activiti/activiti-cloud-full-chart
-          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          version: ${{ inputs.version }}
+          repo: Activiti/activiti-cloud-full-chart
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/git-check-existing-tag@v3.6.0
-        id: check-tag
-        with:
-          tag: ${{ inputs.version }}
-
-
-      - name: Delete release if the provided version ends with "-mock"
-        id: delete_version
-        shell: bash
-        env:
-          GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
-          VERSION: ${{ inputs.version }}
-        run: |
-          if [[ "${VERSION}" == *-mock ]]; then
-            echo "Removing release from: Activiti/activiti-cloud-full-chart"
-            gh release delete -R Activiti/activiti-cloud-full-chart -y ${VERSION} || true
-            echo "Removing tag from: Activiti/activiti-cloud-full-chart"
-            git push origin --delete ${VERSION} || true
-          else
-            echo "version does not end with '-mock'."
-            echo "Error: The provided version does not end with '-mock.'"
-            exit 1
-          fi
