@@ -20,20 +20,35 @@ jobs:
           VERSION: ${{ inputs.version }}
         run: |
           if [[ "${VERSION}" == *-mock ]]; then
-            echo "Removing releases and tags from: Activiti/activiti-cloud-full-chart"
-            gh release delete -R Activiti/activiti-cloud-full-chart -y --cleanup-tag ${VERSION} || true
+            echo "Removing release from: Activiti/activiti-cloud-full-chart"
+            gh release delete -R Activiti/activiti-cloud-full-chart -y ${VERSION} || true
+            echo "Removing tag from: Activiti/activiti-cloud-full-chart"
+            gh repo clone Activiti/activiti-cloud-full-chart --depth 1
+            git push origin --delete ${VERSION} || true
 
-            echo "Removing releases and tags from: Activiti/activiti-scripts"
-            gh release delete -R Activiti/activiti-scripts -y --cleanup-tag ${VERSION} || true
+            echo "Removing release from: Activiti/activiti-scripts"
+            gh release delete -R Activiti/activiti-scripts -y ${VERSION} || true
+            echo "Removing tag from: Activiti/activiti-scripts"
+            gh repo clone Activiti/activiti-scripts --depth 1
+            git push origin --delete ${VERSION} || true
 
-            echo "Removing releases and tags from: Activiti/activiti-cloud"
-            gh release delete -R Activiti/activiti-cloud -y --cleanup-tag ${VERSION} || true
+            echo "Removing release from: Activiti/activiti-cloud"
+            gh release delete -R Activiti/activiti-cloud -y ${VERSION} || true
+            echo "Removing tag from: Activiti/activiti-cloud"
+            gh repo clone Activiti/activiti-cloud --depth 1
+            git push origin --delete ${VERSION} || true
 
-            echo "Removing releases and tags from: Activiti/activiti-cloud-common-chart"
-            gh release delete -R Activiti/activiti-cloud-common-chart -y --cleanup-tag ${VERSION} || true
+            echo "Removing release from: Activiti/activiti-cloud-common-chart"
+            gh release delete -R Activiti/activiti-cloud-common-chart -y ${VERSION} || true
+            echo "Removing tag from: Activiti/activiti-cloud-common-chart"
+            gh repo clone Activiti/activiti-cloud-common-chart --depth 1
+            git push origin --delete ${VERSION} || true
 
-            echo "Removing releases and tags from: Activiti/activiti"
-            gh release delete -R Activiti/Activiti -y --cleanup-tag ${VERSION} || true
+            echo "Removing release from: Activiti/activiti"
+            gh release delete -R Activiti/Activiti -y ${VERSION} || true
+            echo "Removing tag from: Activiti/activiti"
+            gh repo clone Activiti/activiti --depth 1
+            git push origin --delete ${VERSION} || true
 
           else
             echo "version does not end with '-mock'."
