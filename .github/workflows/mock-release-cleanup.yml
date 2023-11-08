@@ -20,6 +20,9 @@ jobs:
           VERSION: ${{ inputs.version }}
         run: |
           if [[ "${VERSION}" == *-mock ]]; then
+            git config --global user.email "${{ secrets.BOT_GITHUB_USERNAME}}@no-reply.users.github.com"
+            git config --global user.name "${{ secrets.BOT_GITHUB_USERNAME}}"
+
             echo "Removing release from: Activiti/activiti-cloud-full-chart"
             gh release delete -R Activiti/activiti-cloud-full-chart -y ${VERSION} || true
             echo "Removing tag from: Activiti/activiti-cloud-full-chart"
