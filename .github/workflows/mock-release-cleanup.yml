@@ -10,11 +10,18 @@ on:
 jobs:
   delete_version:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        repository: [ 'Activiti/activiti-cloud-full-chart',
+                      'Activiti/activiti-scripts',
+                      'Activiti/activiti-cloud',
+                      'Activiti/activiti-cloud-common-chart',
+                      'Activiti/activiti' ]
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/remove-mock-release-and-tag
         with:
           version: ${{ inputs.version }}
-          repo: Activiti/activiti-cloud-full-chart
+          repo: ${{ matrix.repository }}
           gh-token: ${{ secrets.BOT_GITHUB_TOKEN }}
       - uses: actions/checkout@v3
