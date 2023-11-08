@@ -20,7 +20,7 @@ jobs:
           VERSION: ${{ inputs.version }}
         run: |
           if [[ "${VERSION}" == *-mock ]]; then
-            #gh release delete -R Activiti/activiti-cloud-full-chart -y --cleanup-tag ${VERSION}
+            gh release delete -R Activiti/activiti-cloud-full-chart -y --cleanup-tag ${VERSION}
             echo "Activiti/activiti-cloud-full-chart cleaned"
             gh release delete -R Activiti/activiti-scripts -y --cleanup-tag ${VERSION}
             echo "Activiti/activiti-scripts cleaned"
