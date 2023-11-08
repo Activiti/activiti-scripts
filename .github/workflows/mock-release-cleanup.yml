@@ -16,4 +16,4 @@ jobs:
         with:
           version: ${{ inputs.version }}
           repo: Activiti/activiti-cloud-full-chart
-          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          gh-token: ${{ secrets.BOT_GITHUB_TOKEN }}
