@@ -409,6 +409,7 @@ jobs:
           - activiti-cloud
           - activiti-cloud-common-chart
           - activiti-cloud-full-chart
+          - activiti-scripts
     env:
       VERSION: ${{ needs.load-release-info.outputs.version }}
       NOTES_START_TAG: ${{ needs.load-release-info.outputs.notes-start-tag }}
