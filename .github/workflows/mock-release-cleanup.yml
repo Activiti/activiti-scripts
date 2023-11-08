@@ -20,16 +20,20 @@ jobs:
           VERSION: ${{ inputs.version }}
         run: |
           if [[ "${VERSION}" == *-mock ]]; then
-            gh release delete -R Activiti/activiti-cloud-full-chart -y --cleanup-tag ${VERSION}
-            echo "Activiti/activiti-cloud-full-chart cleaned"
-            gh release delete -R Activiti/activiti-scripts -y --cleanup-tag ${VERSION}
-            echo "Activiti/activiti-scripts cleaned"
-            gh release delete -R Activiti/activiti-cloud -y --cleanup-tag ${VERSION}
-            echo "Activiti/activiti-cloud cleaned"
-            gh release delete -R Activiti/activiti-cloud-common-chart -y --cleanup-tag ${VERSION}
-            echo "Activiti/activiti-cloud-common-chart cleaned"
-            gh release delete -R Activiti/Activiti -y --cleanup-tag ${VERSION}
-            echo "Activiti/activiti cleaned"
+            echo "Removing releases and tags from: Activiti/activiti-cloud-full-chart"
+            gh release delete -R Activiti/activiti-cloud-full-chart -y --cleanup-tag ${VERSION} || true
+
+            echo "Removing releases and tags from: Activiti/activiti-scripts"
+            gh release delete -R Activiti/activiti-scripts -y --cleanup-tag ${VERSION} || true
+
+            echo "Removing releases and tags from: Activiti/activiti-cloud"
+            gh release delete -R Activiti/activiti-cloud -y --cleanup-tag ${VERSION} || true
+
+            echo "Removing releases and tags from: Activiti/activiti-cloud-common-chart"
+            gh release delete -R Activiti/activiti-cloud-common-chart -y --cleanup-tag ${VERSION} || true
+
+            echo "Removing releases and tags from: Activiti/activiti"
+            gh release delete -R Activiti/Activiti -y --cleanup-tag ${VERSION} || true
 
           else
             echo "version does not end with '-mock'."
