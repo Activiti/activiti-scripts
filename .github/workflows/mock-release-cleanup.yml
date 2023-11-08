@@ -11,48 +11,29 @@ jobs:
   delete_version:
     runs-on: ubuntu-latest
     steps:
-      - name: Delete version if the provided version ends with "-mock"
+      - uses: actions/checkout@v3
+        with:
+          repository: Activiti/activiti-cloud-full-chart
+          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+
+      - uses: Alfresco/alfresco-build-tools/.github/actions/git-check-existing-tag@v3.6.0
+        id: check-tag
+        with:
+          tag: ${{ inputs.version }}
+
+
+      - name: Delete release if the provided version ends with "-mock"
         id: delete_version
         shell: bash
         env:
           GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
-          REPO: ${{ inputs.repository }}
           VERSION: ${{ inputs.version }}
         run: |
           if [[ "${VERSION}" == *-mock ]]; then
-            git config --global user.email "${{ secrets.BOT_GITHUB_USERNAME}}@no-reply.users.github.com"
-            git config --global user.name "${{ secrets.BOT_GITHUB_USERNAME}}"
-
             echo "Removing release from: Activiti/activiti-cloud-full-chart"
             gh release delete -R Activiti/activiti-cloud-full-chart -y ${VERSION} || true
             echo "Removing tag from: Activiti/activiti-cloud-full-chart"
-            gh repo clone Activiti/activiti-cloud-full-chart && cd "$(basename "$_" .git)"
             git push origin --delete ${VERSION} || true
-
-            echo "Removing release from: Activiti/activiti-scripts"
-            gh release delete -R Activiti/activiti-scripts -y ${VERSION} || true
-            echo "Removing tag from: Activiti/activiti-scripts"
-            gh repo clone Activiti/activiti-scripts && cd "$(basename "$_" .git)"
-            git push origin --delete ${VERSION} || true
-
-            echo "Removing release from: Activiti/activiti-cloud"
-            gh release delete -R Activiti/activiti-cloud -y ${VERSION} || true
-            echo "Removing tag from: Activiti/activiti-cloud"
-            gh repo clone Activiti/activiti-cloud && cd "$(basename "$_" .git)"
-            git push origin --delete ${VERSION} || true
-
-            echo "Removing release from: Activiti/activiti-cloud-common-chart"
-            gh release delete -R Activiti/activiti-cloud-common-chart -y ${VERSION} || true
-            echo "Removing tag from: Activiti/activiti-cloud-common-chart"
-            gh repo clone Activiti/activiti-cloud-common-chart && cd "$(basename "$_" .git)"
-            git push origin --delete ${VERSION} || true
-
-            echo "Removing release from: Activiti/activiti"
-            gh release delete -R Activiti/Activiti -y ${VERSION} || true
-            echo "Removing tag from: Activiti/activiti"
-            gh repo clone Activiti/activiti && cd "$(basename "$_" .git)"
-            git push origin --delete ${VERSION} || true
-
           else
             echo "version does not end with '-mock'."
             echo "Error: The provided version does not end with '-mock.'"
