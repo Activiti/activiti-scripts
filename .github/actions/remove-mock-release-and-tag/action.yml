@@ -13,12 +13,12 @@ inputs:
 runs:
   using: composite
   steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
       with:
         repository: ${{ inputs.repo }}
         token: ${{ inputs.gh-token }}
 
-    - uses: Alfresco/alfresco-build-tools/.github/actions/git-check-existing-tag@v3.6.0
+    - uses: Alfresco/alfresco-build-tools/.github/actions/git-check-existing-tag@34b2301fc6245fa98ed73a82e04d4f9ab4eb5a3f #v3.6.0
       id: check-tag
       with:
         tag: ${{ inputs.version }}
@@ -32,8 +32,8 @@ runs:
         REPO: ${{ inputs.repo }}
       run: |
         if [[ "${VERSION}" == *-mock ]]; then
-          echo "Removing release from: ${REPO}"
-          gh release delete -R ${REPO} -y ${VERSION} || true
+          echo "Removing '${VERSION}' release from: ${REPO}"
+          gh release delete -R ${REPO} -y ${VERSION}
         else
           echo "version does not end with '-mock'."
           echo "Error: The provided version does not end with '-mock.'"
@@ -47,5 +47,5 @@ runs:
         GITHUB_TOKEN: ${{ inputs.gh-token }}
         VERSION: ${{ inputs.version }}
       run: |
-        echo "Removing tag from: ${REPO}"
-        git push origin --delete ${VERSION} || true
+        echo "Removing '${VERSION}' tag from: ${REPO}"
+        git push origin --delete ${VERSION}
