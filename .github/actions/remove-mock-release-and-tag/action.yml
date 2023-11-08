@@ -7,13 +7,16 @@ inputs:
   repo:
     description: 'Path to repo'
     required: true
+  gh-token:
+    description: 'gh token'
+    required: true
 runs:
   using: composite
   steps:
     - uses: actions/checkout@v3
       with:
         repository: ${{ inputs.repo }}
-        token: ${{ secrets.BOT_GITHUB_TOKEN }}
+        token: ${{ inputs.token }}
 
     - uses: Alfresco/alfresco-build-tools/.github/actions/git-check-existing-tag@v3.6.0
       id: check-tag
@@ -25,9 +28,9 @@ runs:
       id: delete_version
       shell: bash
       env:
-        GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ inputs.token }}
         VERSION: ${{ inputs.version }}
-        REPO: ${{ inputes.repo }}
+        REPO: ${{ inputs.repo }}
       run: |
         if [[ "${VERSION}" == *-mock ]]; then
           echo "Removing release from: ${REPO}"
