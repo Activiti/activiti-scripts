@@ -7,45 +7,43 @@ inputs:
   repo:
     description: 'Path to repo'
     required: true
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v3
+      with:
+        repository: ${{ inputs.repo }}
+        token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
-jobs:
-  delete_version:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          repository: ${{ inputs.repo }}
-          token: ${{ secrets.BOT_GITHUB_TOKEN }}
-
-      - uses: Alfresco/alfresco-build-tools/.github/actions/git-check-existing-tag@v3.6.0
-        id: check-tag
-        with:
-          tag: ${{ inputs.version }}
+    - uses: Alfresco/alfresco-build-tools/.github/actions/git-check-existing-tag@v3.6.0
+      id: check-tag
+      with:
+        tag: ${{ inputs.version }}
 
 
-      - name: Delete release if the provided version ends with "-mock"
-        id: delete_version
-        shell: bash
-        env:
-          GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
-          VERSION: ${{ inputs.version }}
-          REPO: ${{ inputes.repo }}
-        run: |
-          if [[ "${VERSION}" == *-mock ]]; then
-            echo "Removing release from: ${REPO}"
-            gh release delete -R ${REPO} -y ${VERSION} || true
-          else
-            echo "version does not end with '-mock'."
-            echo "Error: The provided version does not end with '-mock.'"
-            exit 1
-          fi
+    - name: Delete release if the provided version ends with "-mock"
+      id: delete_version
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
+        VERSION: ${{ inputs.version }}
+        REPO: ${{ inputes.repo }}
+      run: |
+        if [[ "${VERSION}" == *-mock ]]; then
+          echo "Removing release from: ${REPO}"
+          gh release delete -R ${REPO} -y ${VERSION} || true
+        else
+          echo "version does not end with '-mock'."
+          echo "Error: The provided version does not end with '-mock.'"
+          exit 1
+        fi
 
-      - name: Delete tag if it exist
-        if: steps.check-tag.outputs.exists == 'true'
-        shell: bash
-        env:
-          GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
-          VERSION: ${{ inputs.version }}
-        run: |
-          echo "Removing tag from: ${REPO}"
-          git push origin --delete ${VERSION} || true
+    - name: Delete tag if it exist
+      if: steps.check-tag.outputs.exists == 'true'
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
+        VERSION: ${{ inputs.version }}
+      run: |
+        echo "Removing tag from: ${REPO}"
+        git push origin --delete ${VERSION} || true
