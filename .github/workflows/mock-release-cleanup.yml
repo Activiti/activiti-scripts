@@ -11,6 +11,7 @@ jobs:
   delete_version:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         repository: [ 'Activiti/activiti-cloud-full-chart',
                       'Activiti/activiti-scripts',

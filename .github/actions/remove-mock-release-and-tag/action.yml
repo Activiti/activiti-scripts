@@ -23,6 +23,16 @@ runs:
       with:
         tag: ${{ inputs.version }}
 
+    - name: Delete tag if it exist
+      if: steps.check-tag.outputs.exists == 'true'
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.gh-token }}
+        VERSION: ${{ inputs.version }}
+      run: |
+        echo "Removing '${VERSION}' tag from: ${REPO}"
+        git push origin --delete ${VERSION}
+
     - name: Delete release if the provided version ends with "-mock"
       id: delete_version
       shell: bash
@@ -39,13 +49,3 @@ runs:
           echo "Error: The provided version does not end with '-mock.'"
           exit 1
         fi
-
-    - name: Delete tag if it exist
-      if: steps.check-tag.outputs.exists == 'true'
-      shell: bash
-      env:
-        GITHUB_TOKEN: ${{ inputs.gh-token }}
-        VERSION: ${{ inputs.version }}
-      run: |
-        echo "Removing '${VERSION}' tag from: ${REPO}"
-        git push origin --delete ${VERSION}
