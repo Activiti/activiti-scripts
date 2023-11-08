@@ -45,7 +45,7 @@ runs:
       if: steps.check-tag.outputs.exists == 'true'
       shell: bash
       env:
-        GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ inputs.token }}
         VERSION: ${{ inputs.version }}
       run: |
         echo "Removing tag from: ${REPO}"
