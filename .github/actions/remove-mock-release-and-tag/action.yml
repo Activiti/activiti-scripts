@@ -16,7 +16,7 @@ runs:
     - uses: actions/checkout@v3
       with:
         repository: ${{ inputs.repo }}
-        token: ${{ inputs.token }}
+        token: ${{ inputs.gh-token }}
 
     - uses: Alfresco/alfresco-build-tools/.github/actions/git-check-existing-tag@v3.6.0
       id: check-tag
@@ -28,7 +28,7 @@ runs:
       id: delete_version
       shell: bash
       env:
-        GITHUB_TOKEN: ${{ inputs.token }}
+        GITHUB_TOKEN: ${{ inputs.gh-token }}
         VERSION: ${{ inputs.version }}
         REPO: ${{ inputs.repo }}
       run: |
@@ -45,7 +45,7 @@ runs:
       if: steps.check-tag.outputs.exists == 'true'
       shell: bash
       env:
-        GITHUB_TOKEN: ${{ inputs.token }}
+        GITHUB_TOKEN: ${{ inputs.gh-token }}
         VERSION: ${{ inputs.version }}
       run: |
         echo "Removing tag from: ${REPO}"
