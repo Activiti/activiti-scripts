@@ -1,14 +1,14 @@
 name: Mock release cleanup
-description: Removal of release and tag
+description: Remove mock release and tag on a repository
 inputs:
   version:
-    description: 'Mock release version to be removed from tags and releases'
+    description: Mock release version to be removed from tags and releases (should end with -mock)
     required: true
   repo:
-    description: 'Path to repo'
+    description: Path the repository
     required: true
   gh-token:
-    description: 'gh token'
+    description: 'GitHub Token'
     required: true
 runs:
   using: composite
