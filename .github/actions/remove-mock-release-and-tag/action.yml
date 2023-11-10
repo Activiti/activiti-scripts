@@ -51,7 +51,6 @@ runs:
           echo "Removing '${VERSION}' release from: ${REPO}"
           gh release delete -R ${REPO} -y ${VERSION}
         else
-          echo "version does not end with '-mock'."
           echo "Error: The provided version does not end with '-mock.'"
           exit 1
         fi
