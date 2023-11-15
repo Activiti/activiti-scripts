@@ -34,7 +34,6 @@ runs:
           echo "Removing '${VERSION}' tag from: ${REPO}"
           git push origin --delete ${VERSION} || true
         else
-          echo "version does not end with '-mock'."
           echo "Error: The provided version does not end with '-mock.'"
           exit 1
         fi
