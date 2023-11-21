@@ -5,4 +5,24 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+
+  - package-ecosystem: "github-actions"
+    directory: "/.github/actions/create-maintenance-branch"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "github-actions"
+    directory: "/.github/actions/docker-update-manifest"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "github-actions"
+    directory: "/.github/actions/update-ci-branch"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "github-actions"
+    directory: "/.github/actions/wait-for-chart"
+    schedule:
+      interval: "weekly"
