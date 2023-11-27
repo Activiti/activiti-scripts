@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: pre-commit
-        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@9cf7c9d178e9ab74bf533217febe4dafe73247f4 # v3.8.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@f8c296ad4ed19996c853123b4ebe050e55ca38f6 # v5.1.0
         with:
           skip_checkout: true
       - name: Ensure SHA pinned actions
