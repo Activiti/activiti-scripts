@@ -17,7 +17,7 @@ jobs:
       - name: Installing activiti-scripts
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/load-release-descriptor@042fc28b3e308e1d1159dfee61bc46c5940ed7b6 # v5.4.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/load-release-descriptor@f2259c2bb5ff4a5579d1a425cb130175a6459665 # v5.10.0
         id: load-descriptor
         with:
           release-descriptor: release.yaml
@@ -44,12 +44,12 @@ jobs:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
       - name: update-to-next-version
-        uses: Alfresco/alfresco-build-tools/.github/actions/maven-update-pom-version@042fc28b3e308e1d1159dfee61bc46c5940ed7b6 # v5.4.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/maven-update-pom-version@f2259c2bb5ff4a5579d1a425cb130175a6459665 # v5.10.0
         with:
           version: ${{ env.NEXT_VERSION }}
           repository-directory: repos/${{ matrix.repo }}
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@042fc28b3e308e1d1159dfee61bc46c5940ed7b6 # v5.4.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@f2259c2bb5ff4a5579d1a425cb130175a6459665 # v5.10.0
         with:
           username: ${{ secrets.BOT_GITHUB_USERNAME }}
           add-options: -u
@@ -87,13 +87,13 @@ jobs:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
       - name: Update branch '${{env.BRANCH}}' to the next version
-        uses: Alfresco/alfresco-build-tools/.github/actions/helm-update-chart-version@042fc28b3e308e1d1159dfee61bc46c5940ed7b6 # v5.4.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/helm-update-chart-version@f2259c2bb5ff4a5579d1a425cb130175a6459665 # v5.10.0
         with:
           new-version: ${{ env.NEXT_VERSION }}
           chart-repository-dir: ${{ env.REPO_DIR }}
           chart-dir: ${{ matrix.chart-dir }}
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@042fc28b3e308e1d1159dfee61bc46c5940ed7b6 # v5.4.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@f2259c2bb5ff4a5579d1a425cb130175a6459665 # v5.10.0
         with:
           username: ${{ secrets.BOT_GITHUB_USERNAME }}
           add-options: -u
@@ -163,7 +163,7 @@ jobs:
           NEXUS_USERNAME: "${{ secrets.NEXUS_USERNAME }}"
           NEXUS_PASSWORD: "${{ secrets.NEXUS_PASSWORD }}"
           VERSION: ${{ steps.create-maintenance-branch.outputs.version }}
-        uses: Alfresco/alfresco-build-tools/.github/actions/maven-update-pom-version@042fc28b3e308e1d1159dfee61bc46c5940ed7b6 # v5.4.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/maven-update-pom-version@f2259c2bb5ff4a5579d1a425cb130175a6459665 # v5.10.0
         with:
           version: ${{ env.VERSION }}
           repository-directory: ${{ env.REPO_DIR }}
@@ -175,7 +175,7 @@ jobs:
           repo-path: ${{ env.REPO_DIR }}
           branch: ${{ steps.create-maintenance-branch.outputs.branch }}
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@042fc28b3e308e1d1159dfee61bc46c5940ed7b6 # v5.4.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@f2259c2bb5ff4a5579d1a425cb130175a6459665 # v5.10.0
         if: steps.create-maintenance-branch.outputs.exists == 'false'
         with:
           username: ${{ secrets.BOT_GITHUB_USERNAME }}
@@ -227,7 +227,7 @@ jobs:
 
       - name: Update maintenance branch '${{env.BRANCH}}' to ${{ env.VERSION }} version
         if: steps.create-maintenance-branch.outputs.exists == 'false'
-        uses: Alfresco/alfresco-build-tools/.github/actions/helm-update-chart-version@042fc28b3e308e1d1159dfee61bc46c5940ed7b6 # v5.4.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/helm-update-chart-version@f2259c2bb5ff4a5579d1a425cb130175a6459665 # v5.10.0
         env:
           BRANCH: ${{steps.create-maintenance-branch.outputs.branch}}
           VERSION: ${{ steps.create-maintenance-branch.outputs.version }}
@@ -243,7 +243,7 @@ jobs:
           repo-path: ${{ env.REPO_DIR }}
           branch: ${{ steps.create-maintenance-branch.outputs.branch }}
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@042fc28b3e308e1d1159dfee61bc46c5940ed7b6 # v5.4.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@f2259c2bb5ff4a5579d1a425cb130175a6459665 # v5.10.0
         if: steps.create-maintenance-branch.outputs.exists == 'false'
         with:
           username: ${{ secrets.BOT_GITHUB_USERNAME }}
