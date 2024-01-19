@@ -237,11 +237,11 @@ jobs:
           repository: Activiti/activiti-cloud-full-chart
           ref: ${{ env.VERSION }}
 
-      - name: Set up JDK 17
+      - name: Set up JDK 21
         uses: actions/setup-java@387ac29b308b003ca37ba93a6cab5eb57c8f5f93 # v4.0.0
         with:
           distribution: temurin
-          java-version: 17
+          java-version: 21
           cache: 'maven'
 
       - name: Wait for full chart to be published
