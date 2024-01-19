@@ -11,14 +11,30 @@ inputs:
 runs:
   using: composite
   steps:
+    - name: Set workflow files variables
+      id: set_workflow_files
+      shell: bash
+      run: |
+        if [[ $REPO_DIR == *"activiti-cloud"* ]]
+        then
+          echo "push_workflow=main.yml" >> $GITHUB_OUTPUT
+          echo "pull_workflow=main.yml" >> $GITHUB_OUTPUT
+        else
+          echo "push_workflow=main_push.yml" >> $GITHUB_OUTPUT
+          echo "pull_workflow=main_pull.yml" >> $GITHUB_OUTPUT
+        fi
+      env:
+        REPO_DIR: ${{ inputs.repo-path }}
+
+
     - name: Update CI configuration
       working-directory: ${{ inputs.repo-path }}
       env:
         BRANCH: ${{ inputs.branch }}
       shell: bash
       run: |
-        yq e -i '.on.push.branches = [ env(BRANCH) ]' .github/workflows/main.yml
-        yq e -i '.on.pull_request.branches = [ env(BRANCH) ]' .github/workflows/main.yml
+        yq e -i '.on.push.branches = [ env(BRANCH) ]' .github/workflows/${{ steps.set_workflow_files.outputs.push_workflow }}
+        yq e -i '.on.pull_request.branches = [ env(BRANCH) ]' .github/workflows/${{ steps.set_workflow_files.outputs.pull_workflow }}
 
         PROPAGATION_WORKFLOW=.github/workflows/versions-propagation-auto-merge.yml
         if test -f "$PROPAGATION_WORKFLOW"; then
