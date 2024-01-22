@@ -4,8 +4,3 @@ release:
   nextVersion: 8.3.0-SNAPSHOT
   notesStartTag: 8.1.0
   mock: false
-  baseTag:
-    activiti: 8.2.0-alpha.25
-    activitiCloud: 8.2.0-alpha.35
-    commonChart: 8.2.0-alpha.4
-    fullChart: 8.2.0-alpha.44
