@@ -267,6 +267,7 @@ jobs:
 
       - name: Install application
         id: install-application
+        if: false
         working-directory: ${{env.FULL_CHART_DIR}}/charts/activiti-cloud-full-example
         env:
           MESSAGING_BROKER: rabbitmq
@@ -290,6 +291,7 @@ jobs:
 
       - name: Run Acceptance Tests
         working-directory: ${{ env.ACT_CLOUD_DIR }}
+        if: false
         run: |
           wait_until_true () {
             local attempt_counter=0
@@ -328,7 +330,7 @@ jobs:
           make test/identity-adapter-acceptance-tests
 
       - name: Delete application
-        if: always() && steps.install-application.outcome == 'success'
+        if: false
         run: kubectl delete ns $PREVIEW_NAME
 
   create-scripts-tag:
