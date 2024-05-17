@@ -19,7 +19,7 @@ runs:
     - name: tag-docker-images
       shell: bash
       env:
-        DOCKER_IMAGES: "example-runtime-bundle,activiti-cloud-query,example-cloud-connector,activiti-cloud-modeling,activiti-cloud-identity-adapter"
+        DOCKER_IMAGES: "example-runtime-bundle,activiti-cloud-query,example-cloud-connector,activiti-cloud-identity-adapter"
         BASE_TAG: "${{ inputs.base-tag }}"
         RELEASE_VERSION: "${{ inputs.extra-tag}}"
         DOCKERHUB_ORG: activiti
