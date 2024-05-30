@@ -15,7 +15,7 @@ jobs:
 
     steps:
       - name: Installing activiti-scripts
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
 
       - uses: Alfresco/alfresco-build-tools/.github/actions/load-release-descriptor@a3f5a4ae53302e9a1f9dc728dee0f4069c1bc584 # v5.22.1
         id: load-descriptor
@@ -36,7 +36,7 @@ jobs:
 
     steps:
       - name: Checkout ${{ matrix.repo }}
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
         with:
           repository: Activiti/${{ matrix.repo }}
           path: ${{ env.REPO_DIR }}
@@ -79,7 +79,7 @@ jobs:
 
     steps:
       - name: Checkout ${{ matrix.repo }}
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
         with:
           repository: Activiti/${{ matrix.repo }}
           path: ${{ env.REPO_DIR }}
@@ -119,10 +119,10 @@ jobs:
 
     steps:
       - name: Checkout activiti-scripts
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
 
       - name: Checkout ${{ matrix.repo }}
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
         with:
           repository: Activiti/${{ matrix.repo }}
           path: ${{ env.REPO_DIR }}
@@ -208,10 +208,10 @@ jobs:
 
     steps:
       - name: Checkout activiti-scripts
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
 
       - name: Checkout ${{ matrix.repo }}
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
         with:
           repository: Activiti/${{ matrix.repo }}
           path: ${{ env.REPO_DIR }}
