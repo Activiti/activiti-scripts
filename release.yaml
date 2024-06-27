@@ -9,3 +9,4 @@ release:
     activitiCloud: 8.6.0-alpha.12
     commonChart: 8.6.0-alpha.9
     fullChart: 8.6.0-alpha.19
+  stagingRepository: activiti-7-community-staging-profile-1215
