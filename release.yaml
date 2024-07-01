@@ -1,8 +1,8 @@
 release:
   branch: 8.1.x
   version: 8.1.1
-  nextVersion: 8.2.0-SNAPSHOT
-  notesStartTag: 8.0.0
+  nextVersion: 8.1.2-SNAPSHOT
+  notesStartTag: 8.1.0
   mock: true
   baseTag:
     activiti: 8.1.1-alpha.9
