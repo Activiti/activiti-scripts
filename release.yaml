@@ -1,11 +1,11 @@
 release:
-  branch: develop
-  version: 8.1.0
-  nextVersion: 8.2.0-SNAPSHOT
-  notesStartTag: 8.0.0
+  branch: 8.1.x
+  version: 8.1.1
+  nextVersion: 8.1.2-SNAPSHOT
+  notesStartTag: 8.1.0
   mock: false
   baseTag:
-    activiti: 8.1.0-alpha.13
+    activiti: 8.1.1-alpha.9
     activitiCloud: 8.1.0-alpha.17
     commonChart: 7.12.0-alpha.3
     fullChart: 8.1.0-alpha.17
