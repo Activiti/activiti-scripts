@@ -5,7 +5,7 @@ release:
   notesStartTag: 8.1.0
   mock: false
   baseTag:
-    activiti: 8.1.1-alpha.9
+    activiti: 8.1.1-alpha.10
     activitiCloud: 8.1.0-alpha.17
     commonChart: 7.12.0-alpha.3
     fullChart: 8.1.0-alpha.17
