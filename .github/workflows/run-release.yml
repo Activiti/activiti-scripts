@@ -121,4 +121,4 @@ jobs:
           GITHUB_REPO: Activiti/${{ matrix.repo }}
           GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
         run: |
-          gh release create $VERSION --generate-notes --repo $GITHUB_REPO --notes-start-tag $NOTES_START_TAG $GH_RN_DRAFT
+          gh release create $VERSION --generate-notes --repo $GITHUB_REPO --notes-start-tag $NOTES_START_TAG $GH_RN_DRAFT --latest=false
