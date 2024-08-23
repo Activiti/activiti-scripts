@@ -37,15 +37,6 @@ jobs:
     outputs:
       staging-repository: ${{ steps.staging.outputs.staging-repository }}
     steps:
-      - name: create-staging-repository
-        id: staging
-        uses: Alfresco/alfresco-build-tools/.github/actions/nexus-create-staging@v2.6.0
-        with:
-          staging-description: Activiti staging ${{ needs.load-release-info.outputs.version }}
-          nexus-profile-id: ${{ secrets.NEXUS_ACTIVITI7_PROFILE_ID }}
-          nexus-username: ${{ secrets.NEXUS_USERNAME }}
-          nexus-password: ${{ secrets.NEXUS_PASSWORD }}
-
       - name: Checkout activiti-scripts
         uses: actions/checkout@v3
 
@@ -54,7 +45,7 @@ jobs:
           repo: Activiti/Activiti
           base-ref: ${{  needs.load-release-info.outputs.activiti-tag }}
           release-version: ${{ needs.load-release-info.outputs.version }}
-          staging-repository: ${{ steps.staging.outputs.staging-repository }}
+          staging-repository: activiti-releases
           git-username: ${{ secrets.BOT_GITHUB_USERNAME }}
           github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
           gpg-passphrase: "${{ secrets.GPG_PASSPHRASE }}"
@@ -86,7 +77,7 @@ jobs:
       - name: Update staging repository
         env:
           STAGING_REPOSITORY_FILE: maven-config/staging-repository.txt
-          STAGING_REPOSITORY_ID: ${{ needs.release-activiti.outputs.staging-repository }}
+          STAGING_REPOSITORY_ID: activiti-releases
         run: |
           echo "$STAGING_REPOSITORY_ID" > "$STAGING_REPOSITORY_FILE"
           yq -i e '.release.stagingRepository = env(STAGING_REPOSITORY_ID)' release.yaml
@@ -103,30 +94,6 @@ jobs:
           git tag "$RELEASE_VERSION" -m "Release version $RELEASE_VERSION"
           git push origin "$RELEASE_VERSION"
 
-
-  promote-nexus-staging:
-    runs-on: ubuntu-latest
-    needs:
-      - load-release-info
-      - release-activiti
-      - create-scripts-tag
-
-    steps:
-      - uses: Alfresco/alfresco-build-tools/.github/actions/nexus-close-staging@v2.6.0
-        if: needs.load-release-info.outputs.mock != 'true'
-        with:
-          version: ${{ needs.load-release-info.outputs.version }}
-          staging-repository: ${{ needs.release-activiti.outputs.staging-repository}}
-          nexus-username: ${{ secrets.NEXUS_USERNAME }}
-          nexus-password: ${{ secrets.NEXUS_PASSWORD }}
-
-      - uses: Alfresco/alfresco-build-tools/.github/actions/nexus-release-staging@v2.6.0
-        if: needs.load-release-info.outputs.mock != 'true'
-        with:
-          version: ${{ needs.load-release-info.outputs.version }}
-          staging-repository: ${{ needs.release-activiti.outputs.staging-repository}}
-          nexus-username: ${{ secrets.NEXUS_USERNAME }}
-          nexus-password: ${{ secrets.NEXUS_PASSWORD }}
 
   create-gh-releases:
     runs-on: ubuntu-latest
