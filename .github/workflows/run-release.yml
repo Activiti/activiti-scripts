@@ -77,7 +77,7 @@ jobs:
       - name: Update staging repository
         env:
           STAGING_REPOSITORY_FILE: maven-config/staging-repository.txt
-          STAGING_REPOSITORY_ID: ${{ needs.release-activiti.outputs.staging-repository }}
+          STAGING_REPOSITORY_ID: activiti-releases
         run: |
           echo "$STAGING_REPOSITORY_ID" > "$STAGING_REPOSITORY_FILE"
           yq -i e '.release.stagingRepository = env(STAGING_REPOSITORY_ID)' release.yaml
