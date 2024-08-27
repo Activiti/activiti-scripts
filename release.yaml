@@ -1,11 +1,8 @@
 release:
-  branch: develop
-  version: 7.11.0
-  nextVersion: 7.12.0-SNAPSHOT
+  branch: 7.11.x
+  version: 7.11.2
+  nextVersion: 7.11.3-SNAPSHOT
   mock: false
-  notesStartTag: 7.10.0
+  notesStartTag: 7.11.0
   baseTag:
-    activiti: 7.11.0-alpha.2
-    activitiCloud: 7.11.0-alpha.9
-    commonChart: 7.11.0-alpha.1
-    fullChart: 7.11.0-alpha.12
+    activiti: 7.11.1
