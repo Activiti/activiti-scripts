@@ -69,11 +69,6 @@ jobs:
         with:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/git-check-existing-tag@v2.6.0
-        id: check-tag
-        with:
-          tag: ${{ env.RELEASE_VERSION }}
-
       - name: Update staging repository
         env:
           STAGING_REPOSITORY_FILE: maven-config/staging-repository.txt
