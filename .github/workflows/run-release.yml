@@ -375,7 +375,18 @@ jobs:
           destination-repository: activiti-temp-test-move
           source-repository: activiti-staging
           group: org.activiti
-          version: ${{ needs.load-release-info.outputs.version }}
+          version: ${{ needs.load-descriptor.outputs.version }}
+
+      - uses: Alfresco/alfresco-build-tools/.github/actions/nexus-move-artifacts@9d00215f539f669b41c7fabf7b88ccc8f316926c # v6.0.1
+        if: needs.load-release-info.outputs.mock != 'true'
+        with:
+          nexus-username: ${{ secrets.NEXUS_USERNAME }}
+          nexus-password: ${{ secrets.NEXUS_PASSWORD }}
+          nexus-url: ${{vars.NEXUS_URL}}
+          destination-repository: activiti-temp-test-move
+          source-repository: activiti-staging
+          group: org.activiti.cloud
+          version: ${{ needs.load-descriptor.outputs.version }}
 
   create-gh-releases:
     runs-on: ubuntu-latest
