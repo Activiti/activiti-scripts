@@ -125,18 +125,7 @@ jobs:
   release-activiti:
     runs-on: ubuntu-latest
     needs: [load-release-info]
-    outputs:
-      tag-name: ${{ steps.tagging.outputs.tag-name }}
     steps:
-      - name: create nexus-tag
-        id: tagging
-        uses: Alfresco/alfresco-build-tools/.github/actions/nexus-create-tag@9d00215f539f669b41c7fabf7b88ccc8f316926c # v6.0.1
-        with:
-          tag: ${{ needs.load-release-info.outputs.version }}
-          nexus-username: ${{ secrets.NEXUS_USERNAME }}
-          nexus-password: ${{ secrets.NEXUS_PASSWORD }}
-          nexus-url: ${{vars.NEXUS_URL}}
-
       - name: Checkout activiti-scripts
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
@@ -155,16 +144,6 @@ jobs:
           nexus-password: "${{ secrets.NEXUS_PASSWORD }}"
           java-distribution: "temurin"
           java-version: "21"
-
-      - name: Associate tag with artifacts
-        uses: Alfresco/alfresco-build-tools/.github/actions/nexus-associate-tag@9d00215f539f669b41c7fabf7b88ccc8f316926c # v6.0.1
-        with:
-          tag: ${{ steps.tagging.outputs.tag-name }}
-          nexus-username: ${{ secrets.NEXUS_USERNAME }}
-          nexus-password: ${{ secrets.NEXUS_PASSWORD }}
-          nexus-url: ${{vars.NEXUS_URL}}
-          group: org.activiti
-          version: ${{ steps.load-descriptor.outputs.version }}
 
   release-activiti-cloud:
     runs-on: ubuntu-latest
@@ -191,16 +170,6 @@ jobs:
           nexus-password: "${{ secrets.NEXUS_PASSWORD }}"
           java-distribution: "temurin"
           java-version: "21"
-
-      - name: Associate tag with artifacts
-        uses: Alfresco/alfresco-build-tools/.github/actions/nexus-associate-tags@9d00215f539f669b41c7fabf7b88ccc8f316926c # v6.0.1
-        with:
-          tag-name: ${{ steps.tagging.outputs.tag-name }}
-          nexus-username: ${{ secrets.NEXUS_USERNAME }}
-          nexus-password: ${{ secrets.NEXUS_PASSWORD }}
-          nexus-url: ${{vars.NEXUS_URL}}
-          group: org.activiti.cloud
-          version: ${{ steps.load-descriptor.outputs.version }}
 
   run-sanity-checks:
     runs-on: ubuntu-latest
@@ -400,7 +369,6 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/nexus-move-artifacts@9d00215f539f669b41c7fabf7b88ccc8f316926c # v6.0.1
         if: needs.load-release-info.outputs.mock != 'true'
         with:
-          tag: ${{ needs.load-release-info.outputs.version }}
           nexus-username: ${{ secrets.NEXUS_USERNAME }}
           nexus-password: ${{ secrets.NEXUS_PASSWORD }}
           nexus-url: ${{vars.NEXUS_URL}}
