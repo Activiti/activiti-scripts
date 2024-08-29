@@ -130,11 +130,12 @@ jobs:
     steps:
       - name: create nexus-tag
         id: tagging
-        uses: Alfresco/alfresco-build-tools/.github/actions/nexus-create-staging@9d00215f539f669b41c7fabf7b88ccc8f316926c # v6.0.1
+        uses: Alfresco/alfresco-build-tools/.github/actions/nexus-create-tag@9d00215f539f669b41c7fabf7b88ccc8f316926c # v6.0.1
         with:
-          tag-name: ${{ needs.load-release-info.outputs.version }}
+          tag: ${{ needs.load-release-info.outputs.version }}
           nexus-username: ${{ secrets.NEXUS_USERNAME }}
           nexus-password: ${{ secrets.NEXUS_PASSWORD }}
+          nexus-url: ${{vars.NEXUS_URL}}
 
       - name: Checkout activiti-scripts
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
@@ -144,7 +145,7 @@ jobs:
           repo: Activiti/Activiti
           base-ref: ${{  needs.load-release-info.outputs.activiti-tag }}
           release-version: ${{ needs.load-release-info.outputs.version }}
-          staging-repository: http://nexus.alfresco.com/nexus/repository/activiti-staging/
+          staging-repository: activiti-staging
           git-username: ${{ secrets.BOT_GITHUB_USERNAME }}
           github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
           gpg-passphrase: "${{ secrets.GPG_PASSPHRASE }}"
@@ -158,9 +159,10 @@ jobs:
       - name: Associate tag with artifacts
         uses: Alfresco/alfresco-build-tools/.github/actions/nexus-associate-tag@9d00215f539f669b41c7fabf7b88ccc8f316926c # v6.0.1
         with:
-          tag-name: ${{ steps.tagging.outputs.tag-name }}
+          tag: ${{ steps.tagging.outputs.tag-name }}
           nexus-username: ${{ secrets.NEXUS_USERNAME }}
           nexus-password: ${{ secrets.NEXUS_PASSWORD }}
+          nexus-url: ${{vars.NEXUS_URL}}
           group: org.activiti
           version: ${{ steps.load-descriptor.outputs.version }}
 
@@ -179,7 +181,7 @@ jobs:
           base-ref: ${{  needs.load-release-info.outputs.activiti-cloud-tag }}
           extra-replacements: activiti.version=${{  needs.load-release-info.outputs.activiti-tag }}
           release-version: ${{ needs.load-release-info.outputs.version }}
-          staging-repository: http://nexus.alfresco.com/nexus/repository/activiti-staging/
+          staging-repository: activiti-staging
           git-username: ${{ secrets.BOT_GITHUB_USERNAME }}
           github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
           gpg-passphrase: "${{ secrets.GPG_PASSPHRASE }}"
@@ -196,9 +198,9 @@ jobs:
           tag-name: ${{ steps.tagging.outputs.tag-name }}
           nexus-username: ${{ secrets.NEXUS_USERNAME }}
           nexus-password: ${{ secrets.NEXUS_PASSWORD }}
+          nexus-url: ${{vars.NEXUS_URL}}
           group: org.activiti.cloud
           version: ${{ steps.load-descriptor.outputs.version }}
-
 
   run-sanity-checks:
     runs-on: ubuntu-latest
@@ -398,10 +400,14 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/nexus-move-artifacts@9d00215f539f669b41c7fabf7b88ccc8f316926c # v6.0.1
         if: needs.load-release-info.outputs.mock != 'true'
         with:
-          tag-name: ${{ needs.load-release-info.outputs.version }}
+          tag: ${{ needs.load-release-info.outputs.version }}
           nexus-username: ${{ secrets.NEXUS_USERNAME }}
           nexus-password: ${{ secrets.NEXUS_PASSWORD }}
-          destination-repository: http://nexus.alfresco.com/nexus/repository/activiti-temp-test-move/
+          nexus-url: ${{vars.NEXUS_URL}}
+          destination-repository: activiti-temp-test-move
+          source-repository: activiti-staging
+          group: org.activiti
+          version: ${{ needs.load-release-info.outputs.version }}
 
   create-gh-releases:
     runs-on: ubuntu-latest
