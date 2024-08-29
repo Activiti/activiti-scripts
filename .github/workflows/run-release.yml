@@ -366,7 +366,7 @@ jobs:
       - create-scripts-tag
 
     steps:
-      - uses: Alfresco/alfresco-build-tools/.github/actions/nexus-move-artifacts@9d00215f539f669b41c7fabf7b88ccc8f316926c # v6.0.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/nexus-move-artifacts@c3b048542d490d7b31b017d0d46c9f93961f4a23 # v6.0.1
         if: needs.load-release-info.outputs.mock != 'true'
         with:
           nexus-username: ${{ secrets.NEXUS_USERNAME }}
@@ -377,7 +377,7 @@ jobs:
           group: org.activiti
           version: ${{ needs.load-descriptor.outputs.version }}
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/nexus-move-artifacts@9d00215f539f669b41c7fabf7b88ccc8f316926c # v6.0.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/nexus-move-artifacts@c3b048542d490d7b31b017d0d46c9f93961f4a23 # v6.0.1
         if: needs.load-release-info.outputs.mock != 'true'
         with:
           nexus-username: ${{ secrets.NEXUS_USERNAME }}
