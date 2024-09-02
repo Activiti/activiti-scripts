@@ -348,27 +348,15 @@ jobs:
 
   promote-nexus-staging:
     runs-on: ubuntu-latest
-    if: ${{ needs.load-release-info.outputs.mock != 'true' }}
     needs:
       - load-release-info
       - release-activiti
       - create-scripts-tag
 
     steps:
-      - name: Count artifacts in nexus repository for activiti
-        id: count-artifacts-activiti
-        uses: Alfresco/alfresco-build-tools/.github/actions/nexus-count-artifacts@92be05c9e37b178bb2e478e4075c4dc6ee2e99f0 # v6.0.1
-        with:
-          nexus-username: ${{ secrets.NEXUS_USERNAME }}
-          nexus-password: ${{ secrets.NEXUS_PASSWORD }}
-          nexus-url: ${{ vars.NEXUS_URL }}
-          repository: activiti-staging
-          group: org.activiti
-          version: ${{ needs.load-release-info.outputs.version }}
-
       - name: Move artifacts to destination repository for activiti
         id: move-artifacts-activiti
-        if: ${{ steps.count-artifacts-activiti.outputs.artifact_count > 0 }}
+        if: ${{ needs.load-release-info.outputs.mock != 'true' }}
         uses: Alfresco/alfresco-build-tools/.github/actions/nexus-move-artifacts@92be05c9e37b178bb2e478e4075c4dc6ee2e99f0 # v6.0.1
         with:
           nexus-username: ${{ secrets.NEXUS_USERNAME }}
@@ -377,26 +365,11 @@ jobs:
           destination-repository: activiti-releases
           source-repository: activiti-staging
           group: org.activiti
-          version: ${{ needs.load-release-info.outputs.version }}
-
-      - name: Print message if no artifacts found for activiti
-        if: ${{ steps.count-artifacts-activiti.outputs.artifact_count == 0 }}
-        run: echo "No artifacts found to move with group org.activiti and version ${{ needs.load-release-info.outputs.version }}"
-
-      - name: Count artifacts in nexus repository for activiti-cloud
-        id: count-artifacts-activiti-cloud
-        uses: Alfresco/alfresco-build-tools/.github/actions/nexus-count-artifacts@92be05c9e37b178bb2e478e4075c4dc6ee2e99f0 # v6.0.1
-        with:
-          nexus-username: ${{ secrets.NEXUS_USERNAME }}
-          nexus-password: ${{ secrets.NEXUS_PASSWORD }}
-          nexus-url: ${{ vars.NEXUS_URL }}
-          repository: activiti-staging
-          group: org.activiti.cloud
           version: ${{ needs.load-release-info.outputs.version }}
 
       - name: Move artifacts to destination repository for activiti-cloud
         id: move-artifacts-activiti-cloud
-        if: ${{ steps.count-artifacts-activiti-cloud.outputs.artifact_count > 0 }}
+        if: ${{ needs.load-release-info.outputs.mock != 'true' }}
         uses: Alfresco/alfresco-build-tools/.github/actions/nexus-move-artifacts@92be05c9e37b178bb2e478e4075c4dc6ee2e99f0 # v6.0.1
         with:
           nexus-username: ${{ secrets.NEXUS_USERNAME }}
@@ -406,10 +379,6 @@ jobs:
           source-repository: activiti-staging
           group: org.activiti.cloud
           version: ${{ needs.load-release-info.outputs.version }}
-
-      - name: Print message if no artifacts found for activiti-cloud
-        if: ${{ steps.count-artifacts-activiti-cloud.outputs.artifact_count == 0 }}
-        run: echo "No artifacts found to move with group org.activiti.cloud and version ${{ needs.load-release-info.outputs.version }}"
 
   create-gh-releases:
     runs-on: ubuntu-latest
