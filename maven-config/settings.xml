@@ -7,6 +7,11 @@
       <username>${env.NEXUS_USERNAME}</username>
       <password>${env.NEXUS_PASSWORD}</password>
     </server>
+    <server>
+      <id>activiti-staging</id>
+      <username>${env.NEXUS_USERNAME}</username>
+      <password>${env.NEXUS_PASSWORD}</password>
+    </server>
   </servers>
   <profiles>
     <profile>
@@ -44,7 +49,7 @@
         </repository>
         <repository>
           <id>activiti-staging</id>
-          <url>${env.NEXUS_URL}/service/local/repositories/${env.STAGING_REPOSITORY_ID}/content</url>
+          <url>${env.NEXUS_URL}/content/repositories/${env.STAGING_REPOSITORY_ID}</url>
         </repository>
       </repositories>
     </profile>
