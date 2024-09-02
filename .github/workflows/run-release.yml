@@ -129,7 +129,7 @@ jobs:
       - name: Checkout activiti-scripts
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/maven-release@9d00215f539f669b41c7fabf7b88ccc8f316926c # v6.0.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/maven-release@a4013b7dfd8453ee94ec5d4eb8cb51d74654f770 # v7.0.0
         with:
           repo: Activiti/Activiti
           base-ref: ${{  needs.load-release-info.outputs.activiti-tag }}
@@ -154,7 +154,7 @@ jobs:
       - name: Checkout activiti-scripts
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/maven-release@9d00215f539f669b41c7fabf7b88ccc8f316926c # v6.0.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/maven-release@a4013b7dfd8453ee94ec5d4eb8cb51d74654f770 # v7.0.0
         with:
           repo: Activiti/activiti-cloud
           base-ref: ${{  needs.load-release-info.outputs.activiti-cloud-tag }}
@@ -357,7 +357,7 @@ jobs:
       - name: Move artifacts to destination repository for activiti
         id: move-artifacts-activiti
         if: ${{ needs.load-release-info.outputs.mock != 'true' }}
-        uses: Alfresco/alfresco-build-tools/.github/actions/nexus-move-artifacts@92be05c9e37b178bb2e478e4075c4dc6ee2e99f0 # v6.0.1
+        uses: Alfresco/alfresco-build-tools/.github/actions/nexus-move-artifacts@a4013b7dfd8453ee94ec5d4eb8cb51d74654f770 # v7.0.0
         with:
           nexus-username: ${{ secrets.NEXUS_USERNAME }}
           nexus-password: ${{ secrets.NEXUS_PASSWORD }}
@@ -370,7 +370,7 @@ jobs:
       - name: Move artifacts to destination repository for activiti-cloud
         id: move-artifacts-activiti-cloud
         if: ${{ needs.load-release-info.outputs.mock != 'true' }}
-        uses: Alfresco/alfresco-build-tools/.github/actions/nexus-move-artifacts@92be05c9e37b178bb2e478e4075c4dc6ee2e99f0 # v6.0.1
+        uses: Alfresco/alfresco-build-tools/.github/actions/nexus-move-artifacts@a4013b7dfd8453ee94ec5d4eb8cb51d74654f770 # v7.0.0
         with:
           nexus-username: ${{ secrets.NEXUS_USERNAME }}
           nexus-password: ${{ secrets.NEXUS_PASSWORD }}
