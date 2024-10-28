@@ -24,7 +24,7 @@ jobs:
 
     steps:
       - name: Installing activiti-scripts
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - uses: Alfresco/alfresco-build-tools/.github/actions/load-release-descriptor@209bb4275688720e13dc0703dbd17826bf677c5c # v6.1.0
         id: load-descriptor
@@ -36,7 +36,7 @@ jobs:
     needs: [load-release-info]
     steps:
       - name: Checkout activiti-scripts
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: tag-docker-images
         uses: ./.github/actions/docker-update-manifest
@@ -53,7 +53,7 @@ jobs:
       COMMON_CHART_DIR: common-chart
     steps:
       - name: Checkout common chart
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         env:
           BASE_TAG: ${{needs.load-release-info.outputs.common-chart-tag}}
         with:
@@ -82,10 +82,10 @@ jobs:
       VERSION: ${{needs.load-release-info.outputs.version}}
     steps:
       - name: Checkout activiti-scripts
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Checkout full chart
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         env:
           BASE_TAG: ${{ needs.load-release-info.outputs.full-chart-tag }}
         with:
@@ -127,7 +127,7 @@ jobs:
     needs: [load-release-info]
     steps:
       - name: Checkout activiti-scripts
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - uses: Alfresco/alfresco-build-tools/.github/actions/maven-release@a4013b7dfd8453ee94ec5d4eb8cb51d74654f770 # v7.0.0
         with:
@@ -152,7 +152,7 @@ jobs:
       - release-activiti
     steps:
       - name: Checkout activiti-scripts
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - uses: Alfresco/alfresco-build-tools/.github/actions/maven-release@a4013b7dfd8453ee94ec5d4eb8cb51d74654f770 # v7.0.0
         with:
@@ -207,10 +207,10 @@ jobs:
           context: ${{ env.CLUSTER_NAME }}
 
       - name: Checkout activiti-scripts
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Checkout activiti-cloud
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: Activiti/activiti-cloud
           path: ${{ env.ACT_CLOUD_DIR}}
@@ -219,7 +219,7 @@ jobs:
           ref: ${{ needs.load-release-info.outputs.activiti-cloud-tag }}
 
       - name: Checkout full chart
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           path: ${{ env.FULL_CHART_DIR }}
           repository: Activiti/activiti-cloud-full-chart
@@ -328,7 +328,7 @@ jobs:
       RELEASE_VERSION: ${{ needs.load-release-info.outputs.version }}
     steps:
       - name: Checkout activiti-scripts
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
