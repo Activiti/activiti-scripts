@@ -56,7 +56,7 @@ runs:
       run: |
         git checkout -b "$BRANCH"
 
-    - uses: Alfresco/alfresco-build-tools/.github/actions/setup-pysemver@5cab7bac9b94deb11087c3c39c8e412f6ecf1e00 # v8.1.0
+    - uses: Alfresco/alfresco-build-tools/.github/actions/setup-pysemver@1713976b6d7dc48dfe74f441c9bf1ae9481cbb45 # v8.6.1
     - name: Resolve maintenance version
       id: resolve-maintenance-version
       if: steps.check-branch-exists.outputs.result == 'false'
