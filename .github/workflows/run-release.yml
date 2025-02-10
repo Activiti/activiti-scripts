@@ -103,21 +103,19 @@ jobs:
       - create-scripts-tag
 
     steps:
-      - uses: Alfresco/alfresco-build-tools/.github/actions/nexus-close-staging@v2.6.0
-        if: needs.load-release-info.outputs.mock != 'true'
+      - name: Move artifacts to destination repository for activiti
+        id: move-artifacts-activiti
+        if: ${{ needs.load-release-info.outputs.mock != 'true' }}
+        uses: Alfresco/alfresco-build-tools/.github/actions/nexus-move-artifacts@5cab7bac9b94deb11087c3c39c8e412f6ecf1e00 # v8.1.0
         with:
-          version: ${{ needs.load-release-info.outputs.version }}
-          staging-repository: ${{ needs.release-activiti.outputs.staging-repository}}
           nexus-username: ${{ secrets.NEXUS_USERNAME }}
           nexus-password: ${{ secrets.NEXUS_PASSWORD }}
-
-      - uses: Alfresco/alfresco-build-tools/.github/actions/nexus-release-staging@v2.6.0
-        if: needs.load-release-info.outputs.mock != 'true'
-        with:
+          nexus-url: ${{ vars.NEXUS_URL }}
+          destination-repository: activiti-releases
+          source-repository: activiti-staging
+          group: org.activiti
           version: ${{ needs.load-release-info.outputs.version }}
           staging-repository: ${{ needs.release-activiti.outputs.staging-repository}}
-          nexus-username: ${{ secrets.NEXUS_USERNAME }}
-          nexus-password: ${{ secrets.NEXUS_PASSWORD }}
 
   create-gh-releases:
     runs-on: ubuntu-latest
