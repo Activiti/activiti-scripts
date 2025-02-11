@@ -6,3 +6,4 @@ release:
   mock: false
   baseTag:
     activiti: 7.11.3-alpha.1
+  stagingRepository: activiti-releases
