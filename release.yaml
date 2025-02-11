@@ -1,8 +1,8 @@
 release:
   branch: 7.11.x
-  version: 7.11.1
-  nextVersion: 7.11.2-SNAPSHOT
-  notesStartTag: 7.11.0
-  mock: false
+  version: 7.11.3
+  nextVersion: 7.11.4-SNAPSHOT
+  notesStartTag: 7.11.2
+  mock: true
   baseTag:
-    activiti: 7.11.1-alpha.15
+    activiti: 7.11.3-alpha.1
