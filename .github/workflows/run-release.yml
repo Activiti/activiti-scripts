@@ -54,7 +54,7 @@ jobs:
           nexus-username: "${{ secrets.NEXUS_USERNAME }}"
           nexus-password: "${{ secrets.NEXUS_PASSWORD }}"
           java-distribution: "temurin"
-          java-version: "17"
+          java-version: "11"
 
   create-scripts-tag:
     runs-on: ubuntu-latest
