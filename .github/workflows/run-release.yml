@@ -24,9 +24,9 @@ jobs:
 
     steps:
       - name: Installing activiti-scripts
-        uses: actions/checkout@v3
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/load-release-descriptor@v2.6.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/load-release-descriptor@5cab7bac9b94deb11087c3c39c8e412f6ecf1e00 # v8.1.0
         id: load-descriptor
         with:
           release-descriptor: release.yaml
@@ -47,9 +47,9 @@ jobs:
           nexus-password: ${{ secrets.NEXUS_PASSWORD }}
 
       - name: Checkout activiti-scripts
-        uses: actions/checkout@v3
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/maven-release@v3.3.3
+      - uses: Alfresco/alfresco-build-tools/.github/actions/maven-release@5cab7bac9b94deb11087c3c39c8e412f6ecf1e00 # v8.1.0
         with:
           repo: Activiti/Activiti
           base-ref: ${{  needs.load-release-info.outputs.activiti-tag }}
@@ -74,11 +74,11 @@ jobs:
       RELEASE_VERSION: ${{ needs.load-release-info.outputs.version }}
     steps:
       - name: Checkout activiti-scripts
-        uses: actions/checkout@v3
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/git-check-existing-tag@v2.6.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/git-check-existing-tag@5cab7bac9b94deb11087c3c39c8e412f6ecf1e00 # v8.1.0
         id: check-tag
         with:
           tag: ${{ env.RELEASE_VERSION }}
