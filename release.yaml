@@ -1,5 +1,5 @@
 release:
-  branch: develop
+  branch: 8.7.x
   version: 8.7.0
   nextVersion: 8.8.0-SNAPSHOT
   notesStartTag: 8.6.0
