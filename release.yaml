@@ -3,7 +3,7 @@ release:
   version: 8.7.1
   nextVersion: 8.7.2-SNAPSHOT
   notesStartTag: 8.7.0
-  mock: true
+  mock: false
   baseTag:
     activiti: 8.7.0-alpha.51
     activitiCloud: 8.7.1-alpha.2
