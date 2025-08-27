@@ -22,27 +22,45 @@ jobs:
           if [[ "${VERSION}" == *-mock ]]; then
             echo "Starting cleanup for version: ${VERSION}"
             
+            # Initialize error tracking
+            has_errors=false
+            
             echo "Deleting release from Activiti/activiti-cloud-full-chart..."
-            gh release delete -R Activiti/activiti-cloud-full-chart -y --cleanup-tag ${VERSION}
-            echo "✓ Deleted release from Activiti/activiti-cloud-full-chart"
+            gh release delete -R Activiti/activiti-cloud-full-chart -y --cleanup-tag ${VERSION} || { echo "❌ Failed to delete release from Activiti/activiti-cloud-full-chart"; has_errors=true; }
+            if [[ "$has_errors" == "false" ]]; then
+              echo "✓ Deleted release from Activiti/activiti-cloud-full-chart"
+            fi
             
             echo "Deleting release from Activiti/activiti-cloud..."
-            gh release delete -R Activiti/activiti-cloud -y --cleanup-tag ${VERSION}
-            echo "✓ Deleted release from Activiti/activiti-cloud"
+            gh release delete -R Activiti/activiti-cloud -y --cleanup-tag ${VERSION} || { echo "❌ Failed to delete release from Activiti/activiti-cloud"; has_errors=true; }
+            if [[ "$has_errors" == "false" ]] || [[ "$(gh release delete -R Activiti/activiti-cloud -y --cleanup-tag ${VERSION} 2>&1)" != *"failed"* ]]; then
+              echo "✓ Deleted release from Activiti/activiti-cloud"
+            fi
             
             echo "Deleting release from Activiti/activiti-cloud-common-chart..."
-            gh release delete -R Activiti/activiti-cloud-common-chart -y --cleanup-tag ${VERSION}
-            echo "✓ Deleted release from Activiti/activiti-cloud-common-chart"
+            gh release delete -R Activiti/activiti-cloud-common-chart -y --cleanup-tag ${VERSION} || { echo "❌ Failed to delete release from Activiti/activiti-cloud-common-chart"; has_errors=true; }
+            if [[ "$(gh release delete -R Activiti/activiti-cloud-common-chart -y --cleanup-tag ${VERSION} 2>&1; echo $?)" == "0" ]]; then
+              echo "✓ Deleted release from Activiti/activiti-cloud-common-chart"
+            fi
             
             echo "Deleting release from Activiti/Activiti..."
-            gh release delete -R Activiti/Activiti -y --cleanup-tag ${VERSION}
-            echo "✓ Deleted release from Activiti/Activiti"
+            gh release delete -R Activiti/Activiti -y --cleanup-tag ${VERSION} || { echo "❌ Failed to delete release from Activiti/Activiti"; has_errors=true; }
+            if [[ "$(gh release delete -R Activiti/Activiti -y --cleanup-tag ${VERSION} 2>&1; echo $?)" == "0" ]]; then
+              echo "✓ Deleted release from Activiti/Activiti"
+            fi
             
             echo "Deleting tag from Activiti/activiti-scripts..."
-            gh api --silent -X DELETE /repos/Activiti/activiti-scripts/git/refs/tags/${VERSION}
-            echo "✓ Deleted tag from Activiti/activiti-scripts"
+            gh api --silent -X DELETE /repos/Activiti/activiti-scripts/git/refs/tags/${VERSION} || { echo "❌ Failed to delete tag from Activiti/activiti-scripts"; has_errors=true; }
+            if [[ "$(gh api --silent -X DELETE /repos/Activiti/activiti-scripts/git/refs/tags/${VERSION} 2>&1; echo $?)" == "0" ]]; then
+              echo "✓ Deleted tag from Activiti/activiti-scripts"
+            fi
             
-            echo "✅ Cleanup completed for version: ${VERSION}"
+            if [[ "$has_errors" == "true" ]]; then
+              echo "❌ Cleanup completed with errors for version: ${VERSION}"
+              exit 1
+            else
+              echo "✅ Cleanup completed successfully for version: ${VERSION}"
+            fi
 
           else
             echo "version does not end with '-mock'."
