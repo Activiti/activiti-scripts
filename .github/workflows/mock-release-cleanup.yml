@@ -26,33 +26,43 @@ jobs:
             has_errors=false
             
             echo "Deleting release from Activiti/activiti-cloud-full-chart..."
-            gh release delete -R Activiti/activiti-cloud-full-chart -y --cleanup-tag ${VERSION} || { echo "❌ Failed to delete release from Activiti/activiti-cloud-full-chart"; has_errors=true; }
-            if [[ "$has_errors" == "false" ]]; then
+            if gh release delete -R Activiti/activiti-cloud-full-chart -y --cleanup-tag ${VERSION}; then
               echo "✓ Deleted release from Activiti/activiti-cloud-full-chart"
+            else
+              echo "❌ Failed to delete release from Activiti/activiti-cloud-full-chart"
+              has_errors=true
             fi
             
             echo "Deleting release from Activiti/activiti-cloud..."
-            gh release delete -R Activiti/activiti-cloud -y --cleanup-tag ${VERSION} || { echo "❌ Failed to delete release from Activiti/activiti-cloud"; has_errors=true; }
-            if [[ "$has_errors" == "false" ]] || [[ "$(gh release delete -R Activiti/activiti-cloud -y --cleanup-tag ${VERSION} 2>&1)" != *"failed"* ]]; then
+            if gh release delete -R Activiti/activiti-cloud -y --cleanup-tag ${VERSION}; then
               echo "✓ Deleted release from Activiti/activiti-cloud"
+            else
+              echo "❌ Failed to delete release from Activiti/activiti-cloud"
+              has_errors=true
             fi
             
             echo "Deleting release from Activiti/activiti-cloud-common-chart..."
-            gh release delete -R Activiti/activiti-cloud-common-chart -y --cleanup-tag ${VERSION} || { echo "❌ Failed to delete release from Activiti/activiti-cloud-common-chart"; has_errors=true; }
-            if [[ "$(gh release delete -R Activiti/activiti-cloud-common-chart -y --cleanup-tag ${VERSION} 2>&1; echo $?)" == "0" ]]; then
+            if gh release delete -R Activiti/activiti-cloud-common-chart -y --cleanup-tag ${VERSION}; then
               echo "✓ Deleted release from Activiti/activiti-cloud-common-chart"
+            else
+              echo "❌ Failed to delete release from Activiti/activiti-cloud-common-chart"
+              has_errors=true
             fi
             
             echo "Deleting release from Activiti/Activiti..."
-            gh release delete -R Activiti/Activiti -y --cleanup-tag ${VERSION} || { echo "❌ Failed to delete release from Activiti/Activiti"; has_errors=true; }
-            if [[ "$(gh release delete -R Activiti/Activiti -y --cleanup-tag ${VERSION} 2>&1; echo $?)" == "0" ]]; then
+            if gh release delete -R Activiti/Activiti -y --cleanup-tag ${VERSION}; then
               echo "✓ Deleted release from Activiti/Activiti"
+            else
+              echo "❌ Failed to delete release from Activiti/Activiti"
+              has_errors=true
             fi
             
             echo "Deleting tag from Activiti/activiti-scripts..."
-            gh api --silent -X DELETE /repos/Activiti/activiti-scripts/git/refs/tags/${VERSION} || { echo "❌ Failed to delete tag from Activiti/activiti-scripts"; has_errors=true; }
-            if [[ "$(gh api --silent -X DELETE /repos/Activiti/activiti-scripts/git/refs/tags/${VERSION} 2>&1; echo $?)" == "0" ]]; then
+            if gh api --silent -X DELETE /repos/Activiti/activiti-scripts/git/refs/tags/${VERSION}; then
               echo "✓ Deleted tag from Activiti/activiti-scripts"
+            else
+              echo "❌ Failed to delete tag from Activiti/activiti-scripts"
+              has_errors=true
             fi
             
             if [[ "$has_errors" == "true" ]]; then
