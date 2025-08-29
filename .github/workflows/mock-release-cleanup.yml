@@ -10,70 +10,41 @@ on:
 jobs:
   delete_version:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        repo:
+          - { name: "Activiti/activiti-cloud-full-chart", type: "release" }
+          - { name: "Activiti/activiti-cloud", type: "release" }
+          - { name: "Activiti/activiti-cloud-common-chart", type: "release" }
+          - { name: "Activiti/Activiti", type: "release" }
+          - { name: "Activiti/activiti-scripts", type: "tag" }
+      fail-fast: false
     steps:
       - name: Delete version if the provided version ends with "-mock"
-        id: delete_version
         shell: bash
         env:
           GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
-          REPO: ${{ inputs.repository }}
           VERSION: ${{ inputs.version }}
         run: |
-          if [[ "${VERSION}" == *-mock ]]; then
-            echo "Starting cleanup for version: ${VERSION}"
-            
-            # Initialize error tracking
-            has_errors=false
-            
-            echo "Deleting release from Activiti/activiti-cloud-full-chart..."
-            if gh release delete -R Activiti/activiti-cloud-full-chart -y --cleanup-tag ${VERSION}; then
-              echo "✓ Deleted release from Activiti/activiti-cloud-full-chart"
-            else
-              echo "❌ Failed to delete release from Activiti/activiti-cloud-full-chart"
-              has_errors=true
-            fi
-            
-            echo "Deleting release from Activiti/activiti-cloud..."
-            if gh release delete -R Activiti/activiti-cloud -y --cleanup-tag ${VERSION}; then
-              echo "✓ Deleted release from Activiti/activiti-cloud"
-            else
-              echo "❌ Failed to delete release from Activiti/activiti-cloud"
-              has_errors=true
-            fi
-            
-            echo "Deleting release from Activiti/activiti-cloud-common-chart..."
-            if gh release delete -R Activiti/activiti-cloud-common-chart -y --cleanup-tag ${VERSION}; then
-              echo "✓ Deleted release from Activiti/activiti-cloud-common-chart"
-            else
-              echo "❌ Failed to delete release from Activiti/activiti-cloud-common-chart"
-              has_errors=true
-            fi
-            
-            echo "Deleting release from Activiti/Activiti..."
-            if gh release delete -R Activiti/Activiti -y --cleanup-tag ${VERSION}; then
-              echo "✓ Deleted release from Activiti/Activiti"
-            else
-              echo "❌ Failed to delete release from Activiti/Activiti"
-              has_errors=true
-            fi
-            
-            echo "Deleting tag from Activiti/activiti-scripts..."
-            if gh api --silent -X DELETE /repos/Activiti/activiti-scripts/git/refs/tags/${VERSION}; then
-              echo "✓ Deleted tag from Activiti/activiti-scripts"
-            else
-              echo "❌ Failed to delete tag from Activiti/activiti-scripts"
-              has_errors=true
-            fi
-            
-            if [[ "$has_errors" == "true" ]]; then
-              echo "❌ Cleanup completed with errors for version: ${VERSION}"
-              exit 1
-            else
-              echo "✅ Cleanup completed successfully for version: ${VERSION}"
-            fi
-
-          else
-            echo "version does not end with '-mock'."
+          if [[ "${VERSION}" != *-mock ]]; then
             echo "Error: The provided version does not end with '-mock.'"
             exit 1
+          fi
+          
+          echo "Starting cleanup for version: ${VERSION} from ${{ matrix.repo.name }}"
+          
+          if [[ "${{ matrix.repo.type }}" == "release" ]]; then
+            if gh release delete -R ${{ matrix.repo.name }} -y --cleanup-tag ${VERSION}; then
+              echo "✓ Deleted release from ${{ matrix.repo.name }}"
+            else
+              echo "❌ Failed to delete release from ${{ matrix.repo.name }}"
+              exit 1
+            fi
+          else
+            if gh api --silent -X DELETE /repos/${{ matrix.repo.name }}/git/refs/tags/${VERSION}; then
+              echo "✓ Deleted tag from ${{ matrix.repo.name }}"
+            else
+              echo "❌ Failed to delete tag from ${{ matrix.repo.name }}"
+              exit 1
+            fi
           fi
