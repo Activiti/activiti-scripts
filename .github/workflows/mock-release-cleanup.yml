@@ -30,9 +30,9 @@ jobs:
             echo "Error: The provided version does not end with '-mock.'"
             exit 1
           fi
-          
+
           echo "Starting cleanup for version: ${VERSION} from ${{ matrix.repo.name }}"
-          
+
           if [[ "${{ matrix.repo.type }}" == "release" ]]; then
             if gh release delete -R ${{ matrix.repo.name }} -y --cleanup-tag ${VERSION}; then
               echo "✓ Deleted release from ${{ matrix.repo.name }}"
