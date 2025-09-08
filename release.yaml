@@ -6,6 +6,3 @@ release:
   mock: false
   baseTag:
     activiti: 8.1.2-alpha.5
-    activitiCloud: 8.1.0-alpha.17
-    commonChart: 7.12.0-alpha.3
-    fullChart: 8.1.0-alpha.17
