@@ -112,8 +112,10 @@ jobs:
       - create-scripts-tag
 
     steps:
-      - uses: Alfresco/alfresco-build-tools/.github/actions/nexus-move-artifacts@5cab7bac9b94deb11087c3c39c8e412f6ecf1e00 # v8.1.0
-        if: needs.load-release-info.outputs.mock != 'true'
+      - name: Move artifacts to destination repository for activiti
+        id: move-artifacts-activiti
+        if: ${{ needs.load-release-info.outputs.mock != 'true' }}
+        uses: Alfresco/alfresco-build-tools/.github/actions/nexus-move-artifacts@5cab7bac9b94deb11087c3c39c8e412f6ecf1e00 # v8.1.0
         with:
           nexus-username: ${{ secrets.NEXUS_USERNAME }}
           nexus-password: ${{ secrets.NEXUS_PASSWORD }}
