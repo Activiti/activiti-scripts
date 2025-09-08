@@ -6,3 +6,4 @@ release:
   mock: false
   baseTag:
     activiti: 8.1.6-alpha.1
+  stagingRepository: null
