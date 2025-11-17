@@ -23,3 +23,7 @@ repos:
       - id: check-dependabot
       - id: check-github-actions
       - id: check-github-workflows
+  - repo: https://github.com/hyland/github-actions-ensure-sha-pinned-actions
+    rev: v1.0.0
+    hooks:
+      - id: gha-sha-convert
