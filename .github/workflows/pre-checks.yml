@@ -21,6 +21,10 @@ jobs:
         uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@7bb0d8f13a52db230cff8d3e2895880d6a11c66a # v9.3.3
         with:
           skip_checkout: true
-          python-version: '3.10'
+
+  sha-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Ensure SHA pinned actions
         uses: hyland/github-actions-ensure-sha-pinned-actions@cda680a0136c8c0daede32a0da794dd0578ea661 # v1.0.0
