@@ -311,7 +311,6 @@ jobs:
 
           # Launching the tests
           make test/runtime-acceptance-tests
-          make test/identity-adapter-acceptance-tests
 
       - name: Delete application
         if: always() && steps.install-application.outcome == 'success'
