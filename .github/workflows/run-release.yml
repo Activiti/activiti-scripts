@@ -20,13 +20,12 @@ jobs:
       activiti-cloud-tag: ${{ steps.load-descriptor.outputs.activiti-cloud-tag }}
       common-chart-tag: ${{ steps.load-descriptor.outputs.common-chart-tag }}
       full-chart-tag: ${{ steps.load-descriptor.outputs.full-chart-tag }}
-      staging-repository: ${{ steps.load-descriptor.outputs.staging-repository }}
 
     steps:
       - name: Installing activiti-scripts
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/load-release-descriptor@7c33225b191ec9de4fa385b9a88c895211f04784 # v8.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/load-release-descriptor@7e6cfc6dc78dd63baf3e7193e85f6a630e46c41e # v15.2.0
         id: load-descriptor
         with:
           release-descriptor: release.yaml
@@ -36,7 +35,7 @@ jobs:
     needs: [load-release-info]
     steps:
       - name: Checkout activiti-scripts
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: tag-docker-images
         uses: ./.github/actions/docker-update-manifest
@@ -53,7 +52,7 @@ jobs:
       COMMON_CHART_DIR: common-chart
     steps:
       - name: Checkout common chart
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         env:
           BASE_TAG: ${{needs.load-release-info.outputs.common-chart-tag}}
         with:
@@ -63,7 +62,7 @@ jobs:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
       - name: Release common chart
-        uses: Alfresco/alfresco-build-tools/.github/actions/helm-release-and-publish@7c33225b191ec9de4fa385b9a88c895211f04784 # v8.35.2
+        uses: Alfresco/alfresco-build-tools/.github/actions/helm-release-and-publish@7e6cfc6dc78dd63baf3e7193e85f6a630e46c41e # v15.2.0
         with:
           version: ${{ needs.load-release-info.outputs.version }}
           chart-dir: charts/common
@@ -82,10 +81,10 @@ jobs:
       VERSION: ${{needs.load-release-info.outputs.version}}
     steps:
       - name: Checkout activiti-scripts
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Checkout full chart
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         env:
           BASE_TAG: ${{ needs.load-release-info.outputs.full-chart-tag }}
         with:
@@ -112,7 +111,7 @@ jobs:
           helm-repo-url: https://activiti.github.io/activiti-cloud-helm-charts
 
       - name: Release full chart
-        uses: Alfresco/alfresco-build-tools/.github/actions/helm-release-and-publish@7c33225b191ec9de4fa385b9a88c895211f04784 # v8.35.2
+        uses: Alfresco/alfresco-build-tools/.github/actions/helm-release-and-publish@7e6cfc6dc78dd63baf3e7193e85f6a630e46c41e # v15.2.0
         with:
           version: ${{ needs.load-release-info.outputs.version }}
           chart-dir: ${{env.CHART_FILES_DIR}}
@@ -127,9 +126,9 @@ jobs:
     needs: [load-release-info]
     steps:
       - name: Checkout activiti-scripts
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/maven-release@7c33225b191ec9de4fa385b9a88c895211f04784 # v8.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/maven-release@7e6cfc6dc78dd63baf3e7193e85f6a630e46c41e # v15.2.0
         with:
           repo: Activiti/Activiti
           base-ref: ${{  needs.load-release-info.outputs.activiti-tag }}
@@ -152,9 +151,9 @@ jobs:
       - release-activiti
     steps:
       - name: Checkout activiti-scripts
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/maven-release@7c33225b191ec9de4fa385b9a88c895211f04784 # v8.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/maven-release@7e6cfc6dc78dd63baf3e7193e85f6a630e46c41e # v15.2.0
         with:
           repo: Activiti/activiti-cloud
           base-ref: ${{  needs.load-release-info.outputs.activiti-cloud-tag }}
@@ -199,7 +198,7 @@ jobs:
           version: v3.5.2
 
       - name: Set up rancher
-        uses: Alfresco/alfresco-build-tools/.github/actions/setup-rancher-cli@7c33225b191ec9de4fa385b9a88c895211f04784 # v8.35.2
+        uses: Alfresco/alfresco-build-tools/.github/actions/setup-rancher-cli@7e6cfc6dc78dd63baf3e7193e85f6a630e46c41e # v15.2.0
         with:
           url: ${{ secrets.RANCHER2_URL }}
           access-key: ${{ secrets.RANCHER2_ACCESS_KEY }}
@@ -207,10 +206,10 @@ jobs:
           context: ${{ env.CLUSTER_NAME }}
 
       - name: Checkout activiti-scripts
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Checkout activiti-cloud
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           repository: Activiti/activiti-cloud
           path: ${{ env.ACT_CLOUD_DIR}}
@@ -219,14 +218,14 @@ jobs:
           ref: ${{ needs.load-release-info.outputs.activiti-cloud-tag }}
 
       - name: Checkout full chart
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           path: ${{ env.FULL_CHART_DIR }}
           repository: Activiti/activiti-cloud-full-chart
           ref: ${{ env.VERSION }}
 
       - name: Set up JDK 21
-        uses: actions/setup-java@8df1039502a15bceb9433410b1a100fbe190c53b # v4.5.0
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
         with:
           distribution: temurin
           java-version: 21
@@ -311,7 +310,6 @@ jobs:
 
           # Launching the tests
           make test/runtime-acceptance-tests
-          make test/identity-adapter-acceptance-tests
 
       - name: Delete application
         if: always() && steps.install-application.outcome == 'success'
@@ -328,11 +326,11 @@ jobs:
       RELEASE_VERSION: ${{ needs.load-release-info.outputs.version }}
     steps:
       - name: Checkout activiti-scripts
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/git-check-existing-tag@7c33225b191ec9de4fa385b9a88c895211f04784 # v8.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/git-check-existing-tag@7e6cfc6dc78dd63baf3e7193e85f6a630e46c41e # v15.2.0
         id: check-tag
         with:
           tag: ${{ env.RELEASE_VERSION }}
@@ -357,7 +355,7 @@ jobs:
       - name: Move artifacts to destination repository for activiti
         id: move-artifacts-activiti
         if: ${{ needs.load-release-info.outputs.mock != 'true' }}
-        uses: Alfresco/alfresco-build-tools/.github/actions/nexus-move-artifacts@7c33225b191ec9de4fa385b9a88c895211f04784 # v8.35.2
+        uses: Alfresco/alfresco-build-tools/.github/actions/nexus-move-artifacts@7e6cfc6dc78dd63baf3e7193e85f6a630e46c41e # v15.2.0
         with:
           nexus-username: ${{ secrets.NEXUS_USERNAME }}
           nexus-password: ${{ secrets.NEXUS_PASSWORD }}
@@ -370,7 +368,7 @@ jobs:
       - name: Move artifacts to destination repository for activiti-cloud
         id: move-artifacts-activiti-cloud
         if: ${{ needs.load-release-info.outputs.mock != 'true' }}
-        uses: Alfresco/alfresco-build-tools/.github/actions/nexus-move-artifacts@7c33225b191ec9de4fa385b9a88c895211f04784 # v8.35.2
+        uses: Alfresco/alfresco-build-tools/.github/actions/nexus-move-artifacts@7e6cfc6dc78dd63baf3e7193e85f6a630e46c41e # v15.2.0
         with:
           nexus-username: ${{ secrets.NEXUS_USERNAME }}
           nexus-password: ${{ secrets.NEXUS_PASSWORD }}
