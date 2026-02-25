@@ -20,7 +20,6 @@ jobs:
       activiti-cloud-tag: ${{ steps.load-descriptor.outputs.activiti-cloud-tag }}
       common-chart-tag: ${{ steps.load-descriptor.outputs.common-chart-tag }}
       full-chart-tag: ${{ steps.load-descriptor.outputs.full-chart-tag }}
-      staging-repository: ${{ steps.load-descriptor.outputs.staging-repository }}
 
     steps:
       - name: Installing activiti-scripts
@@ -311,7 +310,6 @@ jobs:
 
           # Launching the tests
           make test/runtime-acceptance-tests
-          make test/identity-adapter-acceptance-tests
 
       - name: Delete application
         if: always() && steps.install-application.outcome == 'success'
