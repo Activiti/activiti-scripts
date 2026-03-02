@@ -135,12 +135,12 @@ jobs:
           working-directory: ${{ env.REPO_DIR }}
           tag: ${{ env.TAG }}
 
-      - name: Set up JDK 21
+      - name: Set up JDK 25
         if: steps.create-maintenance-branch.outputs.exists == 'false'
         uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
         with:
-          distribution: temurin
-          java-version: 21
+          distribution: corretto
+          java-version: 25
           cache: 'maven'
 
       - name: Configure Maven settings
