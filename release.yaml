@@ -3,6 +3,6 @@ release:
   version: 8.8.1
   nextVersion: 8.8.2-SNAPSHOT
   notesStartTag: 8.8.0
-  mock: true
+  mock: false
   baseTag:
     activiti: 8.8.1-alpha.4
