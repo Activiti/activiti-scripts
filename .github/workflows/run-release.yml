@@ -320,8 +320,6 @@ jobs:
     needs:
       - load-release-info
       - release-activiti
-      - release-activiti-cloud
-      - run-sanity-checks
     env:
       RELEASE_VERSION: ${{ needs.load-release-info.outputs.version }}
     steps:
