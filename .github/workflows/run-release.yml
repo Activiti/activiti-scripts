@@ -109,7 +109,6 @@ jobs:
     needs:
       - load-release-info
       - release-activiti
-      - create-scripts-tag
 
     steps:
       - name: Move artifacts to destination repository for activiti
