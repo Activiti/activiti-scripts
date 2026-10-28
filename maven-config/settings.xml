@@ -3,6 +3,14 @@
   xsi:schemalocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
   <servers>
     <server>
+      <id>cloudsmith</id>
+      <username>${env.CLOUDSMITH_USERNAME}</username>
+      <password>${env.CLOUDSMITH_API_KEY}</password>
+      <repositoryOrigins>
+        <repositoryOrigin>https://maven.cloudsmith.io</repositoryOrigin>
+      </repositoryOrigins>
+    </server>
+    <server>
       <id>nexus-releases-staging-fixed</id>
       <username>${env.NEXUS_USERNAME}</username>
       <password>${env.NEXUS_PASSWORD}</password>

@@ -8,6 +8,10 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref_name || github.run_id }}
   cancel-in-progress: true
 
+env:
+  CLOUDSMITH_NAMESPACE: ${{ vars.CLOUDSMITH_NAMESPACE }}
+  MAVEN_VERSION: "3.10.0"
+
 jobs:
   load-release-info:
     runs-on: ubuntu-latest
@@ -24,6 +28,14 @@ jobs:
     steps:
       - name: Installing activiti-scripts
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Check Cloudsmith namespace
+        shell: bash
+        run: |
+          if [[ -z "$CLOUDSMITH_NAMESPACE" ]]; then
+            echo "::error::Set the CLOUDSMITH_NAMESPACE repository variable before releasing."
+            exit 1
+          fi
 
       - uses: Alfresco/alfresco-build-tools/.github/actions/load-release-descriptor@c388af5fcce6747d0059ae98db2857fc9e8a9387 # v18.28.2
         id: load-descriptor
@@ -124,16 +136,23 @@ jobs:
   release-activiti:
     runs-on: ubuntu-latest
     needs: [load-release-info]
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - name: Checkout activiti-scripts
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/maven-release@c388af5fcce6747d0059ae98db2857fc9e8a9387 # v18.28.2
+      # Draft dependency: merge/release the AAE-55031 build-tools support before enabling this workflow.
+      - uses: Alfresco/alfresco-build-tools/.github/actions/maven-release@09bac2e96f6daa50aa5876dfa27c1f505aa49bd0 # AAE-55031
         with:
           repo: Activiti/Activiti
           base-ref: ${{  needs.load-release-info.outputs.activiti-tag }}
           release-version: ${{ needs.load-release-info.outputs.version }}
           staging-repository: activiti-staging
+          cloudsmith-namespace: ${{ env.CLOUDSMITH_NAMESPACE }}
+          maven-deploy-plugin-major-version: "3"
+          maven-version: ${{ env.MAVEN_VERSION }}
           git-username: ${{ secrets.BOT_GITHUB_USERNAME }}
           github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
           gpg-passphrase: "${{ secrets.GPG_PASSPHRASE }}"
@@ -149,17 +168,23 @@ jobs:
     needs:
       - load-release-info
       - release-activiti
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - name: Checkout activiti-scripts
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/maven-release@c388af5fcce6747d0059ae98db2857fc9e8a9387 # v18.28.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/maven-release@09bac2e96f6daa50aa5876dfa27c1f505aa49bd0 # AAE-55031
         with:
           repo: Activiti/activiti-cloud
           base-ref: ${{  needs.load-release-info.outputs.activiti-cloud-tag }}
           extra-replacements: activiti.version=${{  needs.load-release-info.outputs.activiti-tag }}
           release-version: ${{ needs.load-release-info.outputs.version }}
           staging-repository: activiti-staging
+          cloudsmith-namespace: ${{ env.CLOUDSMITH_NAMESPACE }}
+          maven-deploy-plugin-major-version: "3"
+          maven-version: ${{ env.MAVEN_VERSION }}
           git-username: ${{ secrets.BOT_GITHUB_USERNAME }}
           github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
           gpg-passphrase: "${{ secrets.GPG_PASSPHRASE }}"
@@ -344,12 +369,15 @@ jobs:
           git push origin "$RELEASE_VERSION"
 
 
-  promote-nexus-staging:
+  promote-maven-staging:
     runs-on: ubuntu-latest
     needs:
       - load-release-info
       - release-activiti
       - create-scripts-tag
+    permissions:
+      contents: read
+      id-token: write
 
     steps:
       - name: Move artifacts to destination repository for activiti
@@ -378,11 +406,37 @@ jobs:
           group: org.activiti.cloud
           version: ${{ needs.load-release-info.outputs.version }}
 
+      - name: Authenticate with Cloudsmith
+        if: needs.load-release-info.outputs.mock != 'true'
+        uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@09bac2e96f6daa50aa5876dfa27c1f505aa49bd0 # AAE-55031
+        with:
+          oidc-namespace: ${{ env.CLOUDSMITH_NAMESPACE }}
+
+      - name: Promote Activiti Maven release in Cloudsmith
+        if: needs.load-release-info.outputs.mock != 'true'
+        uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-maven-promote@09bac2e96f6daa50aa5876dfa27c1f505aa49bd0 # AAE-55031
+        with:
+          namespace: ${{ env.CLOUDSMITH_NAMESPACE }}
+          source-repository: activiti-staging
+          destination-repository: activiti-releases
+          group: org.activiti
+          version: ${{ needs.load-release-info.outputs.version }}
+
+      - name: Promote Activiti Cloud Maven release in Cloudsmith
+        if: needs.load-release-info.outputs.mock != 'true'
+        uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-maven-promote@09bac2e96f6daa50aa5876dfa27c1f505aa49bd0 # AAE-55031
+        with:
+          namespace: ${{ env.CLOUDSMITH_NAMESPACE }}
+          source-repository: activiti-staging
+          destination-repository: activiti-releases
+          group: org.activiti.cloud
+          version: ${{ needs.load-release-info.outputs.version }}
+
   create-gh-releases:
     runs-on: ubuntu-latest
     needs:
       - load-release-info
-      - promote-nexus-staging
+      - promote-maven-staging
     strategy:
       fail-fast: true
       matrix:
